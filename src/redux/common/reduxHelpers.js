@@ -10,28 +10,28 @@ import { helpers } from '../../common';
  */
 
 /**
- * Apply a "fulfilled" suffix for Redux Promise Middleware action responses.
+ * Apply a "fulfilled" suffix for Redux Promise Middleware action responses if it doesn't exist.
  *
  * @param {string} base
  * @returns {string}
  */
-const FULFILLED_ACTION = (base = '') => `${base}_FULFILLED`;
+const FULFILLED_ACTION = (base = '') => (!/_FULFILLED$/.test(base) && `${base}_FULFILLED`) || base;
 
 /**
- * Apply a "pending" suffix for Redux Promise Middleware action responses.
+ * Apply a "pending" suffix for Redux Promise Middleware action responses if it doesn't exist.
  *
  * @param {string} base
  * @returns {string}
  */
-const PENDING_ACTION = (base = '') => `${base}_PENDING`;
+const PENDING_ACTION = (base = '') => (!/_PENDING$/.test(base) && `${base}_PENDING`) || base;
 
 /**
- * Apply a "rejected" suffix for Redux Promise Middleware action responses.
+ * Apply a "rejected" suffix for Redux Promise Middleware action responses if it doesn't exist.
  *
  * @param {string} base
  * @returns {string}
  */
-const REJECTED_ACTION = (base = '') => `${base}_REJECTED`;
+const REJECTED_ACTION = (base = '') => (!/_REJECTED$/.test(base) && `${base}_REJECTED`) || base;
 
 /**
  * Apply a "status range" suffix for Status Middleware action responses.
@@ -284,7 +284,7 @@ const setStateProp = (prop, data, options) => {
   let obj = { ...state };
 
   if (helpers.DEV_MODE && prop && !state[prop]) {
-    console.error(`Error: Property ${prop} does not exist within the passed state.`, state);
+    console.warn(`Warning: Property ${prop} does not exist within the passed state.`, state);
   }
 
   if (helpers.DEV_MODE && reset && prop && !initialState[prop]) {
