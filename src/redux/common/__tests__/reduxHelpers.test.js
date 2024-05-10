@@ -12,8 +12,14 @@ describe('ReduxHelpers', () => {
 
   it('should support generated strings and flags', () => {
     expect(reduxHelpers.FULFILLED_ACTION('lorem')).toBe('lorem_FULFILLED');
+    expect(reduxHelpers.FULFILLED_ACTION('lorem_FULFILLED')).toBe('lorem_FULFILLED');
+
     expect(reduxHelpers.PENDING_ACTION('lorem')).toBe('lorem_PENDING');
+    expect(reduxHelpers.PENDING_ACTION('lorem_PENDING')).toBe('lorem_PENDING');
+
     expect(reduxHelpers.REJECTED_ACTION('lorem')).toBe('lorem_REJECTED');
+    expect(reduxHelpers.REJECTED_ACTION('lorem_REJECTED')).toBe('lorem_REJECTED');
+
     expect(reduxHelpers.HTTP_STATUS_RANGE('lorem')).toBe('lorem_STATUS_RANGE');
   });
 

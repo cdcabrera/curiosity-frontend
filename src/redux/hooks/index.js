@@ -1,5 +1,5 @@
 import { reactReduxHooks } from './useReactRedux';
-import { dynamicReactReduxHooks } from './useDynamicRedux';
+import { dynamicReactReduxHooks } from './useDynamicReactRedux';
 
 const storeHooks = {
   reactRedux: {

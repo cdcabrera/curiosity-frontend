@@ -25,28 +25,29 @@ const useDynamicDispatch = ({ useDispatch: useAliasDispatch = useDispatch } = {}
 
       return dispatch(
         updatedTypeValue.map(value => {
-          if ('dynamicType' in value) {
-            if (value.payload) {
+          const { dynamicType, ...updatedValue } = value;
+          if (dynamicType) {
+            if (updatedValue.payload) {
               return {
-                ...value,
-                type: value.dynamicType,
+                ...updatedValue,
+                type: dynamicType,
                 meta: {
-                  ...value.meta,
-                  __originalType: value.dynamicType,
+                  ...updatedValue.meta,
+                  __originalType: dynamicType,
                   __dynamic: true
                 }
               };
             }
 
             return {
-              ...value,
-              type: value.dynamicType,
-              __originalType: value.dynamicType,
+              ...updatedValue,
+              type: dynamicType,
+              __originalType: dynamicType,
               __dynamic: true
             };
           }
 
-          return value;
+          return updatedValue;
         })
       );
     },
@@ -62,14 +63,19 @@ const useDynamicDispatch = ({ useDispatch: useAliasDispatch = useDispatch } = {}
  * @param {*} value
  * @param {object} options
  * @param {*} options.equality
+ * @param {string} options.reducerStateProp The reducer property used to store related "dynamic state" for you.
  * @param {Function} options.useSelector
  * @returns {*}
  */
-const useDynamicSelector = (selector, value = null, { equality, useSelector: useAliasSelector = useSelector } = {}) => {
+const useDynamicSelector = (
+  selector,
+  value = null,
+  { equality, reducerStateProp = 'dynamic', useSelector: useAliasSelector = useSelector } = {}
+) => {
   let updatedSelector = selector;
 
   if (typeof selector === 'string') {
-    updatedSelector = ({ dynamic }) => dynamic?.[selector];
+    updatedSelector = ({ [reducerStateProp]: stateProp }) => stateProp?.[selector];
   }
 
   return useAliasSelector(updatedSelector, value, { equality });
@@ -84,22 +90,27 @@ const useDynamicSelector = (selector, value = null, { equality, useSelector: use
  * @param {*} value Pass-through value similar to charging the response.
  * @param {object} options
  * @param {*} options.equality
+ * @param {string} options.reducerStateProp The reducer property used to store related "dynamic state" for you.
  * @param {Function} options.useSelectors
  * @returns {Array|object}
  */
-const useDynamicSelectors = (selectors, value, { equality, useSelectors: useAliasSelectors = useSelectors } = {}) => {
+const useDynamicSelectors = (
+  selectors,
+  value,
+  { equality, reducerStateProp = 'dynamic', useSelectors: useAliasSelectors = useSelectors } = {}
+) => {
   let updatedSelectors = Array.isArray(selectors) ? selectors : [selectors];
 
   updatedSelectors = updatedSelectors.map(selector => {
     if (typeof selector.selector === 'string') {
       return {
         ...selector,
-        selector: ({ dynamic }) => dynamic?.[selector.selector]
+        selector: ({ [reducerStateProp]: stateProp }) => stateProp?.[selector.selector]
       };
     }
 
     if (typeof selector === 'string') {
-      return ({ dynamic }) => dynamic?.[selector];
+      return ({ [reducerStateProp]: stateProp }) => stateProp?.[selector];
     }
 
     return selector;

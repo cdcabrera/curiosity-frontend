@@ -105,6 +105,7 @@ const useSelectors = (
   });
 
   const multiSelector = createSimpleSelector(updatedSelectors, (...results) => results);
+  console.log('>>>>>>>>>>>>', multiSelector.toString(), updatedSelectors.toString());
   let listMultiSelectorResponse = (useAliasSelector(multiSelector, equality) ?? value) || [];
   const undefinedMultiSelectorResponse = listMultiSelectorResponse.filter(response => response === undefined);
 

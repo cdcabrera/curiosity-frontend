@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useDynamicReactRedux should apply a hook for useDispatch: dispatch 1`] = `
+[
+  [
+    [
+      {
+        "data": "ipsum",
+        "type": "lorem",
+      },
+      {
+        "__dynamic": true,
+        "__originalType": "dolor",
+        "data": "sit",
+        "type": "dolor",
+      },
+      {
+        "meta": {
+          "__dynamic": true,
+          "__originalType": "hello",
+        },
+        "payload": {
+          "data": "world",
+        },
+        "type": "hello",
+      },
+    ],
+  ],
+]
+`;
+
+exports[`useDynamicReactRedux should return specific properties: specific properties 1`] = `
+{
+  "useDynamicDispatch": [Function],
+  "useDynamicSelector": [Function],
+  "useDynamicSelectors": [Function],
+  "useDynamicSelectorsResponse": [Function],
+}
+`;
