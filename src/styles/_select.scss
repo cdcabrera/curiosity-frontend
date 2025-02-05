@@ -1,6 +1,10 @@
 .curiosity-select {
   position: relative;
 
+  &-pf__toggle {
+    background-color: var(--pf-global--BackgroundColor--100);
+  }
+
   &-pf__no-toggle-text {
     > button {
       div {
