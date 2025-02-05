@@ -19,11 +19,11 @@ import { translate } from '../i18n/i18n';
 /**
  * Select field options.
  *
- * @type {Array<{title: React.ReactNode, value: string, selected: boolean}>}
+ * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
  */
 const toolbarFieldOptions = dateHelpers.getRangedMonthDateTime().listDateTimeRanges.map(dateTime => ({
   ...dateTime,
-  selected: false
+  isSelected: false
 }));
 
 /**
@@ -96,7 +96,7 @@ const ToolbarFieldRangedMonthly = ({
 
   const updatedOptions = options.map(option => ({
     ...option,
-    selected: option.title === updatedValue || option.value.startDate.toISOString() === updatedValue
+    isSelected: option.title === updatedValue || option.value.startDate.toISOString() === updatedValue
   }));
 
   return (
@@ -105,8 +105,8 @@ const ToolbarFieldRangedMonthly = ({
       onSelect={onSelect}
       options={updatedOptions}
       placeholder={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'rangedMonthly' })}
-      position={position}
       maxHeight={250}
+      alignment={{ position }}
       data-test="toolbarFieldRangeGranularity"
     />
   );
