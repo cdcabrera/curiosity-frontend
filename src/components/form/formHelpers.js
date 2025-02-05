@@ -10,11 +10,12 @@ import { helpers } from '../../common/helpers';
 /**
  * Create a consistent mock event object modeled on JS behavior.
  *
- * @param {object} event
- * @param {boolean} persistEvent
- * @returns {{keyCode, currentTarget: {}, name, checked: *, id: *, persist: Function, value, target: {}}}
+ * @param {Event} event
+ * @param {object} options
+ * @param {boolean} options.persistEvent
+ * @returns {CustomEvent<{keyCode, currentTarget: {}, name, checked: *, id: *, persist: Function, value, target: {}}>}
  */
-const createMockEvent = (event, persistEvent = false) => {
+const createMockEvent = (event, { persistEvent = false } = {}) => {
   const { checked, currentTarget = {}, keyCode, persist = helpers.noop, target = {} } = { ...event };
   let updatedCurrentTarget = currentTarget;
   if (persistEvent) {
