@@ -2,8 +2,8 @@ import React from 'react';
 import {
   chart_color_blue_100 as chartColorBlueLight,
   chart_color_blue_300 as chartColorBlueDark,
-  chart_color_cyan_100 as chartColorCyanLight,
-  chart_color_cyan_300 as chartColorCyanDark,
+  chart_color_teal_100 as chartColorTealLight,
+  chart_color_teal_300 as chartColorTealDark,
   chart_color_orange_100 as chartColorOrangeLight,
   chart_color_orange_300 as chartColorOrangeDark,
   chart_color_purple_100 as chartColorPurpleLight,
@@ -121,9 +121,9 @@ const config = {
         },
         {
           metric: RHSM_API_PATH_METRIC_TYPES.SOCKETS,
-          fill: chartColorCyanLight.value,
-          stroke: chartColorCyanDark.value,
-          color: chartColorCyanDark.value,
+          fill: chartColorTealLight.value,
+          stroke: chartColorTealDark.value,
+          color: chartColorTealDark.value,
           query: {
             [RHSM_API_QUERY_SET_TYPES.CATEGORY]: CATEGORY_TYPES.VIRTUAL
           }

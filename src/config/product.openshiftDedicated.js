@@ -2,8 +2,8 @@ import React from 'react';
 import {
   chart_color_blue_100 as chartColorBlueLight,
   chart_color_blue_300 as chartColorBlueDark,
-  chart_color_cyan_100 as chartColorCyanLight,
-  chart_color_cyan_300 as chartColorCyanDark
+  chart_color_teal_100 as chartColorTealLight,
+  chart_color_teal_300 as chartColorTealDark
 } from '@patternfly/react-tokens';
 import { Button, Label as PfLabel } from '@patternfly/react-core';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
@@ -97,9 +97,9 @@ const config = {
     },
     {
       metric: RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS,
-      fill: chartColorCyanLight.value,
-      stroke: chartColorCyanDark.value,
-      color: chartColorCyanDark.value,
+      fill: chartColorTealLight.value,
+      stroke: chartColorTealDark.value,
+      color: chartColorTealDark.value,
       chartType: ChartTypeVariant.line,
       isStacked: false,
       yAxisChartLabel: ({ id } = {}) => translate('curiosity-graph.label_axisY', { context: id })
