@@ -1,5 +1,5 @@
 import React from 'react';
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from '@patternfly/react-core';
+import { EmptyState, EmptyStateBody, EmptyStateVariant, Title } from '@patternfly/react-core';
 import { PageLayout, PageHeader, PageSection } from '../pageLayout/pageLayout';
 import { helpers } from '../../common';
 
@@ -12,7 +12,6 @@ import { helpers } from '../../common';
 
 /**
  * Render a message view, page empty state.
- * Note: PF EmptyStateIcon registers as function, we compensate for PF by allowing a ReactNode or Function.
  *
  * @param {object} props
  * @param {React.ReactNode} [props.children]
@@ -27,15 +26,7 @@ const MessageView = ({ children, icon, message, pageTitle, title }) => (
     <PageHeader>{pageTitle || helpers.UI_DISPLAY_NAME}</PageHeader>
     <PageSection>
       {children ?? (
-        <EmptyState variant={EmptyStateVariant.full} className="fadein">
-          {(typeof icon === 'function' && <EmptyStateIcon icon={icon} />) ||
-            (icon && <EmptyStateIcon icon={() => icon} />) ||
-            null}
-          {title && (
-            <Title headingLevel="h2" size="lg">
-              {title}
-            </Title>
-          )}
+        <EmptyState variant={EmptyStateVariant.full} className="fadein" icon={icon} titleText={title} headingLevel="h2">
           {message && <EmptyStateBody>{message}</EmptyStateBody>}
         </EmptyState>
       )}
