@@ -125,7 +125,7 @@ const ToolbarFieldBillingProvider = ({
 
   return (
     <React.Fragment>
-      <ToolbarItem gap={{ default: "gapNone" }}>
+      <ToolbarItem gap={{ default: 'gapNone' }}>
         <Select
           // isReadOnly={updatedOptions.length === 1}
           aria-label={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, {

@@ -94,14 +94,14 @@ const ErrorMessage = ({
   return (
     <div className="fadein" aria-live="polite">
       {isCauseOrError && (
-        <Button icon={<CogIcon />}
+        <Button
+          icon={<CogIcon />}
           className="curiosity-error__link"
           title={t('curiosity-view.error', { context: 'debug' })}
           style={{ float: 'right' }}
           variant="link"
           onClick={() => onClickShowErrorDisplay()}
         >
-          
           <span className="sr-only">{t('curiosity-view.error', { context: 'debug' })}</span>
         </Button>
       )}
@@ -111,9 +111,15 @@ const ErrorMessage = ({
         </Button>
       )}
       {(isErrorDisplay && (cause || errorStr)) || (
-        <EmptyState titleText={<Title headingLevel="h2" size="lg">
-            {title || t('curiosity-view.error', { context: 'title', appName: helpers.UI_INTERNAL_NAME })}
-          </Title>} icon={ExclamationCircleIcon} variant={EmptyStateVariant.full}>
+        <EmptyState
+          titleText={
+            <Title headingLevel="h2" size="lg">
+              {title || t('curiosity-view.error', { context: 'title', appName: helpers.UI_INTERNAL_NAME })}
+            </Title>
+          }
+          icon={ExclamationCircleIcon}
+          variant={EmptyStateVariant.full}
+        >
           <EmptyStateBody>
             {description ||
               t('curiosity-view.error', { context: 'description' }, [

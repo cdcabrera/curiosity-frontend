@@ -60,7 +60,7 @@ const GraphCardChart = ({
       actions: (
         <Toolbar className="curiosity-toolbar" collapseListedFiltersBreakpoint="sm">
           <ToolbarContent className="curiosity-toolbar__content">
-            <ToolbarGroup align={{ default: "alignEnd" }}>{updatedActionDisplay}</ToolbarGroup>
+            <ToolbarGroup align={{ default: 'alignEnd' }}>{updatedActionDisplay}</ToolbarGroup>
           </ToolbarContent>
         </Toolbar>
       )

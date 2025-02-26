@@ -1,12 +1,6 @@
 import React from 'react';
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon';
-import {
-  EmptyState,
-  EmptyStateIcon,
-  EmptyStateBody,
-  EmptyStateVariant,
-  
-} from '@patternfly/react-core';
+import { EmptyState, EmptyStateIcon, EmptyStateBody, EmptyStateVariant } from '@patternfly/react-core';
 import { EmptyTable as PlatformEmptyTableWrapper } from '@redhat-cloud-services/frontend-components/EmptyTable';
 
 /**
@@ -37,7 +31,7 @@ const TableEmpty = ({
 }) => (
   <PlatformEmptyTableWrapper>
     <table aria-label={ariaLabel} {...props} />
-    <EmptyState  headingLevel={tableHeading}   titleText={title} variant={variant} className="fadein">
+    <EmptyState headingLevel={tableHeading} titleText={title} variant={variant} className="fadein">
       {(typeof icon === 'function' && <EmptyStateIcon icon={icon} />) ||
         (icon && <EmptyStateIcon icon={() => icon} />) ||
         null}
