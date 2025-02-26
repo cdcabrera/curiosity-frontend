@@ -2,9 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useMount } from 'react-use';
 import { ToolbarContentContext, ToolbarContext } from '@patternfly/react-core/dist/dynamic/components/Toolbar';
-import {
-	Label, LabelGroup, ToolbarItem
-} from '@patternfly/react-core';
+import { Label, LabelGroup, ToolbarItem } from '@patternfly/react-core';
 
 import { helpers } from '../../common/helpers';
 
@@ -103,7 +101,11 @@ const ToolbarFilter = ({
           {chips.map(chip => {
             const normalizedChip = (typeof chip === 'string' && { key: chip, node: chip }) || chip;
             return (
-              <Label variant="outline" key={normalizedChip.key} onClose={() => deleteChip(normalizedCategoryKey, normalizedChip)}>
+              <Label
+                variant="outline"
+                key={normalizedChip.key}
+                onClose={() => deleteChip(normalizedCategoryKey, normalizedChip)}
+              >
                 {normalizedChip.node}
               </Label>
             );
