@@ -5,7 +5,7 @@ import {
   EmptyStateIcon,
   EmptyStateBody,
   EmptyStateVariant,
-  EmptyStateHeader
+  
 } from '@patternfly/react-core';
 import { EmptyTable as PlatformEmptyTableWrapper } from '@redhat-cloud-services/frontend-components/EmptyTable';
 
@@ -37,11 +37,10 @@ const TableEmpty = ({
 }) => (
   <PlatformEmptyTableWrapper>
     <table aria-label={ariaLabel} {...props} />
-    <EmptyState variant={variant} className="fadein">
+    <EmptyState  headingLevel={tableHeading}   titleText={title} variant={variant} className="fadein">
       {(typeof icon === 'function' && <EmptyStateIcon icon={icon} />) ||
         (icon && <EmptyStateIcon icon={() => icon} />) ||
         null}
-      <EmptyStateHeader titleText={title} headingLevel={tableHeading} />
       <EmptyStateBody>{message}</EmptyStateBody>
     </EmptyState>
   </PlatformEmptyTableWrapper>
