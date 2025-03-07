@@ -108,7 +108,7 @@ updateOptions.memo = helpers.memo(updateOptions);
 const updateSelectedOptions = options => (Array.isArray(options) && options) || (options && [options]) || [];
 
 /**
- * Apply "data-" attributes to PF elements.
+ * Apply "data-" attributes to main PF element.
  *
  * @param {object} params
  * @param {React.ReactElement|HTMLElement} params.selectField
@@ -246,23 +246,8 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
   }, [baseOptions, selectedOptions, variant]);
 
   const onSelectCallback = useCallback(
-    (event, optionTitle) => {
+    (event, key) => {
       const updatedOptions = _cloneDeep(options);
-      let key;
-
-      switch (variant) {
-        case SelectVariant.dropdown:
-          key = event.currentTarget.closest('button').id;
-          break;
-        case SelectVariant.checkbox:
-          key = event.currentTarget.closest('label').id;
-          break;
-        case SelectVariant.single:
-        default:
-          key = event.currentTarget.id;
-          break;
-      }
-
       const selectedOptionIndex = options.findIndex(option => option.key === key);
 
       if (options[selectedOptionIndex].isDisabled === true) {
@@ -281,7 +266,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
           break;
       }
 
-      setSelectedTitle(optionTitle);
+      setSelectedTitle(updatedOptions[selectedOptionIndex].title);
       setOptions(updatedOptions);
 
       if (typeof onSelect === 'function') {
@@ -425,6 +410,7 @@ const Select = ({
           {isExpanded &&
             options?.map(option => (
               <SelectOption
+                className="curiosity-select-pf__option"
                 role="menu"
                 description={option.description}
                 key={option.key}
@@ -433,12 +419,7 @@ const Select = ({
                 icon={option.icon}
                 isDisabled={option.isDisabled === true}
                 isSelected={variant !== SelectVariant.dropdown && option.isSelected}
-                value={option.title}
-                data-value={
-                  ((_isPlainObject(option.value) || Array.isArray(option.value)) && JSON.stringify([option.value])) ||
-                  option.value
-                }
-                data-title={option.title}
+                value={option.key}
               >
                 {option.title}
               </SelectOption>
