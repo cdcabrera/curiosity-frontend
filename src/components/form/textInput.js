@@ -58,7 +58,7 @@ const TextInput = ({
       const { currentTarget, keyCode } = event;
       const clonedEvent = { ...event };
 
-      onKeyUpCallback(createMockEvent(event, true));
+      onKeyUpCallback(createMockEvent(event, { presistEvent: true }));
 
       if (keyCode === 27) {
         if (type === 'search' && currentTarget.value === '') {
@@ -85,7 +85,7 @@ const TextInput = ({
       const { currentTarget } = event;
       const clonedEvent = { ...event };
 
-      onMouseUpCallback(createMockEvent(event, true));
+      onMouseUpCallback(createMockEvent(event, { presistEvent: true }));
 
       if (type !== 'search' || currentTarget.value === '') {
         return;
