@@ -18,6 +18,13 @@ import { createMockEvent } from './formHelpers';
 import { helpers } from '../../common';
 
 /**
+ * A bundled wrapper for PF Select, Dropdown.
+ *
+ * @memberof Form
+ * @module Select
+ */
+
+/**
  * Pass button variant as a select component option.
  *
  * @type {{secondary: ButtonVariant.secondary, plain: ButtonVariant.plain, tertiary:
@@ -101,7 +108,7 @@ updateOptions.memo = helpers.memo(updateOptions);
 const updateSelectedOptions = options => (Array.isArray(options) && options) || (options && [options]) || [];
 
 /**
- * Apply "data-" attributes to PF elements.
+ * Apply "data-" attributes to main PF element.
  *
  * @param {object} params
  * @param {React.ReactElement|HTMLElement} params.selectField
@@ -129,7 +136,7 @@ const formatOptions = ({ options, selectedOptions, variant } = {}) => {
   const updatedOptions = updateOptions.memo(options);
   const updatedSelectedOptions = updateSelectedOptions(selectedOptions);
   let updateSelected;
-  // THIS IS BORKING THE ISSELECTED FROM TRUE TO FALSE
+
   updatedOptions.forEach(({ isSelected, title, value }, index) => {
     let updateIsSelected = isSelected;
 
@@ -221,7 +228,7 @@ setSelectElements.memo = helpers.memo(setSelectElements);
  * @param {Function} options.onSelect
  * @param {updateSelectedOptions} options.selectedOptions
  * @param {SelectVariant} options.variant
- * @returns {{options: *[], selectedTitle: undefined, onSelect: ((function(*, *): void)|*)}}
+ * @returns {{options: Array, selectedTitle: undefined, onSelect: Function}}
  */
 const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant }) => {
   const [selectedTitle, setSelectedTitle] = React.useState();
@@ -239,24 +246,9 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
   }, [baseOptions, selectedOptions, variant]);
 
   const onSelectCallback = useCallback(
-    (event, optionTitle) => {
+    (event, key) => {
       const updatedOptions = _cloneDeep(options);
-      let key;
-
-      switch (variant) {
-        case SelectVariant.dropdown:
-          key = event.currentTarget.closest('button').id;
-          break;
-        case SelectVariant.checkbox:
-          key = event.currentTarget.closest('label').id;
-          break;
-        case SelectVariant.single:
-        default:
-          key = event.currentTarget.id;
-          break;
-      }
-
-      const selectedOptionIndex = options.findIndex(option => option.key === key);
+      const selectedOptionIndex = updatedOptions.findIndex(option => option.key === key);
 
       if (options[selectedOptionIndex].isDisabled === true) {
         return;
@@ -274,7 +266,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
           break;
       }
 
-      setSelectedTitle(optionTitle);
+      setSelectedTitle(updatedOptions[selectedOptionIndex].title);
       setOptions(updatedOptions);
 
       if (typeof onSelect === 'function') {
@@ -301,6 +293,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
  *     preventOverflow: boolean }} [props.alignment] Alias for PF references to "popperProps".
  *     Override by passing a "popperProps" prop object value.
  * @param {string} [props.className]
+ * @param {boolean} [props.isDisabled] Disable the select/dropdown toggle
  * @param {boolean} [props.isInline=true] Is the select/dropdown an inline-block or not.
  * @param {number} [props.maxHeight] Max height of the select/dropdown menu
  * @param {Function} [props.onSelect]
@@ -315,14 +308,16 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
  * @param {string|number|{value: unknown}|
  *     Array<string|number|{value: unknown
  *     }>} [props.selectedOptions]
- * @param {{ content: React.ReactNode, icon: React.ReactNode,
- *     variant: SelectButtonVariant }} [props.toggle] select/dropdown menu-toggle props object
+ * @param {{ content: React.ReactNode|undefined, icon: React.ReactNode|undefined,
+ *     isToggleIconOnly: boolean|undefined, variant: SelectButtonVariant|undefined }} [props.toggle] select/dropdown
+ *     menu-toggle props object
  * @param {SelectVariant} [props.variant=SelectVariant.single]
  * @returns {React.ReactElement}
  */
 const Select = ({
   alignment,
   className,
+  isDisabled,
   isInline = true,
   maxHeight,
   onSelect: baseOnSelect,
@@ -365,8 +360,13 @@ const Select = ({
   };
 
   const toggleContent = toggle?.content;
-  const toggleProps = { ...toggle };
+  const isToggleIconOnly = toggle?.isToggleIconOnly;
+  const toggleProps = {
+    isDisabled: isDisabled ?? options.length === 0,
+    ...toggle
+  };
   delete toggleProps.content;
+  delete toggleProps.isToggleIconOnly;
 
   const updatedProps = {
     popperProps: {
@@ -382,12 +382,13 @@ const Select = ({
         isFullWidth={isInline === false}
         {...toggleProps}
       >
-        {toggleContent ||
-          (variant === SelectVariant.dropdown && placeholder) ||
-          (variant === SelectVariant.single && (selectedTitle || placeholder)) ||
+        {(!isToggleIconOnly &&
+          (toggleContent ||
+            (variant === SelectVariant.dropdown && placeholder) ||
+            (variant === SelectVariant.single && (selectedTitle || placeholder)))) ||
           (variant === SelectVariant.checkbox && (
             <React.Fragment>
-              {placeholder}{' '}
+              {!isToggleIconOnly && `${placeholder} `}
               {options.filter(({ isSelected }) => isSelected === true).length > 0 && (
                 <Badge isRead>{options.filter(({ isSelected }) => isSelected === true).length}</Badge>
               )}
@@ -418,6 +419,7 @@ const Select = ({
           {isExpanded &&
             options?.map(option => (
               <SelectOption
+                className="curiosity-select-pf__option"
                 role="menu"
                 description={option.description}
                 key={option.key}
@@ -426,12 +428,7 @@ const Select = ({
                 icon={option.icon}
                 isDisabled={option.isDisabled === true}
                 isSelected={variant !== SelectVariant.dropdown && option.isSelected}
-                value={option.title}
-                data-value={
-                  ((_isPlainObject(option.value) || Array.isArray(option.value)) && JSON.stringify([option.value])) ||
-                  option.value
-                }
-                data-title={option.title}
+                value={option.key}
               >
                 {option.title}
               </SelectOption>
