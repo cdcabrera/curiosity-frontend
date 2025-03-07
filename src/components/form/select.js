@@ -129,7 +129,7 @@ const formatOptions = ({ options, selectedOptions, variant } = {}) => {
   const updatedOptions = updateOptions.memo(options);
   const updatedSelectedOptions = updateSelectedOptions(selectedOptions);
   let updateSelected;
-  // THIS IS BORKING THE ISSELECTED FROM TRUE TO FALSE
+
   updatedOptions.forEach(({ isSelected, title, value }, index) => {
     let updateIsSelected = isSelected;
 
