@@ -307,8 +307,9 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
  * @param {string|number|{value: unknown}|
  *     Array<string|number|{value: unknown
  *     }>} [props.selectedOptions]
- * @param {{ content: React.ReactNode, icon: React.ReactNode,
- *     variant: SelectButtonVariant }} [props.toggle] select/dropdown menu-toggle props object
+ * @param {{ content: React.ReactNode|undefined, icon: React.ReactNode|undefined,
+ *     isToggleIconOnly: boolean|undefined, variant: SelectButtonVariant|undefined }} [props.toggle] select/dropdown
+ *     menu-toggle props object
  * @param {SelectVariant} [props.variant=SelectVariant.single]
  * @returns {React.ReactElement}
  */
@@ -357,8 +358,10 @@ const Select = ({
   };
 
   const toggleContent = toggle?.content;
+  const isToggleIconOnly = toggle?.isToggleIconOnly;
   const toggleProps = { ...toggle };
   delete toggleProps.content;
+  delete toggleProps.isToggleIconOnly;
 
   const updatedProps = {
     popperProps: {
@@ -374,12 +377,13 @@ const Select = ({
         isFullWidth={isInline === false}
         {...toggleProps}
       >
-        {toggleContent ||
-          (variant === SelectVariant.dropdown && placeholder) ||
-          (variant === SelectVariant.single && (selectedTitle || placeholder)) ||
+        {(!isToggleIconOnly &&
+          (toggleContent ||
+            (variant === SelectVariant.dropdown && placeholder) ||
+            (variant === SelectVariant.single && (selectedTitle || placeholder)))) ||
           (variant === SelectVariant.checkbox && (
             <React.Fragment>
-              {placeholder}{' '}
+              {!isToggleIconOnly && `${placeholder} `}
               {options.filter(({ isSelected }) => isSelected === true).length > 0 && (
                 <Badge isRead>{options.filter(({ isSelected }) => isSelected === true).length}</Badge>
               )}
