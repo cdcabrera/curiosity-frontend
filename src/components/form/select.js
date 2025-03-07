@@ -416,7 +416,7 @@ const Select = ({
                 hasCheckbox={variant === SelectVariant.checkbox}
                 icon={option.icon}
                 isDisabled={option.isDisabled === true}
-                isSelected={option.isSelected}
+                isSelected={variant !== SelectVariant.dropdown && option.isSelected}
                 value={option.title}
                 data-value={
                   ((_isPlainObject(option.value) || Array.isArray(option.value)) && JSON.stringify([option.value])) ||
