@@ -315,6 +315,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
  * @param {string|number|{value: unknown}|
  *     Array<string|number|{value: unknown
  *     }>} [props.selectedOptions]
+ * @param {MenuToggle} [props.toggle] select/dropdown menu-toggle props object
  * @param {SelectVariant} [props.variant=SelectVariant.single]
  * @returns {React.ReactElement}
  */
@@ -327,6 +328,7 @@ const Select = ({
   options: baseOptions,
   placeholder = 'Select option',
   selectedOptions,
+  toggle,
   variant = SelectVariant.single,
   ...props
 }) => {
@@ -373,6 +375,7 @@ const Select = ({
         onClick={onToggle}
         isExpanded={isExpanded}
         isFullWidth={isInline === false}
+        {...toggle}
       >
         {(variant === SelectVariant.dropdown && placeholder) ||
           (variant === SelectVariant.single && (selectedTitle || placeholder)) ||
