@@ -293,6 +293,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
  *     preventOverflow: boolean }} [props.alignment] Alias for PF references to "popperProps".
  *     Override by passing a "popperProps" prop object value.
  * @param {string} [props.className]
+ * @param {boolean} [props.isDisabled] Disable the select/dropdown toggle
  * @param {boolean} [props.isInline=true] Is the select/dropdown an inline-block or not.
  * @param {number} [props.maxHeight] Max height of the select/dropdown menu
  * @param {Function} [props.onSelect]
@@ -316,6 +317,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
 const Select = ({
   alignment,
   className,
+  isDisabled,
   isInline = true,
   maxHeight,
   onSelect: baseOnSelect,
@@ -373,6 +375,7 @@ const Select = ({
         className="curiosity-select-pf__toggle"
         ref={toggleRef}
         onClick={onToggle}
+        isDisabled={isDisabled}
         isExpanded={isExpanded}
         isFullWidth={isInline === false}
         {...toggleProps}
