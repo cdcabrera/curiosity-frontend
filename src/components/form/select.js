@@ -248,7 +248,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
   const onSelectCallback = useCallback(
     (event, key) => {
       const updatedOptions = _cloneDeep(options);
-      const selectedOptionIndex = options.findIndex(option => option.key === key);
+      const selectedOptionIndex = updatedOptions.findIndex(option => option.key === key);
 
       if (options[selectedOptionIndex].isDisabled === true) {
         return;
