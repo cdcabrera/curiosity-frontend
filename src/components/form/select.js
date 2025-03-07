@@ -18,6 +18,13 @@ import { createMockEvent } from './formHelpers';
 import { helpers } from '../../common';
 
 /**
+ * A bundled wrapper for PF Select, Dropdown.
+ *
+ * @memberof Form
+ * @module Select
+ */
+
+/**
  * Pass button variant as a select component option.
  *
  * @type {{secondary: ButtonVariant.secondary, plain: ButtonVariant.plain, tertiary:
@@ -221,7 +228,7 @@ setSelectElements.memo = helpers.memo(setSelectElements);
  * @param {Function} options.onSelect
  * @param {updateSelectedOptions} options.selectedOptions
  * @param {SelectVariant} options.variant
- * @returns {{options: *[], selectedTitle: undefined, onSelect: ((function(*, *): void)|*)}}
+ * @returns {{options: Array, selectedTitle: undefined, onSelect: Function}}
  */
 const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant }) => {
   const [selectedTitle, setSelectedTitle] = React.useState();
