@@ -361,7 +361,10 @@ const Select = ({
 
   const toggleContent = toggle?.content;
   const isToggleIconOnly = toggle?.isToggleIconOnly;
-  const toggleProps = { ...toggle };
+  const toggleProps = {
+    isDisabled: isDisabled ?? options.length === 0,
+    ...toggle
+  };
   delete toggleProps.content;
   delete toggleProps.isToggleIconOnly;
 
@@ -375,7 +378,6 @@ const Select = ({
         className="curiosity-select-pf__toggle"
         ref={toggleRef}
         onClick={onToggle}
-        isDisabled={isDisabled}
         isExpanded={isExpanded}
         isFullWidth={isInline === false}
         {...toggleProps}
