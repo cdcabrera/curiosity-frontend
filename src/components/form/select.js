@@ -315,7 +315,8 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
  * @param {string|number|{value: unknown}|
  *     Array<string|number|{value: unknown
  *     }>} [props.selectedOptions]
- * @param {MenuToggle} [props.toggle] select/dropdown menu-toggle props object
+ * @param {{ content: React.ReactNode, icon: React.ReactNode,
+ *     variant: SelectButtonVariant }} [props.toggle] select/dropdown menu-toggle props object
  * @param {SelectVariant} [props.variant=SelectVariant.single]
  * @returns {React.ReactElement}
  */
@@ -363,6 +364,10 @@ const Select = ({
     onSelect(...args);
   };
 
+  const toggleContent = toggle?.content;
+  const toggleProps = { ...toggle };
+  delete toggleProps.content;
+
   const updatedProps = {
     popperProps: {
       ...alignment
@@ -375,9 +380,10 @@ const Select = ({
         onClick={onToggle}
         isExpanded={isExpanded}
         isFullWidth={isInline === false}
-        {...toggle}
+        {...toggleProps}
       >
-        {(variant === SelectVariant.dropdown && placeholder) ||
+        {toggleContent ||
+          (variant === SelectVariant.dropdown && placeholder) ||
           (variant === SelectVariant.single && (selectedTitle || placeholder)) ||
           (variant === SelectVariant.checkbox && (
             <React.Fragment>

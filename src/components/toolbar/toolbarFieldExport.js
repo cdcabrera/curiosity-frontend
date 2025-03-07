@@ -127,8 +127,7 @@ const ToolbarFieldExport = ({
       placeholder={t('curiosity-toolbar.placeholder', { context: 'export' })}
       alignment={{ position }}
       data-test="toolbarFieldExport"
-      toggle={{ variant: SelectButtonVariant.secondary }}
-      buttonContent={t('curiosity-toolbar.label', { context: 'export' })}
+      toggle={{ variant: SelectButtonVariant.secondary, content: t('curiosity-toolbar.label', { context: 'export' }) }}
     />
   );
 };
