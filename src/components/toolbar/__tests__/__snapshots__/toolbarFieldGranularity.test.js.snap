@@ -3,22 +3,22 @@
 exports[`ToolbarFieldGranularity Component should export select options: toolbarFieldOptions 1`] = `
 [
   {
-    "isSelected": false,
+    "selected": false,
     "title": "t(curiosity-toolbar.label_granularity, {"context":"Daily"})",
     "value": "Daily",
   },
   {
-    "isSelected": false,
+    "selected": false,
     "title": "t(curiosity-toolbar.label_granularity, {"context":"Weekly"})",
     "value": "Weekly",
   },
   {
-    "isSelected": false,
+    "selected": false,
     "title": "t(curiosity-toolbar.label_granularity, {"context":"Monthly"})",
     "value": "Monthly",
   },
   {
-    "isSelected": false,
+    "selected": false,
     "title": "t(curiosity-toolbar.label_granularity, {"context":"Quarterly"})",
     "value": "Quarterly",
   },
@@ -89,39 +89,35 @@ exports[`ToolbarFieldGranularity Component should handle updating granularity th
 
 exports[`ToolbarFieldGranularity Component should render a basic component: basic 1`] = `
 <Select
-  alignment={
-    {
-      "position": "left",
-    }
-  }
   aria-label="t(curiosity-toolbar.placeholder, {"context":"granularity"})"
   data-test="toolbarFieldGranularity"
   onSelect={[Function]}
   options={
     [
       {
-        "isSelected": false,
+        "selected": false,
         "title": "t(curiosity-toolbar.label_granularity, {"context":"Daily"})",
         "value": "Daily",
       },
       {
-        "isSelected": true,
+        "selected": true,
         "title": "t(curiosity-toolbar.label_granularity, {"context":"Weekly"})",
         "value": "Weekly",
       },
       {
-        "isSelected": false,
+        "selected": false,
         "title": "t(curiosity-toolbar.label_granularity, {"context":"Monthly"})",
         "value": "Monthly",
       },
       {
-        "isSelected": false,
+        "selected": false,
         "title": "t(curiosity-toolbar.label_granularity, {"context":"Quarterly"})",
         "value": "Quarterly",
       },
     ]
   }
   placeholder="t(curiosity-toolbar.placeholder, {"context":"granularity"})"
+  position="left"
   selectedOptions="Weekly"
 />
 `;
