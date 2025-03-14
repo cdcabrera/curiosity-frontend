@@ -1,7 +1,7 @@
 import React from 'react';
 import { useProduct, useProductExportQuery } from '../productView/productViewContext';
 import { useExport, useExistingExports, useExportStatus } from './toolbarFieldExportContext';
-import { Select, SelectButtonVariant, SelectPosition, SelectVariant } from '../form/select';
+import { Select, SelectPosition, SelectButtonVariant } from '../form/select.deprecated';
 import {
   PLATFORM_API_EXPORT_APPLICATION_TYPES as APP_TYPES,
   PLATFORM_API_EXPORT_CONTENT_TYPES as FIELD_TYPES,
@@ -22,12 +22,12 @@ import { dateHelpers, helpers } from '../../common';
 /**
  * Select field options.
  *
- * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
+ * @type {Array<{title: React.ReactNode, value: string, selected: boolean}>}
  */
 const toolbarFieldOptions = Object.values(FIELD_TYPES).map(type => ({
   title: translate('curiosity-toolbar.label', { context: ['export', type] }),
   value: type,
-  isSelected: false
+  selected: false
 }));
 
 /**
@@ -109,7 +109,7 @@ const ToolbarFieldExport = ({
         pendingProductFormats?.includes(option.value) &&
         t('curiosity-toolbar.label', { context: ['export', 'loading'] })) ||
       option.title,
-    isSelected: isProductPending && pendingProductFormats?.includes(option.value),
+    selected: isProductPending && pendingProductFormats?.includes(option.value),
     isDisabled:
       (isProductPending && !pendingProductFormats?.length) ||
       (isProductPending && pendingProductFormats?.includes(option.value))
@@ -120,14 +120,15 @@ const ToolbarFieldExport = ({
   return (
     <Select
       title={t('curiosity-toolbar.placeholder', { context: 'export' })}
-      variant={SelectVariant.dropdown}
+      isDropdownButton
       aria-label={t('curiosity-toolbar.placeholder', { context: 'export' })}
       onSelect={onSelect}
       options={updatedOptions}
       placeholder={t('curiosity-toolbar.placeholder', { context: 'export' })}
-      alignment={{ position }}
+      position={position}
       data-test="toolbarFieldExport"
-      toggle={{ variant: SelectButtonVariant.secondary, content: t('curiosity-toolbar.label', { context: 'export' }) }}
+      buttonVariant={SelectButtonVariant.secondary}
+      buttonContent={t('curiosity-toolbar.label', { context: 'export' })}
     />
   );
 };
