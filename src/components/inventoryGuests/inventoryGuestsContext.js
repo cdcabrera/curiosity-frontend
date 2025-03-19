@@ -60,7 +60,7 @@ const useSelectorGuests = (
   const { pending, cancelled, data, ...restResponse } = response;
   const updatedPending = pending || cancelled || false;
   const updatedData = (data?.length === 1 && data[0]) || data || {};
-  const parsedData = inventoryCardHelpers.parseInventoryResponse.memo({
+  const parsedData = inventoryCardHelpers.parseInventoryResponse({
     data: updatedData,
     filters,
     query,

@@ -34,8 +34,6 @@ const InventoryGuests = ({
   useGetInventory: useAliasGetInventory = useGetGuestsInventory,
   useOnScroll: useAliasOnScroll = useOnScroll
 }) => {
-  const scrollElement = useRef(null);
-  // const [lastRenderedElement, setLastRenderedElement] = useState([]);
   const {
     error,
     message,
@@ -45,15 +43,6 @@ const InventoryGuests = ({
     resultsColumnCountAndWidths = { count: 1, widths: [] },
     resultsOffset
   } = useAliasGetInventory(id);
-
-  /*
-  useEffect(() => {
-    if (lastRenderedElement.length > 1 && scrollElement.current) {
-      // scrollElement.current.scrollTo(0, lastRenderedElement[0]);
-    }
-  }, [lastRenderedElement]);
-  */
-
   const onScroll = useAliasOnScroll({ id, numberOfGuests });
 
   // ToDo: Review having the height be a calc value. Remember to include the table header
@@ -63,7 +52,6 @@ const InventoryGuests = ({
   return (
     <div className="curiosity-table-scroll" style={{ height: `${updatedHeight}px` }}>
       <div
-        ref={scrollElement}
         className={`curiosity-table-scroll-list${(pending && '__no-scroll') || (updatedHeight < 275 && '__no-scroll') || ''}`}
         onScroll={onScroll}
       >
@@ -93,12 +81,9 @@ const InventoryGuests = ({
             key={id}
             isBorders={false}
             isHeader
-            className="curiosity-guests-list"
+            className="curiosity-guests-list fadein__fast"
             columnHeaders={dataSetColumnHeaders}
             rows={dataSetRows}
-            onLoad={({ tableElement }) => {
-              // setLastRenderedElement(prev => [...prev, tableElement.current.scrollHeight].slice(-2));
-            }}
           />
         )) ||
           null}
