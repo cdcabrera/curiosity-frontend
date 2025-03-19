@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useUnmount, useShallowCompareEffect } from 'react-use';
 import { reduxActions, reduxTypes, storeHooks } from '../../redux';
 import { useProductInventoryGuestsQuery, useProductInventoryGuestsConfig } from '../productView/productViewContext';
@@ -51,30 +52,34 @@ const useSelectorGuests = (
     useSession: useAliasSession = useSession
   } = {}
 ) => {
+  const [dataSetRows, setDataSetRows] = useState([]);
   const session = useAliasSession();
   const query = useAliasProductInventoryQuery({ options: { overrideId: id } });
   const { columnCountAndWidths, filters, settings } = useAliasParseFiltersSettings();
   const response = useAliasSelectorsResponse(({ inventory }) => inventory?.[storeRef]?.[id]);
   const { pending, cancelled, data, ...restResponse } = response;
   const updatedPending = pending || cancelled || false;
-  let parsedData;
+  const updatedData = (data?.length === 1 && data[0]) || data || {};
+  const parsedData = inventoryCardHelpers.parseInventoryResponse.memo({
+    data: updatedData,
+    filters,
+    query,
+    session,
+    settings
+  });
 
-  if (response?.fulfilled) {
-    const updatedData = (data?.length === 1 && data[0]) || data || {};
-    parsedData = inventoryCardHelpers.parseInventoryResponse({
-      data: updatedData,
-      filters,
-      query,
-      session,
-      settings
-    });
-  }
+  useEffect(() => {
+    if (response?.fulfilled) {
+      setDataSetRows([...(parsedData?.dataSetRows || [])]);
+    }
+  }, [response?.fulfilled, parsedData?.dataSetRows]);
 
   return {
     ...restResponse,
     pending: updatedPending,
     resultsColumnCountAndWidths: columnCountAndWidths,
-    ...parsedData
+    ...parsedData,
+    dataSetRows
   };
 };
 

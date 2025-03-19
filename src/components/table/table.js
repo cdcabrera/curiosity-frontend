@@ -135,11 +135,11 @@ const Table = ({
   /**
    * Apply onLoad callback
    */
-  useTimeoutFn(() => {
-    if (tableElement?.current && typeof onLoad === 'function') {
-      onLoad({ tableElement });
-    }
-  });
+  // useTimeoutFn(() => {
+  //  if (tableElement?.current && typeof onLoad === 'function') {
+  //    onLoad({ tableElement });
+  //  }
+  // });
 
   /**
    * Apply an onExpand handler.

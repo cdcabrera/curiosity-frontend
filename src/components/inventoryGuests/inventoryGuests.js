@@ -35,7 +35,7 @@ const InventoryGuests = ({
   useOnScroll: useAliasOnScroll = useOnScroll
 }) => {
   const scrollElement = useRef(null);
-  const [lastRenderedElement, setLastRenderedElement] = useState([]);
+  // const [lastRenderedElement, setLastRenderedElement] = useState([]);
   const {
     error,
     message,
@@ -46,11 +46,13 @@ const InventoryGuests = ({
     resultsOffset
   } = useAliasGetInventory(id);
 
+  /*
   useEffect(() => {
     if (lastRenderedElement.length > 1 && scrollElement.current) {
-      scrollElement.current.scrollTo(0, lastRenderedElement[0]);
+      // scrollElement.current.scrollTo(0, lastRenderedElement[0]);
     }
   }, [lastRenderedElement]);
+  */
 
   const onScroll = useAliasOnScroll({ id, numberOfGuests });
 
@@ -85,15 +87,17 @@ const InventoryGuests = ({
               />
             </div>
           ))}
+        test
         {(dataSetRows?.length && (
           <Table
+            key={id}
             isBorders={false}
             isHeader
-            className="curiosity-guests-list fadein__fast"
+            className="curiosity-guests-list"
             columnHeaders={dataSetColumnHeaders}
             rows={dataSetRows}
             onLoad={({ tableElement }) => {
-              setLastRenderedElement(prev => [...prev, tableElement.current.scrollHeight].slice(-2));
+              // setLastRenderedElement(prev => [...prev, tableElement.current.scrollHeight].slice(-2));
             }}
           />
         )) ||

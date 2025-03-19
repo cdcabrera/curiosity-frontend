@@ -2,6 +2,7 @@ import React from 'react';
 import { translate } from '../i18n/i18n';
 import { RHSM_API_QUERY_SET_TYPES, RHSM_API_RESPONSE_META_TYPES } from '../../services/rhsm/rhsmConstants';
 import { tableHelpers } from '../table/table';
+import { helpers } from '../../common/helpers';
 
 /**
  * @memberof InventoryCard
@@ -69,6 +70,8 @@ const normalizeInventorySettings = ({ filters = [], guestFilters = [], settings 
     settings
   };
 };
+
+normalizeInventorySettings.memo = helpers.memo(normalizeInventorySettings, { cache: 25 });
 
 // ToDo: evaluate moving isWrap logic under the table component helpers
 
@@ -165,6 +168,8 @@ const parseInventoryResponse = ({
     resultsPerPage
   };
 };
+
+parseInventoryResponse.memo = helpers.memo(parseInventoryResponse, { cache: 25 });
 
 const inventoryCardHelpers = {
   normalizeInventorySettings,
