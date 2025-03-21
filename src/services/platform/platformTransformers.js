@@ -154,6 +154,8 @@ const user = response => {
     [platformConstants.PLATFORM_API_RESPONSE_USER_ENTITLEMENTS]: entitlements = {}
   } = response || {};
 
+  updatedResponse.orgId = identity?.[platformConstants.PLATFORM_API_RESPONSE_USER_IDENTITY_TYPES.ORG_ID];
+
   updatedResponse.isAdmin =
     identity?.[platformConstants.PLATFORM_API_RESPONSE_USER_IDENTITY_TYPES.USER]?.[
       platformConstants.PLATFORM_API_RESPONSE_USER_IDENTITY_USER_TYPES.ORG_ADMIN

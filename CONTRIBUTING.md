@@ -459,6 +459,25 @@ This is a non-networked local run designed to function with minimal resources an
 1. Make sure your browser opened around the domain `https://localhost:3000/`
 1. Start developing...
 
+> The UI uses basic permissions in certain components to adjust the display. You can adjust permissions during development
+> by adding in 3 dotenv params to a gitignored `.env.local` file in the root of the repository, similar to the `REACT_APP_DEBUG_MIDDLEWARE`
+> mentioned above.
+> 
+> The 3 dotenv params below are... 
+> - REACT_APP_DEBUG_ORG_ADMIN
+> - REACT_APP_DEBUG_PERMISSION_APP_ONE 
+> - REACT_APP_DEBUG_PERMISSION_APP_TWO
+> 
+> The `REACT_APP_DEBUG_ORG_ADMIN` was previously used as a convenience parameter for determining if a user is the organization admin used during the "opt-in" process.
+> 
+> The other 2 parameters are still leveraged and are defaulted to administration level permissions (during development only). To apply development read-only permissions set the params as...
+> ```
+> REACT_APP_DEBUG_PERMISSION_APP_ONE=subscriptions:reports:read
+> REACT_APP_DEBUG_PERMISSION_APP_TWO=inventory:reports:read
+> ```
+> 
+> You will have to rerun the local run "start command" for the changes to be applied.
+
 #### Start writing code on proxy
 This is a networked run that has the ability to proxy prod and stage with a live API.
 
