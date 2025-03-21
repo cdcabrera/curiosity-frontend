@@ -186,7 +186,7 @@ const userPermissions = (response, { config = rbacConfig } = {}) => {
     ({
       [platformConstants.PLATFORM_API_RESPONSE_USER_PERMISSION_TYPES.PERMISSION]: permission,
       [platformConstants.PLATFORM_API_RESPONSE_USER_PERMISSION_TYPES.RESOURCE_DEFS]: definitions = []
-    }) => {
+    } = {}) => {
       const [app = '', resource, operation] = permission?.split(':') || [];
 
       if (!updatedResponse.permissions[app]) {
