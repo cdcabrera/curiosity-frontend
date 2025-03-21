@@ -469,8 +469,9 @@ This is a non-networked local run designed to function with minimal resources an
 > - REACT_APP_DEBUG_PERMISSION_APP_TWO
 > 
 > The `REACT_APP_DEBUG_ORG_ADMIN` was previously used as a convenience parameter for determining if a user is the organization admin used during the "opt-in" process.
+> It may no longer be actively used.
 > 
-> The other 2 parameters are still leveraged and are defaulted to administration level permissions (during development only). To apply development read-only permissions set the params as...
+> The remaining 2 parameters are actively used during development. To apply development read-only permissions set the params as...
 > ```
 > REACT_APP_DEBUG_PERMISSION_APP_ONE=subscriptions:reports:read
 > REACT_APP_DEBUG_PERMISSION_APP_TWO=inventory:reports:read
