@@ -2,6 +2,7 @@ import { serviceCall } from '../config';
 import { rhsmSchemas } from './rhsmSchemas';
 import { helpers } from '../../common';
 import { rhsmTransformers } from './rhsmTransformers';
+import { RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES as BILLING_ACCOUNT_TYPES } from './rhsmConstants';
 
 /**
  * RHSM API service calls.
@@ -59,6 +60,182 @@ const getApiVersion = (options = {}) => {
     cancel,
     cancelId
   });
+};
+
+/**
+ * @apiMock {DelayResponse} 100
+ * @api {get} /api/rhsm-subscriptions/v1/instances/billing_account_ids Get instances account data
+ * @apiDescription Get account data.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "ids": [
+ *         {
+ *           "billing_account_id": "2cfa4d67-cf37-47f4-bd76-2ffbdfb91242",
+ *           "billing_provider": "aws"
+ *         },
+ *         {
+ *           "billing_account_id": "151968c3-cf37-47f4-bd76-1ffbdfb91241",
+ *           "billing_provider": "aws"
+ *         },
+ *         {
+ *           "billing_account_id": "3cfaxd61-cf37-47f4-bd76-3yzaffbdf123",
+ *           "billing_provider": "azure"
+ *         },
+ *         {
+ *           "billing_account_id": "6cfaxd61-cf37-47f4-bd76-6yzaffbdf126",
+ *           "billing_provider": "aws"
+ *         }
+ *       ]
+ *     }
+ *
+ * @apiError {Array} errors
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *        "errors": [
+ *          {
+ *            "status": "400",
+ *            "title": "Bad Request"
+ *          }
+ *        ]
+ *     }
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 403 Forbidden
+ *     {
+ *        "errors": [
+ *          {
+ *            "code": "SUBSCRIPTIONS1004",
+ *            "detail": "Opt-in required.",
+ *            "status": "403",
+ *            "title": "Access Denied"
+ *          }
+ *        ]
+ *     }
+ */
+/**
+ * Get RHSM API instances billing account id data.
+ * Note: Align API call with RHSM calls. Treat unique search param "product_tag" as "id" instead, allow override.
+ *
+ * @param {string} id Product ID
+ * @param {object} params Query/search params
+ * @param {object} options
+ * @param {boolean} options.cache
+ * @param {boolean} options.cancel
+ * @param {string} options.cancelId
+ * @param {Array} options.schema An array of callbacks used to transform the response,
+ * @param {Array} options.transform An array of callbacks used to transform the response,
+ * @returns {Promise<*>}
+ */
+const getInstancesBillingAccounts = (id, params = {}, options = {}) => {
+  const {
+    cache = true,
+    cancel = true,
+    cancelId,
+    schema = [rhsmSchemas.billingAccounts, rhsmSchemas.errors],
+    transform
+  } = options;
+  return serviceCall({
+    url: `${process.env.REACT_APP_SERVICES_RHSM_BILLING_ACCOUNTS_INSTANCES}`,
+    params: { [BILLING_ACCOUNT_TYPES.PRODUCT_TAG]: id, ...params },
+    cache,
+    cancel,
+    cancelId,
+    schema,
+    transform,
+    _accountType: 'instances'
+  });
+};
+
+/**
+ * @apiMock {DelayResponse} 100
+ * @api {get} /api/rhsm-subscriptions/v1/subscriptions/billing_account_ids Get subscriptions account data
+ * @apiDescription Get account data.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "ids": [
+ *         {
+ *           "billing_account_id": "6cfaxd61-cf37-47f4-bd76-6yzaffbdf126",
+ *           "billing_provider": "aws"
+ *         },
+ *         {
+ *           "billing_account_id": "451968c3-cf37-47f4-bd76-4ffbdfb91245",
+ *           "billing_provider": "aws"
+ *         },
+ *         {
+ *           "billing_account_id": "5cfa4d67-cf37-47f4-bd76-5ffbdfb91245",
+ *           "billing_provider": "aws"
+ *         }
+ *       ]
+ *     }
+ *
+ * @apiError {Array} errors
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 403 Forbidden
+ *     {
+ *        "errors": [
+ *          {
+ *            "code": "SUBSCRIPTIONS1004",
+ *            "detail": "Opt-in required.",
+ *            "status": "403",
+ *            "title": "Access Denied"
+ *          }
+ *        ]
+ *     }
+ */
+/**
+ * Get RHSM API instances billing account id data.
+ * Note: Align API call with RHSM calls. Treat unique search param "product_tag" as "id" instead, allow override.
+ *
+ * @param {string} id Product ID
+ * @param {object} params Query/search params
+ * @param {object} options
+ * @param {boolean} options.cache
+ * @param {boolean} options.cancel
+ * @param {string} options.cancelId
+ * @param {Array} options.schema An array of callbacks used to transform the response,
+ * @param {Array} options.transform An array of callbacks used to transform the response,
+ * @returns {Promise<*>}
+ */
+const getSubscriptionsBillingAccounts = (id, params = {}, options = {}) => {
+  const {
+    cache = true,
+    cancel = true,
+    cancelId,
+    schema = [rhsmSchemas.billingAccounts, rhsmSchemas.errors],
+    transform
+  } = options;
+  return serviceCall({
+    url: `${process.env.REACT_APP_SERVICES_RHSM_BILLING_ACCOUNTS_SUBSCRIPTIONS}`,
+    params: { [BILLING_ACCOUNT_TYPES.PRODUCT_TAG]: id, ...params },
+    cache,
+    cancel,
+    cancelId,
+    schema,
+    transform,
+    _accountType: 'subscriptions'
+  });
+};
+
+/**
+ * Get RHSM API instances AND subscriptions billing account id data.
+ *
+ * @param {string} id Product identifier
+ * @param {object} params Query/search params
+ * @returns {Promise<*>}
+ */
+const getBillingAccounts = async (id, params = {}) => {
+  const transform = rhsmTransformers.billingAccounts;
+
+  const response = await Promise.allSettled([
+    getInstancesBillingAccounts(id, params),
+    getSubscriptionsBillingAccounts(id, params)
+  ]);
+
+  return transform.memo(response);
 };
 
 /**
@@ -2140,10 +2317,13 @@ const getSubscriptionsInventory = (id, params = {}, options = {}) => {
 
 const rhsmServices = {
   getApiVersion,
+  getBillingAccounts,
   getGraphCapacity,
   getGraphTally,
+  getInstancesBillingAccounts,
   getInstancesInventory,
   getInstancesInventoryGuests,
+  getSubscriptionsBillingAccounts,
   getSubscriptionsInventory
 };
 
@@ -2156,9 +2336,12 @@ export {
   rhsmServices as default,
   rhsmServices,
   getApiVersion,
+  getBillingAccounts,
   getGraphCapacity,
   getGraphTally,
+  getInstancesBillingAccounts,
   getInstancesInventory,
   getInstancesInventoryGuests,
+  getSubscriptionsBillingAccounts,
   getSubscriptionsInventory
 };
