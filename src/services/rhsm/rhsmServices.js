@@ -72,19 +72,19 @@ const getApiVersion = (options = {}) => {
  *     {
  *       "ids": [
  *         {
- *           "billing_account_id": "2cfa4d67-cf37-47f4-bd76-2ffbdfb91242",
+ *           "billing_account_id": "2cfa4d67-cf37-47f4-bd76-2mock91242",
  *           "billing_provider": "aws"
  *         },
  *         {
- *           "billing_account_id": "151968c3-cf37-47f4-bd76-1ffbdfb91241",
+ *           "billing_account_id": "151968c3-cf37-47f4-bd76-1mock91241",
  *           "billing_provider": "aws"
  *         },
  *         {
- *           "billing_account_id": "3cfaxd61-cf37-47f4-bd76-3yzaffbdf123",
+ *           "billing_account_id": "3c12361-cf37-47f4-bd76-3mock123",
  *           "billing_provider": "azure"
  *         },
  *         {
- *           "billing_account_id": "6cfaxd61-cf37-47f4-bd76-6yzaffbdf126",
+ *           "billing_account_id": "6c123d61-cf37-47f4-bd76-6mock126",
  *           "billing_provider": "aws"
  *         }
  *       ]
@@ -128,7 +128,7 @@ const getApiVersion = (options = {}) => {
  * @param {Array} options.transform An array of callbacks used to transform the response,
  * @returns {Promise<*>}
  */
-const getInstancesBillingAccounts = (id, params = {}, options = {}) => {
+const getBillingAccountsInstances = (id, params = {}, options = {}) => {
   const {
     cache = true,
     cancel = true,
@@ -158,15 +158,15 @@ const getInstancesBillingAccounts = (id, params = {}, options = {}) => {
  *     {
  *       "ids": [
  *         {
- *           "billing_account_id": "6cfaxd61-cf37-47f4-bd76-6yzaffbdf126",
+ *           "billing_account_id": "6c12361-cf37-47f4-bd76-6mock126",
  *           "billing_provider": "aws"
  *         },
  *         {
- *           "billing_account_id": "451968c3-cf37-47f4-bd76-4ffbdfb91245",
+ *           "billing_account_id": "451968c3-cf37-47f4-bd76-4mock91245",
  *           "billing_provider": "aws"
  *         },
  *         {
- *           "billing_account_id": "5cfa4d67-cf37-47f4-bd76-5ffbdfb91245",
+ *           "billing_account_id": "5cfa4d67-cf37-47f4-bd76-5mock91245",
  *           "billing_provider": "aws"
  *         }
  *       ]
@@ -200,7 +200,7 @@ const getInstancesBillingAccounts = (id, params = {}, options = {}) => {
  * @param {Array} options.transform An array of callbacks used to transform the response,
  * @returns {Promise<*>}
  */
-const getSubscriptionsBillingAccounts = (id, params = {}, options = {}) => {
+const getBillingAccountsSubscriptions = (id, params = {}, options = {}) => {
   const {
     cache = true,
     cancel = true,
@@ -231,8 +231,8 @@ const getBillingAccounts = async (id, params = {}) => {
   const transform = rhsmTransformers.billingAccounts;
 
   const response = await Promise.allSettled([
-    getInstancesBillingAccounts(id, params),
-    getSubscriptionsBillingAccounts(id, params)
+    getBillingAccountsInstances(id, params),
+    getBillingAccountsSubscriptions(id, params)
   ]);
 
   return transform.memo(response);
@@ -2318,12 +2318,12 @@ const getSubscriptionsInventory = (id, params = {}, options = {}) => {
 const rhsmServices = {
   getApiVersion,
   getBillingAccounts,
+  getBillingAccountsInstances,
+  getBillingAccountsSubscriptions,
   getGraphCapacity,
   getGraphTally,
-  getInstancesBillingAccounts,
   getInstancesInventory,
   getInstancesInventoryGuests,
-  getSubscriptionsBillingAccounts,
   getSubscriptionsInventory
 };
 
@@ -2337,11 +2337,11 @@ export {
   rhsmServices,
   getApiVersion,
   getBillingAccounts,
+  getBillingAccountsInstances,
+  getBillingAccountsSubscriptions,
   getGraphCapacity,
   getGraphTally,
-  getInstancesBillingAccounts,
   getInstancesInventory,
   getInstancesInventoryGuests,
-  getSubscriptionsBillingAccounts,
   getSubscriptionsInventory
 };
