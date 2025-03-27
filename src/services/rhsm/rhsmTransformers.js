@@ -25,7 +25,7 @@ import { dateHelpers, helpers } from '../../common';
  * @param {object} response
  * @returns {object}
  */
-const rhsmBillingAccounts = response => {
+const rhsmBillingAccounts = (response = []) => {
   const successResponse = response
     .filter(({ status }) => status === 'fulfilled')
     .map(({ value = {} }) =>
@@ -35,7 +35,7 @@ const rhsmBillingAccounts = response => {
           [BILLING_ACCOUNT_ID_TYPES.BILLING_PROVIDER]: provider
         }) => ({
           id,
-          type: value.config._accountType,
+          type: value?.config?._accountType || 'unknown',
           provider
         })
       )
@@ -43,9 +43,12 @@ const rhsmBillingAccounts = response => {
     .flat()
     .filter(Boolean);
 
+  // Note: Apply last entry. This will overwrite duplicates if they exist in the first response.
   const dupCache = {};
   successResponse.forEach(obj => {
-    dupCache[obj.id] = obj;
+    if (obj.id) {
+      dupCache[obj.id] = obj;
+    }
   });
 
   const accounts = Object.values(dupCache);
