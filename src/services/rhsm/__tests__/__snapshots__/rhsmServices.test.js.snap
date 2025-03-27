@@ -18,38 +18,14 @@ exports[`RhsmServices should call the serviceCall wrapper with consistent config
 [
   [
     {
-      "_accountType": "instances",
       "cache": true,
       "cancel": true,
       "cancelId": undefined,
-      "headers": {},
-      "params": {
-        "product_tag": undefined,
-      },
-      "schema": [
-        [Function],
+      "schema": undefined,
+      "transform": [
         [Function],
       ],
-      "transform": undefined,
-      "url": "/api/rhsm-subscriptions/v1/instances/billing_account_ids",
-    },
-  ],
-  [
-    {
-      "_accountType": "subscriptions",
-      "cache": true,
-      "cancel": true,
-      "cancelId": undefined,
-      "headers": {},
-      "params": {
-        "product_tag": undefined,
-      },
-      "schema": [
-        [Function],
-        [Function],
-      ],
-      "transform": undefined,
-      "url": "/api/rhsm-subscriptions/v1/subscriptions/billing_account_ids",
+      "url": [Function],
     },
   ],
 ]

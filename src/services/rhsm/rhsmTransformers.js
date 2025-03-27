@@ -20,7 +20,7 @@ import { dateHelpers, helpers } from '../../common';
  */
 
 /**
- * Parse RHSM billing account id responses for caching.
+ * Parse RHSM billing account id responses.
  *
  * @param {object} response
  * @returns {object}
@@ -29,7 +29,7 @@ const rhsmBillingAccounts = response => {
   const successResponse = response
     .filter(({ status }) => status === 'fulfilled')
     .map(({ value = {} }) =>
-      value.data[rhsmConstants.RHSM_API_RESPONSE_ID].map(
+      value.data?.[rhsmConstants.RHSM_API_RESPONSE_ID]?.map(
         ({
           [BILLING_ACCOUNT_ID_TYPES.BILLING_ACCOUNT_ID]: id,
           [BILLING_ACCOUNT_ID_TYPES.BILLING_PROVIDER]: provider
@@ -40,7 +40,8 @@ const rhsmBillingAccounts = response => {
         })
       )
     )
-    .flat();
+    .flat()
+    .filter(Boolean);
 
   const dupCache = {};
   successResponse.forEach(obj => {
@@ -67,6 +68,11 @@ const rhsmBillingAccounts = response => {
   };
 };
 
+/**
+ * A memoized response for the rhsmBillingAccounts function. Assigned to a property for testing function.
+ *
+ * @type {Function}
+ */
 rhsmBillingAccounts.memo = helpers.memo(rhsmBillingAccounts, { cacheLimit: 25 });
 
 /**

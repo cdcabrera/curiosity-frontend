@@ -1,4 +1,5 @@
 import { serviceCall } from '../config';
+import { axiosServiceCall } from '../common/serviceConfig';
 import { rhsmSchemas } from './rhsmSchemas';
 import { helpers } from '../../common';
 import { rhsmTransformers } from './rhsmTransformers';
@@ -225,17 +226,33 @@ const getBillingAccountsSubscriptions = (id, params = {}, options = {}) => {
  *
  * @param {string} id Product identifier
  * @param {object} params Query/search params
+ * @param {object} options
+ * @param {boolean} options.cache
+ * @param {boolean} options.cancel
+ * @param {string} options.cancelId
+ * @param {Array} options.schema An array of callbacks used to transform the response,
+ *     ie. [SUCCESS SCHEMA, ERROR SCHEMA]
+ * @param {Array} options.transform An array of callbacks used to transform the response,
+ *     ie. [SUCCESS TRANSFORM, ERROR TRANSFORM]
  * @returns {Promise<*>}
  */
-const getBillingAccounts = async (id, params = {}) => {
-  const transform = rhsmTransformers.billingAccounts;
-
-  const response = await Promise.allSettled([
-    getBillingAccountsInstances(id, params),
-    getBillingAccountsSubscriptions(id, params)
-  ]);
-
-  return transform.memo(response);
+const getBillingAccounts = async (id, params = {}, options = {}) => {
+  const {
+    cache = true,
+    cancel = true,
+    cancelId,
+    schema,
+    transform = [rhsmTransformers.billingAccounts.memo]
+  } = options;
+  return axiosServiceCall({
+    url: async () =>
+      Promise.allSettled([getBillingAccountsInstances(id, params), getBillingAccountsSubscriptions(id, params)]),
+    cache,
+    cancel,
+    cancelId,
+    schema,
+    transform
+  });
 };
 
 /**
