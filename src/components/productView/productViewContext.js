@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useSession } from '../authentication/authenticationContext';
 import { reduxHelpers } from '../../redux/common';
 import { storeHooks } from '../../redux/hooks';
 import { rhsmConstants } from '../../services/rhsm/rhsmConstants';
@@ -80,25 +81,29 @@ const useProductQuery = ({
  * We align the productId use with ALL API calls by passing it separately.
  *
  * @param {object} options
- * @param {string} options.queryType
- * @param {object} options.schemaCheck
- * @param {Function} options.useProductQueryFactory
- * @param {object} options.options
+ * @param {string} [options.queryType='billingAccountsQuery']
+ * @param {object} [options.schemaCheck=rhsmConstants.RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES]
+ * @param {useProductQueryFactory} [options.useProductQueryFactory=useProductQueryFactory]
+ * @param {useSession} [options.useSession=useSession]
+ * @param {object} [options.options]
  * @returns {object}
  */
 const useProductBillingAccountsQuery = ({
   queryType = 'billingAccountsQuery',
   schemaCheck = rhsmConstants.RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES,
   useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
+  useSession: useAliasSession = useSession,
   options
-} = {}) =>
-  reduxHelpers.setApiQuery(
+} = {}) => {
+  const { orgId } = useAliasSession();
+  return reduxHelpers.setApiQuery(
     {
-      ...useAliasProductQueryFactory(queryType, options)
+      ...useAliasProductQueryFactory(queryType, options),
+      [rhsmConstants.RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES.ORG_ID]: orgId
     },
     schemaCheck
   );
-
+};
 /**
  * Return the graph query based off of tally and capacity.
  *
