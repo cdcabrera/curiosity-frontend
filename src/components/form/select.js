@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Badge,
   ButtonVariant,
@@ -255,14 +255,16 @@ setSelectElements.memo = helpers.memo(setSelectElements);
  * Hook for handling option and selected option updates.
  *
  * @param {object} options
+ * @param {Function} options.onLoadOptions
  * @param {updateOptions} options.options
  * @param {Function} options.onSelect
  * @param {updateSelectedOptions} options.selectedOptions
  * @param {SelectVariant} options.variant
  * @returns {{options: Array, selectedOption: undefined, onSelect: Function}}
  */
-const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant } = {}) => {
-  const [selectedOption, setSelectedOption] = React.useState();
+const useOnSelect = ({ onLoadOptions, options: baseOptions, onSelect, selectedOptions, variant } = {}) => {
+  const [firedOnLoad, setFiredOnload] = useState(false);
+  const [selectedOption, setSelectedOption] = useState();
   const [options, setOptions] = useState();
 
   // Update, and allow "re-updating", base/initial options
@@ -277,6 +279,13 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
     setOptions(updatedOptions);
     setSelectedOption(updatedSelected);
   }, [baseOptions, selectedOptions]);
+
+  useEffect(() => {
+    if (!firedOnLoad && typeof onLoadOptions === 'function' && options?.length) {
+      onLoadOptions({ options, selectedOption });
+      setFiredOnload(true);
+    }
+  }, [firedOnLoad, onLoadOptions, options, selectedOption]);
 
   // Update local state with user selected options
   const onSelectCallback = useCallback(
@@ -336,6 +345,8 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
  * @param {boolean} [props.isDisabled] Disable the select/dropdown toggle
  * @param {boolean} [props.isInline=true] Is the select/dropdown an inline-block or not.
  * @param {number} [props.maxHeight] Max height of the select/dropdown menu
+ * @param {Function} [props.onLoadOptions] A callback fired once options are populated. Useful for onload scenarios when
+ *     a default option is selected and requires subsequent actions.
  * @param {Function} [props.onSelect]
  * @param {Array<string|number|{
  *     description: (unknown|undefined),
@@ -361,6 +372,7 @@ const Select = ({
   isDisabled,
   isInline = true,
   maxHeight,
+  onLoadOptions,
   onSelect: baseOnSelect,
   options: baseOptions,
   placeholder = 'Select option',
@@ -374,6 +386,7 @@ const Select = ({
   const selectField = useRef();
   const { options, selectedOption, onSelect } = useAliasOnSelect({
     ...props,
+    onLoadOptions,
     options: baseOptions,
     onSelect: baseOnSelect,
     placeholder,
