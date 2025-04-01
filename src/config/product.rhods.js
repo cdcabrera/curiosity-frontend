@@ -72,7 +72,6 @@ const config = {
   productDisplay: DISPLAY_TYPES.HOURLY,
   viewId: `view${productGroup}-${productId}`,
   query: {
-    [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: RHSM_API_QUERY_BILLING_PROVIDER_TYPES.AWS,
     [RHSM_API_QUERY_SET_TYPES.START_DATE]: dateHelpers.getRangedMonthDateTime('current').value.startDate.toISOString(),
     [RHSM_API_QUERY_SET_TYPES.END_DATE]: dateHelpers.getRangedMonthDateTime('current').value.endDate.toISOString()
   },
