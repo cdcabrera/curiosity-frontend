@@ -75,6 +75,31 @@ const useProductQuery = ({
 } = {}) => useAliasProductQueryFactory(queryType, options);
 
 /**
+ * Return the billing account id base query, sans-productId.
+ * Note: The billing accounts query is a one-off when compared to other API calls.
+ * We align the productId use with ALL API calls by passing it separately.
+ *
+ * @param {object} options
+ * @param {string} options.queryType
+ * @param {object} options.schemaCheck
+ * @param {Function} options.useProductQueryFactory
+ * @param {object} options.options
+ * @returns {object}
+ */
+const useProductBillingAccountsQuery = ({
+  queryType = 'billingAccountsQuery',
+  schemaCheck = rhsmConstants.RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES,
+  useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
+  options
+} = {}) =>
+  reduxHelpers.setApiQuery(
+    {
+      ...useAliasProductQueryFactory(queryType, options)
+    },
+    schemaCheck
+  );
+
+/**
  * Return the graph query based off of tally and capacity.
  *
  * @param {object} options
@@ -341,6 +366,7 @@ const context = {
   useProductContext,
   useQuery: useProductQuery,
   useQueryFactory: useProductQueryFactory,
+  useBillingAccountsQuery: useProductBillingAccountsQuery,
   useGraphTallyQuery: useProductGraphTallyQuery,
   useInventoryGuestsQuery: useProductInventoryGuestsQuery,
   useInventoryHostsQuery: useProductInventoryHostsQuery,
@@ -363,6 +389,7 @@ export {
   useProductContext,
   useProductQuery,
   useProductQueryFactory,
+  useProductBillingAccountsQuery,
   useProductGraphTallyQuery,
   useProductInventoryGuestsQuery,
   useProductInventoryHostsQuery,
