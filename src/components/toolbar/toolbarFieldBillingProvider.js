@@ -8,6 +8,7 @@ import {
   RHSM_API_QUERY_SET_TYPES
 } from '../../services/rhsm/rhsmConstants';
 import { translate } from '../i18n/i18n';
+import { helpers } from '../../common';
 
 /**
  * A standalone Billing Provider select filter.
@@ -15,6 +16,15 @@ import { translate } from '../i18n/i18n';
  * @memberof Toolbar
  * @module ToolbarFieldBillingProvider
  */
+
+const getToolbarFieldOptions = (providers = []) =>
+  providers.map(type => ({
+    title: translate('curiosity-toolbar.label', { context: ['billing_provider', (type === '' && 'none') || type] }),
+    value: type,
+    isSelected: false
+  }));
+
+getToolbarFieldOptions.memo = helpers.memo(getToolbarFieldOptions, { cacheLimit: 10 });
 
 /**
  * Select field options.
@@ -30,6 +40,7 @@ import { translate } from '../i18n/i18n';
  */
 const useToolbarFieldOptions = ({
   getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
+  getToolbarFieldOptions: getAliasToolbarFieldOptions = getToolbarFieldOptions.memo,
   // useAuthContext: useAliasAuthContext = useAuthContext,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
   useProduct: useAliasProduct = useProduct,
@@ -41,10 +52,14 @@ const useToolbarFieldOptions = ({
    * const { orgId } = useAliasAuthContext(); // this can be done through the query hook
    * const [billingProviders, setBillingProviders] = useState([]);
    */
-  const { productId } = useAliasProduct();
+  // const [billingProviders, setBillingProviders] = useState([]);
+  const { productId, viewId } = useAliasProduct();
   const query = useAliasProductBillingAccountsQuery();
   const dispatch = useAliasDispatch();
-  const { fulfilled, data = [] } = useAliasSelectorsResponse(({ app }) => app.billingAccounts?.[productId]);
+  const { data = {} } = useAliasSelectorsResponse([
+    { id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] }
+  ]);
+  const updatedOptions = getAliasToolbarFieldOptions(data?.billing?.billingProviders);
   /*
    *const { billingProviders } = useAliasSelectors([
    *  ({ auth }) => auth.orgId,
@@ -55,23 +70,89 @@ const useToolbarFieldOptions = ({
   useMount(() => {
     getBillingAccounts(productId, query)(dispatch);
   });
-
-  const [billing = {}] = data;
-  console.log('>>>>', billing.billingProviders);
-  return useMemo(() => {
-    // return (fulfilled === true && billing?.billingProviders) || []
-    if (fulfilled === true && billing.billingProviders) {
-      return billing.billingProviders.map(type => ({
+  /*
+  const updatedOptions = useMemo(
+    () =>
+      (data?.billing?.billingProviders || []).map(type => ({
         title: translate('curiosity-toolbar.label', { context: ['billing_provider', (type === '' && 'none') || type] }),
         value: type,
         isSelected: false
-        // isSelected: index === 0
-      }));
-    }
+      })),
+    [data?.billing?.billingProviders]
+  );
+  */
 
-    return [];
-  }, [billing.billingProviders, fulfilled]);
+  useEffect(() => {
+    /*
+    if (updatedOptions.length) {
+      dispatch({
+        type: reduxTypes.query.SET_QUERY,
+        viewId,
+        filter: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
+        value: updatedOptions[0].value
+      });
+    }
+    */
+  }, [dispatch, updatedOptions, viewId]);
+
+  return updatedOptions;
 };
+
+/*
+ *const setup = helpers.memo(
+ *  providers => {
+ *    // return (fulfilled === true && billing?.billingProviders) || []
+ *    console.log('>>>>>> THIS SHOULD NOT BE FIRING MULTIPLE TIMES', providers);
+ *    dispatch([
+ *      {
+ *        type: reduxTypes.query.SET_QUERY,
+ *        viewId,
+ *        filter: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
+ *        value: providers[0]
+ *      }
+ *    ]);
+ *
+ *    return providers.map(type => ({
+ *      title: translate('curiosity-toolbar.label', { context: ['billing_provider', (type === '' && 'none') || type] }),
+ *      value: type,
+ *      isSelected: false
+ *    }));
+ *  },
+ *  { cacheLimit: 25 }
+ *);
+ *
+ *if (fulfilled === true && billing?.billingProviders?.length) {
+ *  return setup(billing.billingProviders);
+ *}
+ *
+ *return [];
+ */
+/*
+ *return useMemo(() => {
+ *  // return (fulfilled === true && billing?.billingProviders) || []
+ *  if (fulfilled === true && billing.billingProviders?.length) {
+ *    console.log('>>>>>> THIS SHOULD NOT BE FIRING MULTIPLE TIMES');
+ *    dispatch([
+ *      {
+ *        type: reduxTypes.query.SET_QUERY,
+ *        viewId,
+ *        filter: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
+ *        value: billing.billingProviders[0]
+ *      }
+ *    ]);
+ *
+ *    return billing.billingProviders.map(type => ({
+ *      title: translate('curiosity-toolbar.label', { context: ['billing_provider', (type === '' && 'none') || type]
+ *      }), value: type,
+ *      isSelected: false
+ *      // isSelected: index === 0
+ *    }));
+ *  }
+ *
+ *  return [];
+ *}, [billing.billingProviders, dispatch, fulfilled, viewId]);
+ */
+// };
 
 /**
  * On select update billing provider.
@@ -142,10 +223,12 @@ const ToolbarFieldBillingProvider = ({
     isSelected: option.value === updatedValue
   }));
 
-  const onLoadOptions = ({ selectedOption }) => {
-    console.log('>>>>>>>> ONLOAD', selectedOption);
-    onSelect(selectedOption);
-  };
+  /*
+   * const onLoadOptions = ({ selectedOption }) => {
+   *  console.log('>>>>>>>> ONLOAD', selectedOption);
+   *  onSelect(selectedOption);
+   * };
+   */
 
   return (
     <Select
