@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useMount } from 'react-use';
+import { useMount, useShallowCompareEffect } from 'react-use';
+import { FilterIcon } from '@patternfly/react-icons';
 import { reduxActions, reduxTypes, storeHooks } from '../../redux';
 import { useProduct, useProductBillingAccountsQuery, useProductQuery } from '../productView/productViewContext';
 import { Select, SelectPosition } from '../form/select';
@@ -17,6 +18,12 @@ import { helpers } from '../../common';
  * @module ToolbarFieldBillingProvider
  */
 
+/**
+ * Select field callback for options. Parallel to leveraging "useMemo" but retains the memoize cache since it's outside
+ * of React.
+ *
+ * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
+ */
 const getToolbarFieldOptions = (providers = []) =>
   providers.map(type => ({
     title: translate('curiosity-toolbar.label', { context: ['billing_provider', (type === '' && 'none') || type] }),
@@ -24,35 +31,27 @@ const getToolbarFieldOptions = (providers = []) =>
     isSelected: false
   }));
 
+/**
+ * A memoized response for the getToolbarFieldOptions function. Assigned to a property for testing function.
+ * Helps retain the memoize cache since it's outside the React hook.
+ *
+ * @type {Function}
+ */
 getToolbarFieldOptions.memo = helpers.memo(getToolbarFieldOptions, { cacheLimit: 10 });
 
 /**
- * Select field options.
+ * Select field hook for options.
  *
  * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
- */
-/*
- *const toolbarFieldOptions = Object.values(FIELD_TYPES).map(type => ({
- *  title: translate('curiosity-toolbar.label', { context: ['billing_provider', (type === '' && 'none') || type] }),
- *  value: type,
- *  isSelected: false
- *}));
  */
 const useToolbarFieldOptions = ({
   getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
   getToolbarFieldOptions: getAliasToolbarFieldOptions = getToolbarFieldOptions.memo,
-  // useAuthContext: useAliasAuthContext = useAuthContext,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
   useProduct: useAliasProduct = useProduct,
   useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
-  // useSelectors: useAliasSelectors = storeHooks.reactRedux.useSelectors
 } = {}) => {
-  /*
-   * const { orgId } = useAliasAuthContext(); // this can be done through the query hook
-   * const [billingProviders, setBillingProviders] = useState([]);
-   */
-  // const [billingProviders, setBillingProviders] = useState([]);
   const { productId, viewId } = useAliasProduct();
   const query = useAliasProductBillingAccountsQuery();
   const dispatch = useAliasDispatch();
@@ -60,40 +59,25 @@ const useToolbarFieldOptions = ({
     { id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] }
   ]);
   const updatedOptions = getAliasToolbarFieldOptions(data?.billing?.billingProviders);
-  /*
-   *const { billingProviders } = useAliasSelectors([
-   *  ({ auth }) => auth.orgId,
-   *  ({ app }) => app.billingAccounts?.[productId]
-   *]);
-   */
+  const [firstUpdatedOption = {}] = updatedOptions;
 
-  useMount(() => {
+  useShallowCompareEffect(() => {
     getBillingAccounts(productId, query)(dispatch);
-  });
-  /*
-  const updatedOptions = useMemo(
-    () =>
-      (data?.billing?.billingProviders || []).map(type => ({
-        title: translate('curiosity-toolbar.label', { context: ['billing_provider', (type === '' && 'none') || type] }),
-        value: type,
-        isSelected: false
-      })),
-    [data?.billing?.billingProviders]
-  );
-  */
+  }, [productId, query]);
 
   useEffect(() => {
-    /*
-    if (updatedOptions.length) {
-      dispatch({
-        type: reduxTypes.query.SET_QUERY,
-        viewId,
-        filter: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
-        value: updatedOptions[0].value
-      });
+    if (firstUpdatedOption.value) {
+      dispatch([
+        {
+          type: reduxTypes.query.SET_QUERY,
+          viewId,
+          filter: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
+          value: firstUpdatedOption.value
+        }
+      ]);
     }
-    */
-  }, [dispatch, updatedOptions, viewId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstUpdatedOption.value]);
 
   return updatedOptions;
 };
@@ -238,7 +222,7 @@ const ToolbarFieldBillingProvider = ({
       options={updatedOptions}
       selectedOptions={updatedValue}
       placeholder={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'billing_provider' })}
-      alignment={{ position }}
+      toggle={{ icon: <FilterIcon /> }}
       data-test="toolbarFieldBillingProvider"
     />
   );
