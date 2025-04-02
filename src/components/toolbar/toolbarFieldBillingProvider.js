@@ -39,49 +39,6 @@ const getToolbarFieldOptions = (providers = []) =>
  */
 getToolbarFieldOptions.memo = helpers.memo(getToolbarFieldOptions, { cacheLimit: 10 });
 
-/**
- * Select field hook for options.
- *
- * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
- */
-const useToolbarFieldOptions = ({
-  getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
-  getToolbarFieldOptions: getAliasToolbarFieldOptions = getToolbarFieldOptions.memo,
-  useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
-  useProduct: useAliasProduct = useProduct,
-  useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
-  useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
-} = {}) => {
-  const { productId, viewId } = useAliasProduct();
-  const query = useAliasProductBillingAccountsQuery();
-  const dispatch = useAliasDispatch();
-  const { data = {} } = useAliasSelectorsResponse([
-    { id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] }
-  ]);
-  const updatedOptions = getAliasToolbarFieldOptions(data?.billing?.billingProviders);
-  const [firstUpdatedOption = {}] = updatedOptions;
-
-  useShallowCompareEffect(() => {
-    getBillingAccounts(productId, query)(dispatch);
-  }, [productId, query]);
-
-  useEffect(() => {
-    if (firstUpdatedOption.value) {
-      dispatch([
-        {
-          type: reduxTypes.query.SET_QUERY,
-          viewId,
-          filter: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
-          value: firstUpdatedOption.value
-        }
-      ]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstUpdatedOption.value]);
-
-  return updatedOptions;
-};
-
 /*
  *const setup = helpers.memo(
  *  providers => {
@@ -175,6 +132,54 @@ const useOnSelect = ({
 };
 
 /**
+ * Select field hook for options.
+ *
+ * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
+ */
+const useToolbarFieldOptions = ({
+  getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
+  getToolbarFieldOptions: getAliasToolbarFieldOptions = getToolbarFieldOptions.memo,
+  useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
+  useOnSelect: useAliasOnSelect = useOnSelect,
+  useProduct: useAliasProduct = useProduct,
+  useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
+  useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
+} = {}) => {
+  const { productId, viewId } = useAliasProduct();
+  const onSelect = useAliasOnSelect();
+  const query = useAliasProductBillingAccountsQuery();
+  const dispatch = useAliasDispatch();
+  const { data = {} } = useAliasSelectorsResponse([
+    { id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] }
+  ]);
+  const updatedOptions = getAliasToolbarFieldOptions(data?.billing?.billingProviders);
+  const [firstUpdatedOption = {}] = updatedOptions;
+
+  useShallowCompareEffect(() => {
+    getBillingAccounts(productId, query)(dispatch);
+  }, [productId, query]);
+
+  useEffect(() => {
+    if (firstUpdatedOption.value) {
+      onSelect({ value: firstUpdatedOption.value });
+      /*
+      dispatch([
+        {
+          type: reduxTypes.query.SET_QUERY,
+          viewId,
+          filter: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
+          value: firstUpdatedOption.value
+        }
+      ]);
+      */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstUpdatedOption.value]);
+
+  return updatedOptions;
+};
+
+/**
  * Display a billing provider field with options.
  *
  * @param {object} props
@@ -189,7 +194,6 @@ const useOnSelect = ({
  */
 const ToolbarFieldBillingProvider = ({
   isFilter = false,
-  position = SelectPosition.left,
   t = translate,
   useOnSelect: useAliasOnSelect = useOnSelect,
   useProductQuery: useAliasProductQuery = useProductQuery,
