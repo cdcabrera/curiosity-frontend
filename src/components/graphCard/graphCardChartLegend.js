@@ -53,7 +53,7 @@ const GraphCardChartLegend = ({
     ...datum.dataSets.map(
       ({ id }) =>
         ({ graph }) =>
-          graph.legend?.[`${productId}-${id}`]
+          graph.legend?.[id]
     )
   ]);
 
@@ -84,7 +84,7 @@ const GraphCardChartLegend = ({
 
     dispatch({
       type: reduxTypes.graph.SET_GRAPH_LEGEND,
-      id: `${productId}-${id}`,
+      id,
       value: updatedToggle
     });
   };
