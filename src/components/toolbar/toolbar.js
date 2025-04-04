@@ -62,7 +62,7 @@ const Toolbar = ({
   useToolbarFieldClearAll: useAliasToolbarFieldClearAll = useToolbarFieldClearAll,
   useToolbarFields: useAliasToolbarFields = useToolbarFields
 }) => {
-  const { productId } = useAliasProduct();
+  const { productGroup } = useAliasProduct();
   const toolbarFieldQueries = useAliasProductToolbarQuery();
   const { currentCategory, options } = useAliasSelectCategoryOptions();
   const clearField = useAliasToolbarFieldClear();
@@ -115,7 +115,7 @@ const Toolbar = ({
   return (
     <PfToolbar
       id="curiosity-toolbar"
-      key={productId}
+      key={productGroup}
       className="curiosity-toolbar pf-m-toggle-group-container ins-c-primary-toolbar"
       collapseListedFiltersBreakpoint="sm"
       clearAllFilters={onClearAll}
