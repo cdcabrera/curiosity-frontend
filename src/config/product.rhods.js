@@ -17,8 +17,7 @@ import {
   RHSM_API_QUERY_SET_TYPES,
   RHSM_API_PATH_PRODUCT_TYPES,
   RHSM_API_PATH_METRIC_TYPES,
-  RHSM_INTERNAL_PRODUCT_DISPLAY_TYPES as DISPLAY_TYPES,
-  RHSM_API_QUERY_BILLING_PROVIDER_TYPES
+  RHSM_INTERNAL_PRODUCT_DISPLAY_TYPES as DISPLAY_TYPES
 } from '../services/rhsm/rhsmConstants';
 import { ChartTypeVariant } from '../components/chart/chart';
 import { dateHelpers, helpers } from '../common';
@@ -73,7 +72,8 @@ const config = {
   viewId: `view${productGroup}-${productId}`,
   query: {
     [RHSM_API_QUERY_SET_TYPES.START_DATE]: dateHelpers.getRangedMonthDateTime('current').value.startDate.toISOString(),
-    [RHSM_API_QUERY_SET_TYPES.END_DATE]: dateHelpers.getRangedMonthDateTime('current').value.endDate.toISOString()
+    [RHSM_API_QUERY_SET_TYPES.END_DATE]: dateHelpers.getRangedMonthDateTime('current').value.endDate.toISOString(),
+    [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID]: '__CONFIGURED__'
   },
   graphTallyQuery: {
     [RHSM_API_QUERY_SET_TYPES.GRANULARITY]: GRANULARITY_TYPES.DAILY
@@ -311,7 +311,8 @@ const config = {
   ],
   initialToolbarFilters: [
     {
-      id: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER
+      id: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
+      isRequired: true
     },
     {
       id: 'rangedMonthly',

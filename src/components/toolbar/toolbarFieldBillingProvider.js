@@ -2,7 +2,12 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { useMount, useShallowCompareEffect } from 'react-use';
 import { FilterIcon } from '@patternfly/react-icons';
 import { reduxActions, reduxTypes, storeHooks } from '../../redux';
-import { useProduct, useProductBillingAccountsQuery, useProductQuery } from '../productView/productViewContext';
+import {
+  useProduct,
+  useProductBillingAccountsQuery,
+  useProductConfig,
+  useProductQuery
+} from '../productView/productViewContext';
 import { Select, SelectPosition } from '../form/select';
 import {
   RHSM_API_QUERY_BILLING_PROVIDER_TYPES as FIELD_TYPES,
@@ -137,6 +142,22 @@ const useOnSelect = ({
  * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
  */
 const useToolbarFieldOptions = ({
+  useProductConfig: useAliasProductConfig = useProductConfig
+  // useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
+} = {}) => {
+  const response = useAliasProductConfig();
+  /*
+   * const { productId } = useAliasProduct();
+   * const response = useAliasSelectorsResponse([
+   *  { id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] }
+   * ]);
+   * console.log('>>>>> RESPONSE', response);
+   */
+  console.log('>>>> TOOLBARFIELD OPTIONS', response);
+  return [];
+};
+
+const useToolbarFieldOptionsOLD = ({
   getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
   getToolbarFieldOptions: getAliasToolbarFieldOptions = getToolbarFieldOptions.memo,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
@@ -145,38 +166,41 @@ const useToolbarFieldOptions = ({
   useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
 } = {}) => {
-  const { productId, viewId } = useAliasProduct();
-  const onSelect = useAliasOnSelect();
-  const query = useAliasProductBillingAccountsQuery();
-  const dispatch = useAliasDispatch();
-  const { data = {} } = useAliasSelectorsResponse([
-    { id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] }
-  ]);
-  const updatedOptions = getAliasToolbarFieldOptions(data?.billing?.billingProviders);
-  const [firstUpdatedOption = {}] = updatedOptions;
-
-  useShallowCompareEffect(() => {
-    getBillingAccounts(productId, query)(dispatch);
-  }, [productId, query]);
-
-  useEffect(() => {
-    if (firstUpdatedOption.value) {
-      onSelect({ value: firstUpdatedOption.value });
-      /*
-      dispatch([
-        {
-          type: reduxTypes.query.SET_QUERY,
-          viewId,
-          filter: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
-          value: firstUpdatedOption.value
-        }
-      ]);
-      */
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstUpdatedOption.value]);
-
-  return updatedOptions;
+  const {} = useAliasProductConfig();
+  /*
+   *const { productId, viewId } = useAliasProduct();
+   *const onSelect = useAliasOnSelect();
+   *const query = useAliasProductBillingAccountsQuery();
+   *const dispatch = useAliasDispatch();
+   *const { data = {} } = useAliasSelectorsResponse([
+   *  { id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] }
+   *]);
+   *const updatedOptions = getAliasToolbarFieldOptions(data?.billing?.billingProviders);
+   *const [firstUpdatedOption = {}] = updatedOptions;
+   *
+   *useShallowCompareEffect(() => {
+   *  getBillingAccounts(productId, query)(dispatch);
+   *}, [productId, query]);
+   *
+   *useEffect(() => {
+   *  if (firstUpdatedOption.value) {
+   *    onSelect({ value: firstUpdatedOption.value });
+   *    /*
+   *    dispatch([
+   *      {
+   *        type: reduxTypes.query.SET_QUERY,
+   *        viewId,
+   *        filter: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
+   *        value: firstUpdatedOption.value
+   *      }
+   *    ]);
+   * /
+   *  }
+   *  // eslint-disable-next-line react-hooks/exhaustive-deps
+   *}, [firstUpdatedOption.value]);
+   *
+   *return updatedOptions;
+   */
 };
 
 /**

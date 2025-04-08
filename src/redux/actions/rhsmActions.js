@@ -1,6 +1,7 @@
 import { rhsmTypes } from '../types';
 import { rhsmServices } from '../../services/rhsm/rhsmServices';
 import { generateChartIds } from '../../components/graphCard/graphCardHelpers';
+import { RHSM_API_QUERY_SET_TYPES } from '../../services/rhsm/rhsmConstants';
 
 /**
  * RHSM service wrappers for dispatch, state update.
@@ -21,7 +22,7 @@ const getBillingAccounts =
   dispatch =>
     dispatch({
       type: rhsmTypes.GET_BILLING_ACCOUNTS_RHSM,
-      payload: rhsmServices.getBillingAccounts(id, query),
+      payload: rhsmServices.getBillingAccounts(id, query, { cancelId: `billing_accounts_${id}` }),
       meta: {
         id,
         productId: id,
@@ -48,6 +49,11 @@ const getGraphMetrics =
     const { cancelId = 'graphTally' } = options;
     const multiMetric = (Array.isArray(idMetric) && idMetric) || [idMetric];
     const multiDispatch = [];
+
+    console.log('>>>> TALLY-CAPACITY API', query);
+    if (query[RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID] === '__CONFIGURED__') {
+      return;
+    }
 
     multiMetric.forEach(({ id, metric, isCapacity, query: metricQuery }) => {
       const methodService = isCapacity ? rhsmServices.getGraphCapacity : rhsmServices.getGraphTally;
@@ -87,8 +93,13 @@ const getGraphMetrics =
  */
 const getInstancesInventory =
   (id = null, query = {}) =>
-  dispatch =>
-    dispatch({
+  dispatch => {
+    console.log('>>>> INSTANCES API', id, query);
+    if (query[RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID] === '__CONFIGURED__') {
+      return;
+    }
+
+    return dispatch({
       type: rhsmTypes.GET_INSTANCES_INVENTORY_RHSM,
       payload: rhsmServices.getInstancesInventory(id, query),
       meta: {
@@ -100,6 +111,7 @@ const getInstancesInventory =
         notifications: {}
       }
     });
+  };
 
 /**
  * Get an instance guest response listing from RHSM subscriptions.
@@ -133,8 +145,13 @@ const getInstancesInventoryGuests =
  */
 const getSubscriptionsInventory =
   (id = null, query = {}) =>
-  dispatch =>
-    dispatch({
+  dispatch => {
+    console.log('>>>> SUBSCRIPTIONS API', id, query);
+    if (query[RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID] === '__CONFIGURED__') {
+      return;
+    }
+
+    return dispatch({
       type: rhsmTypes.GET_SUBSCRIPTIONS_INVENTORY_RHSM,
       payload: rhsmServices.getSubscriptionsInventory(id, query),
       meta: {
@@ -146,6 +163,7 @@ const getSubscriptionsInventory =
         notifications: {}
       }
     });
+  };
 
 const rhsmActions = {
   getBillingAccounts,
