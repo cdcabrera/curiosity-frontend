@@ -2184,17 +2184,28 @@ const getInstancesInventoryGuests = (id, params = {}, options = {}) => {
  *     ie. [SUCCESS TRANSFORM, ERROR TRANSFORM]
  * @returns {Promise<*>}
  */
-const getInstancesInventory = (id, params = {}, options = {}) => {
+const getInstancesInventory = async (id, params = {}, options = {}) => {
   const {
     cache = true,
     cancel = true,
     cancelId,
     schema = [rhsmSchemas.instances, rhsmSchemas.errors],
-    transform = [rhsmTransformers.instances]
+    transform = [rhsmTransformers.instances],
+    isBillingProviderRequired = true
   } = options;
-  return serviceCall({
+  const updatedParams = { ...params };
+
+  if (isBillingProviderRequired) {
+    const { data = {} } = await getBillingAccounts();
+    // defaultProvider = response?.data?.billingProviders?.[0];
+    updatedParams.billing_provider = data?.defaultProvider;
+    updatedParams.billing_account_id = data?.defaultAccount;
+  }
+  // this may not work because of the params required to get billing accounts include org id
+
+  return axiosServiceCall({
     url: `${process.env.REACT_APP_SERVICES_RHSM_INVENTORY_INSTANCES}${id}`,
-    params,
+    params: updatedParams,
     cache,
     cancel,
     cancelId,

@@ -1,4 +1,5 @@
 import axios, { CancelToken } from 'axios';
+import _debounce from 'lodash/debounce';
 import { LRUCache } from 'lru-cache';
 import { serviceHelpers } from './helpers';
 
@@ -364,6 +365,8 @@ const axiosServiceCall = async (
 
   return axiosInstance(updatedConfig);
 };
+
+axiosServiceCall.debounce = _debounce(axiosServiceCall, 250);
 
 const serviceConfig = {
   axiosServiceCall,

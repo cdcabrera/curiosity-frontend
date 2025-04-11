@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
+import { useMount } from 'react-use';
 import { useSession } from '../authentication/authenticationContext';
 import { reduxHelpers } from '../../redux/common';
 import { storeHooks } from '../../redux/hooks';
-import { rhsmConstants } from '../../services/rhsm/rhsmConstants';
+import { RHSM_API_QUERY_SET_TYPES, rhsmConstants } from '../../services/rhsm/rhsmConstants';
 import { platformConstants } from '../../services/platform/platformConstants';
 import { helpers } from '../../common/helpers';
+import { reduxActions } from '../../redux';
 
 /**
  * @memberof ProductView
@@ -365,6 +367,37 @@ const useProductExportQuery = ({
   );
 };
 
+const useProductConfig = ({
+  getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
+  useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
+  useProduct: useAliasProduct = useProduct,
+  useProductToolbarConfig: useAliasProductToolbarConfig = useProductToolbarConfig,
+  useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
+  useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
+} = {}) => {
+  const { productId } = useAliasProduct();
+  const { filters = [] } = useAliasProductToolbarConfig();
+  const query = useAliasProductBillingAccountsQuery();
+  const dispatch = useAliasDispatch();
+  const response = useAliasSelectorsResponse([
+    { id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] }
+  ]);
+
+  const isBillingAccountRequired =
+    filters.find(({ id }) => id === RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER) !== undefined;
+
+  useMount(async () => {
+    console.log('>>>> mount product config api lookup', productId);
+    if (isBillingAccountRequired) {
+      console.log('>>>> DOING CALL mount product config api lookup', productId);
+      await dispatch(getBillingAccounts(productId, query));
+      console.log('>>>> COMPLETE CALL mount product config api lookup', productId);
+    }
+  });
+
+  return response;
+};
+
 const context = {
   ProductViewContext,
   DEFAULT_CONTEXT,
@@ -377,6 +410,7 @@ const context = {
   useInventoryHostsQuery: useProductInventoryHostsQuery,
   useInventorySubscriptionsQuery: useProductInventorySubscriptionsQuery,
   useProduct,
+  useProductConfig,
   useProductExportQuery,
   useGraphConfig: useProductGraphConfig,
   useInventoryGuestsConfig: useProductInventoryGuestsConfig,
@@ -400,6 +434,7 @@ export {
   useProductInventoryHostsQuery,
   useProductInventorySubscriptionsQuery,
   useProduct,
+  useProductConfig,
   useProductExportQuery,
   useProductGraphConfig,
   useProductInventoryGuestsConfig,

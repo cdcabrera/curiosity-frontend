@@ -2,7 +2,12 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { useMount, useShallowCompareEffect } from 'react-use';
 import { FilterIcon } from '@patternfly/react-icons';
 import { reduxActions, reduxTypes, storeHooks } from '../../redux';
-import { useProduct, useProductBillingAccountsQuery, useProductQuery } from '../productView/productViewContext';
+import {
+  useProduct,
+  useProductBillingAccountsQuery,
+  useProductConfig,
+  useProductQuery
+} from '../productView/productViewContext';
 import { Select, SelectPosition } from '../form/select';
 import {
   RHSM_API_QUERY_BILLING_PROVIDER_TYPES as FIELD_TYPES,
@@ -145,7 +150,7 @@ const useToolbarFieldOptions = ({
   useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
 } = {}) => {
-  const { productId, viewId } = useAliasProduct();
+  const { productId } = useAliasProduct();
   const onSelect = useAliasOnSelect();
   const query = useAliasProductBillingAccountsQuery();
   const dispatch = useAliasDispatch();
