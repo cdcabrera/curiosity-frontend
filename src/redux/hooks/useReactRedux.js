@@ -321,6 +321,10 @@ const useSelectorsResponse = (selectors, { useSelectors: useAliasSelectors = use
     return response;
   }
 
+  if (!updatedSelectorResponse.length) {
+    // response.fulfilled = false;
+  }
+
   return response;
 };
 

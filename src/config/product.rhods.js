@@ -71,6 +71,7 @@ const config = {
   productPath: productGroup.toLowerCase(),
   productDisplay: DISPLAY_TYPES.HOURLY,
   viewId: `view${productGroup}-${productId}`,
+  onloadProduct: [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID],
   query: {
     [RHSM_API_QUERY_SET_TYPES.START_DATE]: dateHelpers.getRangedMonthDateTime('current').value.startDate.toISOString(),
     [RHSM_API_QUERY_SET_TYPES.END_DATE]: dateHelpers.getRangedMonthDateTime('current').value.endDate.toISOString()
@@ -102,6 +103,7 @@ const config = {
     }
   ],
   initialGraphSettings: {
+    requiredQueryParams: [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID],
     cards: [
       {
         header: ({ dataSets = [] } = {}) =>
@@ -244,6 +246,7 @@ const config = {
     }
   ],
   initialInventorySettings: {
+    requiredQueryParams: [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID],
     actions: [
       {
         id: RHSM_API_QUERY_SET_TYPES.DISPLAY_NAME
@@ -309,6 +312,9 @@ const config = {
       width: 15
     }
   ],
+  initialSubscriptionsSettings: {
+    requiredQueryParams: [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID]
+  },
   initialToolbarFilters: [
     {
       id: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER

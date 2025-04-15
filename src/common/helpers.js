@@ -102,7 +102,7 @@ const generateHash = anyValue => {
  * @param {number} options.cacheLimit
  * @returns {Function}
  */
-const memo = (func, { cacheLimit = 1 } = {}) => {
+const memoOLD = (func, { cacheLimit = 1 } = {}) => {
   // eslint-disable-next-line func-names
   const ized = function () {
     const cache = [];
@@ -116,6 +116,77 @@ const memo = (func, { cacheLimit = 1 } = {}) => {
         cache.unshift(key, result);
         cache.length = cacheLimit * 2;
         return cache[1];
+      }
+
+      return cache[keyIndex + 1];
+    };
+  };
+
+  return ized();
+};
+
+/**
+ * Simple argument based memoize with adjustable limit, and extendable cache expire.
+ * Expiration expands until a pause in use happens. Also allows for promises
+ * and promise-like functions. For promises and promise-like functions it's the
+ * consumers responsibility to await or process the resolve/reject.
+ *
+ * @param {Function} func A function or promise/promise-like function to memoize
+ * @param {object} options
+ * @param {number} options.cacheLimit Number of entries to cache before overwriting previous entries
+ * @param {number} options.expire Expandable milliseconds until cache expires. The more you use it
+ *     the longer it takes to expire.
+ * @returns {Function}
+ */
+const memo = (func, { cacheLimit = 1, expire } = {}) => {
+  const isFuncPromise = isPromise(func);
+  const updatedExpire = Number.parseInt(expire, 10) || undefined;
+
+  // eslint-disable-next-line func-names
+  const ized = function () {
+    const cache = [];
+    let timeout;
+
+    return (...args) => {
+      const isMemo = cacheLimit > 0 && args.length;
+      let key;
+      let keyIndex = -1;
+
+      if (typeof updatedExpire === 'number') {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+          cache.length = 0;
+        }, updatedExpire);
+      }
+
+      if (isMemo) {
+        key = JSON.stringify({ value: [...args].map(arg => (typeof arg === 'function' && arg.toString()) || arg) });
+        keyIndex = cache.indexOf(key);
+      } else {
+        cache.length = 0;
+      }
+
+      if (keyIndex < 0) {
+        cache.unshift(
+          key,
+          (isFuncPromise &&
+            Promise.all([func.call(null, ...args)]).then(result => {
+              cache[cache.indexOf(key) + 1] = result?.[0];
+              return result?.[0];
+            })) ||
+            func.call(null, ...args)
+        );
+
+        if (isMemo) {
+          cache.length = cacheLimit * 2;
+        }
+
+        return cache[1];
+      }
+
+      if (isFuncPromise) {
+        return Promise.resolve(cache[keyIndex + 1]);
       }
 
       return cache[keyIndex + 1];

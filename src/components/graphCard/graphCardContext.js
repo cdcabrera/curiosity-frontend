@@ -2,7 +2,12 @@ import React, { useContext, useMemo } from 'react';
 import { useShallowCompareEffect } from 'react-use';
 import { ToolbarItem } from '@patternfly/react-core';
 import { reduxActions, storeHooks } from '../../redux';
-import { useProduct, useProductGraphConfig, useProductGraphTallyQuery } from '../productView/productViewContext';
+import {
+  useProduct,
+  useProductOnload,
+  useProductGraphConfig,
+  useProductGraphTallyQuery
+} from '../productView/productViewContext';
 import { toolbarFieldOptions } from '../toolbar/toolbarFieldSelectCategory';
 import { helpers } from '../../common/helpers';
 import { graphCardHelpers } from './graphCardHelpers';
@@ -126,10 +131,12 @@ const useGetMetrics = ({
   useGraphCardContext: useAliasGraphCardContext = useGraphCardContext,
   useMetricsSelector: useAliasMetricsSelector = useMetricsSelector,
   useProduct: useAliasProduct = useProduct,
+  // useProductOnload: useAliasProductOnload = useProductOnload,
   useProductGraphTallyQuery: useAliasProductGraphTallyQuery = useProductGraphTallyQuery
 } = {}) => {
+  // const { isReady, ...rest } = useAliasProductOnload();
   const { productId } = useAliasProduct();
-  const query = useAliasProductGraphTallyQuery();
+  const query = useAliasProductGraphTallyQuery(); // think about using "query isReady" with these required calls...
   const dispatch = useAliasDispatch();
   const response = useAliasMetricsSelector();
   const { settings = {} } = useAliasGraphCardContext();
@@ -142,7 +149,14 @@ const useGetMetrics = ({
       isCapacity,
       query: metricQuery
     }));
+
+    // console.log('>>>> PREREADY TALLY CAPACITY', isReady, rest);
+
+    // if (isReady === true) {
+    // console.log('>>>> READY TALLY CAPACITY', isReady);
     getGraphMetrics(updatedMetrics, query)(dispatch);
+    // }
+    // }, [isReady, metrics, productId, query]);
   }, [metrics, productId, query]);
 
   return response;
