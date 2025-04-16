@@ -476,6 +476,8 @@
     "error_download": "Download UI state log",
     "error_pageTitle": "Subscriptions Usage",
     "error_title": "{{appName}} is temporarily unavailable",
+    "pending": "...",
+    "pending_description": "Configuring...",
     "title": "{{appName}}",
     "subtitle": "Monitor your usage based on your subscription terms. <0>Learn more about {{appName}} reporting</0>",
     "description": "Monitor your usage based on your subscription terms.",
