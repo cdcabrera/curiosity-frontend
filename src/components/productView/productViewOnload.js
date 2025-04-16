@@ -19,17 +19,21 @@ import { useProductOnload } from './productViewContext';
  * @returns {JSX.Element}
  */
 const ProductViewOnload = ({ children, t = translate, useProductOnload: useAliasProductOnload = useProductOnload }) => {
-  const [isReady, setIsReady] = useState(false);
-  const { isReady: isReallyReady } = useAliasProductOnload();
+  // const [isReady, setIsReady] = useState(false);
+  // const { isReady: isReallyReady } = useAliasProductOnload();
+  const isReady = useAliasProductOnload();
 
+  /*
   useMount(async () => {
     console.log('>>>>> isReallyReady', isReallyReady);
     window.setTimeout(() => {
       setIsReady(true);
     }, 1000);
   });
+  */
 
   if (isReady) {
+    console.log('>>>>> isReallyReady', isReady);
     return children;
   }
 

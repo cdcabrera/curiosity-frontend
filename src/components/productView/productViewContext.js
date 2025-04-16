@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useMount } from 'react-use';
 import { useSession } from '../authentication/authenticationContext';
 import { reduxActions, reduxHelpers, storeHooks } from '../../redux';
@@ -366,17 +366,25 @@ const useProductExportQuery = ({
   );
 };
 
+const testingIsReady = condition => condition;
+
+testingIsReady.memo = helpers.memo(testingIsReady, { cacheLimit: 3 });
+
 const useProductOnload = ({
-  // getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
-  // useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
+  getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
+  useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
   // useProductContext: useAliasProductContext = useProductContext,
-  // useProductViewContext: useAliasProductViewContext = useProductViewContext,
-  // useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
+  useProductViewContext: useAliasProductViewContext = useProductViewContext,
+  useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
 } = {}) => {
-  const { onloadProduct, productId } = useContext(ProductViewContext);
-  // const query = useAliasProductBillingAccountsQuery();
-  // const dispatch = useAliasDispatch();
+  // const [isReady, setIsReady] = useState(false);
+  // const { onloadProduct, productId } = useContext(ProductViewContext);
+  const { onloadProduct, productId } = useAliasProductViewContext();
+  const billingAccountsQuery = useAliasProductBillingAccountsQuery();
+  const dispatch = useAliasDispatch();
+
+  console.log('>>>>>> ONLOAD HOOK', productId);
 
   const isBillingAccountRequired =
     onloadProduct?.find(value => value === rhsmConstants.RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID) !== undefined;
@@ -389,14 +397,32 @@ const useProductOnload = ({
   const response = useAliasSelectorsResponse(selectors);
 
   useEffect(() => {
-    console.log('>>>> MOUNT 002', isBillingAccountRequired, productId);
-
     if (isBillingAccountRequired) {
       console.log('>>>> MOUNT 002', isBillingAccountRequired, productId);
-      // await dispatch(getBillingAccounts(productId, query));
+      dispatch(getBillingAccounts(productId, billingAccountsQuery));
     }
     // eslint-disable-next-line
-  }, [productId]);
+  }, [isBillingAccountRequired, productId]);
+
+  /*
+  useEffect(() => {
+    setIsReady(!onloadProduct?.length || response?.fulfilled || false);
+  }, [onloadProduct?.length, response?.fulfilled]);
+
+  return isReady;
+  */
+
+  // return testingIsReady.memo(!onloadProduct?.length || response?.fulfilled || false);
+
+  return !onloadProduct?.length || response?.fulfilled || false;
+
+  /*
+  return useMemo(() => {
+    const isReady = !onloadProduct?.length || response?.fulfilled || false;
+    console.log('>>>> MOUNT', isReady, productId);
+    return isReady;
+  }, [onloadProduct?.length, response?.fulfilled]);
+  */
 
   /*
   useMount(() => {
@@ -407,10 +433,12 @@ const useProductOnload = ({
   });
   */
 
+  /*
   return {
     isReady: !onloadProduct || !onloadProduct.length || response?.fulfilled || false,
     ...response
   };
+  */
 };
 
 const context = {

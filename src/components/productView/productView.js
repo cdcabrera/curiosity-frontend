@@ -37,6 +37,8 @@ import { ProductViewMissing } from './productViewMissing';
  */
 const ProductView = ({ t = translate, useRouteDetail: useAliasRouteDetail = routerContext.useRouteDetail }) => {
   const { disableIsClosestMatch, firstMatch, productGroup } = useAliasRouteDetail();
+  const prodId = firstMatch?.productId;
+  console.log('>>> PRECONTEXT', prodId);
 
   const renderProduct = useCallback(() => {
     const updated = config => {
@@ -45,6 +47,8 @@ const ProductView = ({ t = translate, useRouteDetail: useAliasRouteDetail = rout
       if (!productId || !viewId) {
         return null;
       }
+
+      console.log('>>>>> SET CONTEXT', productId);
 
       return (
         <ProductViewContext.Provider value={config}>
@@ -88,7 +92,7 @@ const ProductView = ({ t = translate, useRouteDetail: useAliasRouteDetail = rout
     };
 
     return updated(firstMatch);
-  }, [firstMatch, t]);
+  }, [prodId]);
 
   if (disableIsClosestMatch) {
     return <ProductViewMissing />;
