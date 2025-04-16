@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useMount } from 'react-use';
 import { BinocularsIcon } from '@patternfly/react-icons';
 import { MessageView } from '../messageView/messageView';
 import { translate } from '../i18n/i18n';
@@ -17,11 +18,18 @@ import { translate } from '../i18n/i18n';
  * @returns {JSX.Element}
  */
 const ProductViewConfigLoad = ({ children, t = translate }) => {
-  useEffect(() => {
-    console.log('>>>>> MOUNT CONFIG LOAD');
+  const [isReady, setIsReady] = useState(false);
+
+  useMount(async () => {
+    window.setTimeout(() => {
+      setIsReady(true);
+    }, 1000);
   });
 
-  /*
+  if (isReady) {
+    return children;
+  }
+
   return (
     <MessageView
       pageTitle="&nbsp;"
@@ -29,9 +37,6 @@ const ProductViewConfigLoad = ({ children, t = translate }) => {
       icon={<BinocularsIcon />}
     />
   );
-  */
-
-  return children;
 };
 
 export { ProductViewConfigLoad as default, ProductViewConfigLoad };
