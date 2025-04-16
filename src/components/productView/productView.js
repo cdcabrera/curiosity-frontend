@@ -11,7 +11,7 @@ import InventoryTabs, { InventoryTab } from '../inventoryTabs/inventoryTabs';
 import { InventoryCardInstances } from '../inventoryCardInstances/inventoryCardInstances';
 import { InventoryCardSubscriptions } from '../inventoryCardSubscriptions/inventoryCardSubscriptions';
 import { translate } from '../i18n/i18n';
-import { ProductViewConfigLoad } from './productViewConfigLoad';
+import { ProductViewOnload } from './productViewOnload';
 import { ProductViewMissing } from './productViewMissing';
 
 /**
@@ -48,7 +48,7 @@ const ProductView = ({ t = translate, useRouteDetail: useAliasRouteDetail = rout
 
       return (
         <ProductViewContext.Provider value={config}>
-          <ProductViewConfigLoad>
+          <ProductViewOnload>
             <PageMessages>
               <BannerMessages />
             </PageMessages>
@@ -82,7 +82,7 @@ const ProductView = ({ t = translate, useRouteDetail: useAliasRouteDetail = rout
                 )}
               </InventoryTabs>
             </PageSection>
-          </ProductViewConfigLoad>
+          </ProductViewOnload>
         </ProductViewContext.Provider>
       );
     };

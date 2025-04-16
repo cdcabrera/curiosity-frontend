@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
-import { reduxHelpers } from '../../redux/common';
-import { storeHooks } from '../../redux/hooks';
+import React, { useContext, useEffect } from 'react';
+import { useMount } from 'react-use';
+import { useSession } from '../authentication/authenticationContext';
+import { reduxActions, reduxHelpers, storeHooks } from '../../redux';
 import { rhsmConstants } from '../../services/rhsm/rhsmConstants';
 import { platformConstants } from '../../services/platform/platformConstants';
 import { helpers } from '../../common/helpers';
@@ -57,6 +58,36 @@ const useProductQueryFactory = (
     ...queryProduct,
     ...queryView
   };
+};
+
+/**
+ * Return the billing account id base query, sans-productId.
+ * Note: The billing accounts query is a one-off when compared to other API calls.
+ * We align the productId use with ALL API calls by passing it separately.
+ *
+ * @param {object} options
+ * @param {string} [options.queryType='billingAccountsQuery']
+ * @param {object} [options.schemaCheck=rhsmConstants.RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES]
+ * @param {useProductQueryFactory} [options.useProductQueryFactory=useProductQueryFactory]
+ * @param {useSession} [options.useSession=useSession]
+ * @param {object} [options.options]
+ * @returns {object}
+ */
+const useProductBillingAccountsQuery = ({
+  queryType = 'billingAccountsQuery',
+  schemaCheck = rhsmConstants.RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES,
+  useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
+  useSession: useAliasSession = useSession,
+  options
+} = {}) => {
+  const { orgId } = useAliasSession();
+  return reduxHelpers.setApiQuery(
+    {
+      ...useAliasProductQueryFactory(queryType, options),
+      [rhsmConstants.RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES.ORG_ID]: orgId
+    },
+    schemaCheck
+  );
 };
 
 /**
@@ -335,6 +366,53 @@ const useProductExportQuery = ({
   );
 };
 
+const useProductOnload = ({
+  // getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
+  // useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
+  // useProductContext: useAliasProductContext = useProductContext,
+  // useProductViewContext: useAliasProductViewContext = useProductViewContext,
+  // useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
+  useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
+} = {}) => {
+  const { onloadProduct, productId } = useContext(ProductViewContext);
+  // const query = useAliasProductBillingAccountsQuery();
+  // const dispatch = useAliasDispatch();
+
+  const isBillingAccountRequired =
+    onloadProduct?.find(value => value === rhsmConstants.RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID) !== undefined;
+  const selectors = [];
+
+  if (isBillingAccountRequired) {
+    selectors.push({ id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] });
+  }
+
+  const response = useAliasSelectorsResponse(selectors);
+
+  useEffect(() => {
+    console.log('>>>> MOUNT 002', isBillingAccountRequired, productId);
+
+    if (isBillingAccountRequired) {
+      console.log('>>>> MOUNT 002', isBillingAccountRequired, productId);
+      // await dispatch(getBillingAccounts(productId, query));
+    }
+    // eslint-disable-next-line
+  }, [productId]);
+
+  /*
+  useMount(() => {
+    if (isBillingAccountRequired) {
+      console.log('>>>> MOUNT', isBillingAccountRequired, productId);
+      // await dispatch(getBillingAccounts(productId, query));
+    }
+  });
+  */
+
+  return {
+    isReady: !onloadProduct || !onloadProduct.length || response?.fulfilled || false,
+    ...response
+  };
+};
+
 const context = {
   ProductViewContext,
   DEFAULT_CONTEXT,
@@ -346,6 +424,7 @@ const context = {
   useInventoryHostsQuery: useProductInventoryHostsQuery,
   useInventorySubscriptionsQuery: useProductInventorySubscriptionsQuery,
   useProduct,
+  useProductOnload,
   useProductExportQuery,
   useGraphConfig: useProductGraphConfig,
   useInventoryGuestsConfig: useProductInventoryGuestsConfig,
@@ -368,6 +447,7 @@ export {
   useProductInventoryHostsQuery,
   useProductInventorySubscriptionsQuery,
   useProduct,
+  useProductOnload,
   useProductExportQuery,
   useProductGraphConfig,
   useProductInventoryGuestsConfig,
