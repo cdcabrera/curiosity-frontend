@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { useSession } from '../authentication/authenticationContext';
 import { reduxActions, reduxHelpers, storeHooks } from '../../redux';
 import { rhsmConstants } from '../../services/rhsm/rhsmConstants';
@@ -89,6 +89,24 @@ const useProductBillingAccountsQuery = ({
   );
 };
 
+const useProductQueryConditional = ({
+  useProductViewContext: useAliasProductViewContext = useProductViewContext,
+  useSelectors: useAliasSelectors = storeHooks.reactRedux.useSelectors
+} = {}) => {
+  const { productId } = useAliasProductViewContext();
+  const { billing = {} } = useAliasSelectors([
+    { id: 'billing', selector: ({ app }) => app.billingAccounts?.[productId] }
+  ]);
+
+  return useMemo(
+    () => ({
+      [rhsmConstants.RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: billing?.data?.defaultProvider || undefined,
+      [rhsmConstants.RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID]: billing?.data?.defaultAccount || undefined
+    }),
+    [billing?.data?.defaultAccount, billing?.data?.defaultProvider]
+  );
+};
+
 /**
  * Return a base product query
  *
@@ -108,10 +126,11 @@ const useProductQuery = ({
  * Return the graph query based off of tally and capacity.
  *
  * @param {object} options
- * @param {string} options.queryType
- * @param {object} options.schemaCheck
- * @param {Function} options.useProductQuery
- * @param {Function} options.useProductQueryFactory
+ * @param {string} [options.queryType='graphTallyQuery']
+ * @param {object} [options.schemaCheck=rhsmConstants.RHSM_API_QUERY_SET_TALLY_CAPACITY_TYPES]
+ * @param {useProductQuery} [options.useProductQuery=useProductQuery]
+ * @param {useProductQueryConditional} [options.useProductQueryConditional=useProductQueryConditional]
+ * @param {useProductQueryFactory} [options.useProductQueryFactory=useProductQueryFactory]
  * @param {object} options.options
  * @returns {object}
  */
@@ -119,13 +138,15 @@ const useProductGraphTallyQuery = ({
   queryType = 'graphTallyQuery',
   schemaCheck = rhsmConstants.RHSM_API_QUERY_SET_TALLY_CAPACITY_TYPES,
   useProductQuery: useAliasProductQuery = useProductQuery,
+  useProductQueryConditional: useAliasProductQueryConditional = useProductQueryConditional,
   useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
   options
 } = {}) =>
   reduxHelpers.setApiQuery(
     {
       ...useAliasProductQuery(),
-      ...useAliasProductQueryFactory(queryType, options)
+      ...useAliasProductQueryFactory(queryType, options),
+      ...useAliasProductQueryConditional()
     },
     schemaCheck
   );
@@ -160,10 +181,11 @@ const useProductInventoryGuestsQuery = ({
  * Return an inventory query for hosts.
  *
  * @param {object} options
- * @param {string} options.queryType
- * @param {object} options.schemaCheck
- * @param {Function} options.useProductQuery
- * @param {Function} options.useProductQueryFactory
+ * @param {string} [options.queryType='inventoryHostsQuery']
+ * @param {object} [options.schemaCheck=rhsmConstants.RHSM_API_QUERY_SET_INVENTORY_TYPES]
+ * @param {useProductQuery} [options.useProductQuery=useProductQuery]
+ * @param {useProductQueryConditional} [options.useProductQueryConditional=useProductQueryConditional]
+ * @param {useProductQueryFactory} [options.useProductQueryFactory=useProductQueryFactory]
  * @param {object} options.options
  * @returns {object}
  */
@@ -171,13 +193,15 @@ const useProductInventoryHostsQuery = ({
   queryType = 'inventoryHostsQuery',
   schemaCheck = rhsmConstants.RHSM_API_QUERY_SET_INVENTORY_TYPES,
   useProductQuery: useAliasProductQuery = useProductQuery,
+  useProductQueryConditional: useAliasProductQueryConditional = useProductQueryConditional,
   useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
   options
 } = {}) =>
   reduxHelpers.setApiQuery(
     {
       ...useAliasProductQuery(),
-      ...useAliasProductQueryFactory(queryType, options)
+      ...useAliasProductQueryFactory(queryType, options),
+      ...useAliasProductQueryConditional()
     },
     schemaCheck
   );
@@ -186,10 +210,11 @@ const useProductInventoryHostsQuery = ({
  * Return an inventory query for subscriptions.
  *
  * @param {object} options
- * @param {string} options.queryType
- * @param {object} options.schemaCheck
- * @param {Function} options.useProductQuery
- * @param {Function} options.useProductQueryFactory
+ * @param {string} [options.queryType='inventorySubscriptionsQuery']
+ * @param {object} [options.schemaCheck=rhsmConstants.RHSM_API_QUERY_SET_INVENTORY_TYPES]
+ * @param {useProductQuery} [options.useProductQuery=useProductQuery]
+ * @param {useProductQueryConditional} [options.useProductQueryConditional=useProductQueryConditional]
+ * @param {useProductQueryFactory} [options.useProductQueryFactory=useProductQueryFactory]
  * @param {object} options.options
  * @returns {object}
  */
@@ -197,13 +222,15 @@ const useProductInventorySubscriptionsQuery = ({
   queryType = 'inventorySubscriptionsQuery',
   schemaCheck = rhsmConstants.RHSM_API_QUERY_SET_INVENTORY_TYPES,
   useProductQuery: useAliasProductQuery = useProductQuery,
+  useProductQueryConditional: useAliasProductQueryConditional = useProductQueryConditional,
   useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
   options
 } = {}) =>
   reduxHelpers.setApiQuery(
     {
       ...useAliasProductQuery(),
-      ...useAliasProductQueryFactory(queryType, options)
+      ...useAliasProductQueryFactory(queryType, options),
+      ...useAliasProductQueryConditional()
     },
     schemaCheck
   );
@@ -404,6 +431,7 @@ const context = {
   useProductContext,
   useQuery: useProductQuery,
   useQueryFactory: useProductQueryFactory,
+  useQueryConditional: useProductQueryConditional,
   useBillingAccountsQuery: useProductBillingAccountsQuery,
   useGraphTallyQuery: useProductGraphTallyQuery,
   useInventoryGuestsQuery: useProductInventoryGuestsQuery,
@@ -428,6 +456,7 @@ export {
   useProductContext,
   useProductQuery,
   useProductQueryFactory,
+  useProductQueryConditional,
   useProductBillingAccountsQuery,
   useProductGraphTallyQuery,
   useProductInventoryGuestsQuery,
