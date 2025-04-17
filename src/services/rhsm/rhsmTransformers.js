@@ -26,16 +26,18 @@ import { dateHelpers, helpers } from '../../common';
  * @returns {object}
  */
 const rhsmBillingAccounts = (response = []) => {
+  console.log('>>>> TRANSFORM', response);
+
   const successResponse = response
-    .filter(({ status }) => status === 'fulfilled')
-    .map(({ value = {} }) =>
-      value.data?.[rhsmConstants.RHSM_API_RESPONSE_ID]?.map(
+    .filter(({ status }) => status === 200)
+    .map(({ data = {}, config }) =>
+      data?.[rhsmConstants.RHSM_API_RESPONSE_ID]?.map(
         ({
           [BILLING_ACCOUNT_ID_TYPES.BILLING_ACCOUNT_ID]: id,
           [BILLING_ACCOUNT_ID_TYPES.BILLING_PROVIDER]: provider
         }) => ({
           id,
-          type: value?.config?._accountType || 'unknown',
+          type: config?._accountType || 'unknown',
           provider
         })
       )
@@ -55,24 +57,28 @@ const rhsmBillingAccounts = (response = []) => {
 
   const billingProviders = [...new Set(accounts.map(({ provider }) => provider))].sort();
 
-  const accountIdsByProvider = {};
+  const accountsByProvider = {};
+  const defaultAccountByProvider = {};
+
   accounts.forEach(({ id, provider }) => {
-    accountIdsByProvider[provider] ??= [];
-    accountIdsByProvider[provider].push(id);
+    accountsByProvider[provider] ??= [];
+    accountsByProvider[provider].push(id);
   });
 
-  Object.keys(accountIdsByProvider).forEach(key => {
-    accountIdsByProvider[key].sort();
+  Object.keys(accountsByProvider).forEach(key => {
+    accountsByProvider[key].sort();
+    defaultAccountByProvider[key] = accountsByProvider[key]?.[0];
   });
 
   const defaultProvider = billingProviders?.[0];
-  const defaultAccount = accountIdsByProvider?.[defaultProvider]?.[0];
+  const defaultAccount = defaultAccountByProvider[defaultProvider];
 
   return {
     defaultProvider,
     defaultAccount,
+    defaultAccountByProvider,
     billingProviders,
-    accountIdsByProvider
+    accountsByProvider
   };
 };
 
