@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Button } from '@patternfly/react-core';
 import { routerContext } from '../router';
 import { ProductViewContext } from './productViewContext';
@@ -11,6 +11,7 @@ import InventoryTabs, { InventoryTab } from '../inventoryTabs/inventoryTabs';
 import { InventoryCardInstances } from '../inventoryCardInstances/inventoryCardInstances';
 import { InventoryCardSubscriptions } from '../inventoryCardSubscriptions/inventoryCardSubscriptions';
 import { translate } from '../i18n/i18n';
+import { ProductViewOnload } from './productViewOnload';
 import { ProductViewMissing } from './productViewMissing';
 
 /**
@@ -19,6 +20,7 @@ import { ProductViewMissing } from './productViewMissing';
  * @memberof Components
  * @module ProductView
  * @property {module} ProductViewContext
+ * @property {module} ProductViewConfigLoad
  * @property {module} ProductViewMissing
  */
 
@@ -34,18 +36,28 @@ import { ProductViewMissing } from './productViewMissing';
  * @returns {JSX.Element}
  */
 const ProductView = ({ t = translate, useRouteDetail: useAliasRouteDetail = routerContext.useRouteDetail }) => {
-  const { disableIsClosestMatch, firstMatch, productGroup } = useAliasRouteDetail();
+  const { availableVariants, disableIsClosestMatch, firstMatch, productGroup } = useAliasRouteDetail();
+  console.log('>>> GET CONTEXT PRODUCT', firstMatch?.productId);
+  const productConfiguration = useMemo(() => {
+    console.log('>>>> SET CONTEXT PRODUCT');
+    return { ...firstMatch, availableVariants };
+  }, [firstMatch, availableVariants]);
 
-  const renderProduct = useCallback(() => {
-    const updated = config => {
-      const { initialInventoryFilters, initialSubscriptionsInventoryFilters, productId, viewId } = config;
+  /**
+   * Render a product off configuration.
+   *
+   * @returns {JSX.Element|null}
+   */
+  const renderProduct = () => {
+    const { initialInventoryFilters, initialSubscriptionsInventoryFilters, productId, viewId } = productConfiguration;
 
-      if (!productId || !viewId) {
-        return null;
-      }
+    if (!productId || !viewId) {
+      return null;
+    }
 
-      return (
-        <ProductViewContext.Provider value={config}>
+    return (
+      <ProductViewContext.Provider value={productConfiguration}>
+        <ProductViewOnload>
           <PageMessages>
             <BannerMessages />
           </PageMessages>
@@ -79,12 +91,10 @@ const ProductView = ({ t = translate, useRouteDetail: useAliasRouteDetail = rout
               )}
             </InventoryTabs>
           </PageSection>
-        </ProductViewContext.Provider>
-      );
-    };
-
-    return updated(firstMatch);
-  }, [firstMatch, t]);
+        </ProductViewOnload>
+      </ProductViewContext.Provider>
+    );
+  };
 
   if (disableIsClosestMatch) {
     return <ProductViewMissing />;

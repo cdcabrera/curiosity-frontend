@@ -47,6 +47,40 @@ const useNavigate = ({
   );
 };
 
+const updateProductRoute = ({ productPath, disableIsClosestMatch, productVariant } = {}) => {
+  let routeConfig = routerHelpers.getRouteConfigByPath({
+    pathName: productPath,
+    isIgnoreClosest: disableIsClosestMatch
+  });
+
+  if (productVariant) {
+    const selectedVariant = productVariant?.[routeConfig?.firstMatch?.productGroup];
+    if (selectedVariant) {
+      routeConfig = routerHelpers.getRouteConfigByPath({
+        pathName: selectedVariant,
+        isIgnoreClosest: disableIsClosestMatch
+      });
+    }
+  }
+
+  console.log('>>>>> SET ROUTE PRODUCT HOOK', routeConfig?.firstMatch?.productId);
+  const { configs, firstMatch, isClosest, ...config } = routeConfig;
+
+  return {
+    ...config,
+    firstMatch,
+    isClosest,
+    productGroup: firstMatch?.productGroup,
+    productConfig: (configs?.length && configs) || [],
+    productPath,
+    productVariant,
+    disableIsClosestMatch:
+      (disableIsClosestMatch && isClosest) || (disableIsClosestMatch && routerHelpers.dynamicPath() === '/')
+  };
+};
+
+updateProductRoute.memo = helpers.memo(updateProductRoute, { cacheLimit: 10 });
+
 /**
  * Initialize and store a product path, parameter, in a "state" update parallel to variant detail.
  * We're opting to use "window.location.pathname" directly because its faster.
@@ -62,44 +96,15 @@ const useNavigate = ({
 const useSetRouteProduct = ({
   disableIsClosestMatch = helpers.DEV_MODE === true,
   useLocation: useAliasLocation = useLocation,
-  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector
+  useSelector: useAliasSelectors = storeHooks.reactRedux.useSelectors
 } = {}) => {
-  const [product, setProduct] = useState({});
   const { pathname: productPath } = useAliasLocation();
-  const productVariant = useAliasSelector(({ view }) => view?.product?.variant, {});
+  // const productVariant = useAliasSelector(({ view }) => view?.product?.variant, {});
+  const [productVariant = {}] = useAliasSelectors(({ view }) => view?.product?.variant);
 
-  useShallowCompareEffect(() => {
-    let routeConfig = routerHelpers.getRouteConfigByPath({
-      pathName: productPath,
-      isIgnoreClosest: disableIsClosestMatch
-    });
+  console.log('>>>>> GET ROUTE PRODUCT HOOK', productPath, productVariant);
 
-    if (productVariant) {
-      const selectedVariant = productVariant?.[routeConfig?.firstMatch?.productGroup];
-      if (selectedVariant) {
-        routeConfig = routerHelpers.getRouteConfigByPath({
-          pathName: selectedVariant,
-          isIgnoreClosest: disableIsClosestMatch
-        });
-      }
-    }
-
-    const { configs, firstMatch, isClosest, ...config } = routeConfig;
-
-    setProduct(() => ({
-      ...config,
-      firstMatch,
-      isClosest,
-      productGroup: firstMatch?.productGroup,
-      productConfig: (configs?.length && configs) || [],
-      productPath,
-      productVariant,
-      disableIsClosestMatch:
-        (disableIsClosestMatch && isClosest) || (disableIsClosestMatch && routerHelpers.dynamicPath() === '/')
-    }));
-  }, [disableIsClosestMatch, productPath, productVariant]);
-
-  return product;
+  return updateProductRoute.memo({ disableIsClosestMatch, productPath, productVariant });
 };
 
 /**
@@ -119,10 +124,12 @@ const useRouteDetail = ({
   useSetRouteProduct: useAliasSetRouteProduct = useSetRouteProduct
 } = {}) => {
   const product = useAliasSetRouteProduct();
-  const { getBundleData = helpers.noop, updateDocumentTitle = helpers.noop } = useAliasChrome();
+  const { getBundleData = helpers.noop, updateDocumentTitle = helpers.noop } = {};// useAliasChrome();
   const bundleData = getBundleData();
   const productGroup = product?.productGroup;
 
+  console.log('>>>>> ROUTE DETAIL HOOK', product?.firstMatch?.productId);
+  /*
   useEffect(() => {
     // Set platform document title, remove pre-baked suffix
     updateDocumentTitle(
@@ -133,6 +140,7 @@ const useRouteDetail = ({
       true
     );
   }, [bundleData?.bundleTitle, productGroup, t, updateDocumentTitle]);
+  */
 
   return product;
 };
