@@ -4,6 +4,7 @@ import { reduxTypes, storeHooks } from '../../redux';
 import { useProduct } from '../productView/productViewContext';
 import { Select, SelectPosition } from '../form/select';
 import { translate } from '../i18n/i18n';
+import { routerContext } from '../router';
 
 /**
  * A toolbar product configuration select filter requiring a toolbar component parent.
@@ -20,8 +21,10 @@ import { translate } from '../i18n/i18n';
  * @param {useProduct} [options.useProduct=useProduct]
  * @returns {Function}
  */
-const useToolbarFieldOptions = ({ t = translate, useProduct: useAliasProduct = useProduct } = {}) => {
-  const { availableVariants, productId } = useAliasProduct();
+const useToolbarFieldOptions = ({ t = translate, useProduct: useAliasProduct = useProduct, useRouteDetail: useAliasRouteDetail = routerContext.useRouteDetail } = {}) => {
+  const { availableVariants, firstMatch } = useAliasRouteDetail();
+  const productId = firstMatch?.productId;
+  // const { availableVariants, productId } = useAliasProduct();
 
   console.log('>>>>>>> GET TOOLBAR OPTS', productId);
 
