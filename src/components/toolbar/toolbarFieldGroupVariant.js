@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Toolbar as PfToolbar, ToolbarContent, ToolbarItem, ToolbarItemVariant } from '@patternfly/react-core';
 import { reduxTypes, storeHooks } from '../../redux';
 import { useProduct } from '../productView/productViewContext';
 import { Select, SelectPosition } from '../form/select';
 import { translate } from '../i18n/i18n';
-import { routerContext } from '../router';
 
 /**
  * A toolbar product configuration select filter requiring a toolbar component parent.
@@ -18,25 +17,28 @@ import { routerContext } from '../router';
  *
  * @param {object} options
  * @param {translate} [options.t=translate]
- * @param {routerContext.useRouteDetail} [options.useRouteDetail=routerContext.useRouteDetail]
+ * @param {useProduct} [options.useProduct=useProduct]
  * @returns {Function}
  */
-const useToolbarFieldOptions = ({
-  t = translate,
-  useRouteDetail: useAliasRouteDetail = routerContext.useRouteDetail
-} = {}) => {
-  const { availableVariants, firstMatch } = useAliasRouteDetail();
-  const options = [];
+const useToolbarFieldOptions = ({ t = translate, useProduct: useAliasProduct = useProduct } = {}) => {
+  const { availableVariants, productId } = useAliasProduct();
 
-  availableVariants?.forEach(variant => {
-    options.push({
-      title: t('curiosity-toolbar.label', { context: ['groupVariant', variant] }),
-      value: variant,
-      isSelected: variant === firstMatch?.productId
+  console.log('>>>>>>> GET TOOLBAR OPTS', productId);
+
+  return useMemo(() => {
+    const options = [];
+
+    availableVariants?.forEach(variant => {
+      options.push({
+        title: t('curiosity-toolbar.label', { context: ['groupVariant', variant] }),
+        value: variant,
+        isSelected: variant === productId
+      });
     });
-  });
 
-  return options.sort(({ title: titleA }, { title: titleB }) => titleA.localeCompare(titleB));
+    console.log('>>>>>>> SET TOOLBAR OPTS');
+    return options.sort(({ title: titleA }, { title: titleB }) => titleA.localeCompare(titleB));
+  }, [availableVariants, productId, t]);
 };
 
 /**
