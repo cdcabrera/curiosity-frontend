@@ -18,15 +18,15 @@ import { routerContext } from '../router';
  *
  * @param {object} options
  * @param {translate} [options.t=translate]
- * @param {useProduct} [options.useProduct=useProduct]
+ * @param {routerContext.useRouteDetail} [options.useRouteDetail=routerContext.useRouteDetail]
  * @returns {Function}
  */
-const useToolbarFieldOptions = ({ t = translate, useProduct: useAliasProduct = useProduct, useRouteDetail: useAliasRouteDetail = routerContext.useRouteDetail } = {}) => {
+const useToolbarFieldOptions = ({
+  t = translate,
+  useRouteDetail: useAliasRouteDetail = routerContext.useRouteDetail
+} = {}) => {
   const { availableVariants, firstMatch } = useAliasRouteDetail();
   const productId = firstMatch?.productId;
-  // const { availableVariants, productId } = useAliasProduct();
-
-  console.log('>>>>>>> GET TOOLBAR OPTS', productId);
 
   return useMemo(() => {
     const options = [];
@@ -39,7 +39,6 @@ const useToolbarFieldOptions = ({ t = translate, useProduct: useAliasProduct = u
       });
     });
 
-    console.log('>>>>>>> SET TOOLBAR OPTS');
     return options.sort(({ title: titleA }, { title: titleB }) => titleA.localeCompare(titleB));
   }, [availableVariants, productId, t]);
 };

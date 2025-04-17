@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
-import { useShallowCompareEffect, useLocation } from 'react-use';
+import { useLocation } from 'react-use';
 import { routerHelpers } from './routerHelpers';
 import { helpers } from '../../common/helpers';
 import { storeHooks } from '../../redux';
@@ -16,8 +16,8 @@ import { translate } from '../i18n/i18n';
  * update. Dispatches the same type leveraged by the initialize hook, useSetRouteDetail.
  *
  * @param {object} options
- * @param {Function} options.useLocation
- * @param {*} options.windowHistory
+ * @param {useLocation} [options.useLocation=useLocation]
+ * @param {*} [options.windowHistory]
  * @returns {Function}
  */
 const useNavigate = ({
@@ -47,7 +47,23 @@ const useNavigate = ({
   );
 };
 
-const updateProductRoute = ({ productPath, disableIsClosestMatch, productVariant } = {}) => {
+/**
+ * Set a product config based on routing
+ *
+ * @param {object} params
+ * @param {string} params.productPath
+ * @param {boolean} params.disableIsClosestMatch
+ * @param {object} params.productVariant
+ * @returns {{
+ *   firstMatch: object,
+ *   productPath: string,
+ *   disableIsClosestMatch: boolean,
+ *   productGroup: string,
+ *   productVariant: string,
+ *   isClosest: boolean,
+ *   productConfig: Array}}
+ */
+const setRouteProduct = ({ productPath, disableIsClosestMatch, productVariant } = {}) => {
   let routeConfig = routerHelpers.getRouteConfigByPath({
     pathName: productPath,
     isIgnoreClosest: disableIsClosestMatch
@@ -63,7 +79,6 @@ const updateProductRoute = ({ productPath, disableIsClosestMatch, productVariant
     }
   }
 
-  console.log('>>>>> SET ROUTE PRODUCT HOOK', routeConfig?.firstMatch?.productId);
   const { configs, firstMatch, isClosest, ...config } = routeConfig;
 
   return {
@@ -79,7 +94,12 @@ const updateProductRoute = ({ productPath, disableIsClosestMatch, productVariant
   };
 };
 
-updateProductRoute.memo = helpers.memo(updateProductRoute, { cacheLimit: 10 });
+/**
+ * A memoized response for the setProductRoute function. Assigned to a property for testing function.
+ *
+ * @type {Function}
+ */
+setRouteProduct.memo = helpers.memo(setRouteProduct, { cacheLimit: 10 });
 
 /**
  * Initialize and store a product path, parameter, in a "state" update parallel to variant detail.
@@ -87,24 +107,23 @@ updateProductRoute.memo = helpers.memo(updateProductRoute, { cacheLimit: 10 });
  * and returns a similar structured value as useParam.
  *
  * @param {object} options
- * @param {boolean} options.disableIsClosestMatch
- * @param {Function} options.useLocation
- * @param {Function} options.useSelector
+ * @param {boolean} [options.disableIsClosestMatch]
+ * @param {setRouteProduct} [options.setProduct=setRouteProduct]
+ * @param {useLocation} [options.useLocation=useLocation]
+ * @param {storeHooks.reactRedux.useSelector} [options.useSelector=storeHooks.reactRedux.useSelector]
  * @returns {{ firstMatch: unknown, isClosest: boolean, productGroup: string, productConfig: Array,
  *     productPath: string, productVariant: string, disableIsClosestMatch:boolean }}
  */
 const useSetRouteProduct = ({
   disableIsClosestMatch = helpers.DEV_MODE === true,
+  setProduct = setRouteProduct,
   useLocation: useAliasLocation = useLocation,
-  useSelector: useAliasSelectors = storeHooks.reactRedux.useSelectors
+  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector
 } = {}) => {
   const { pathname: productPath } = useAliasLocation();
-  // const productVariant = useAliasSelector(({ view }) => view?.product?.variant, {});
-  const [productVariant = {}] = useAliasSelectors(({ view }) => view?.product?.variant);
+  const productVariant = useAliasSelector(({ view }) => view?.product?.variant, {});
 
-  console.log('>>>>> GET ROUTE PRODUCT HOOK', productPath, productVariant);
-
-  return updateProductRoute.memo({ disableIsClosestMatch, productPath, productVariant });
+  return setProduct.memo({ disableIsClosestMatch, productPath, productVariant });
 };
 
 /**
@@ -112,9 +131,9 @@ const useSetRouteProduct = ({
  * Consumes useSetRouteProduct to return a display configuration for use in productView context.
  *
  * @param {object} options
- * @param {Function} options.t
- * @param {Function} options.useChrome
- * @param {useSetRouteProduct} options.useSetRouteProduct
+ * @param {translate} [options.t=translate]
+ * @param {useChrome} [options.useChrome=useChrome]
+ * @param {useSetRouteProduct} [options.useSetRouteProduct=useSetRouteProduct]
  * @returns {{firstMatch: *, isClosest: boolean, productGroup: string, productConfig: Array, productPath: string,
  *     productVariant: string, disableIsClosestMatch: boolean}}}
  */
@@ -124,31 +143,28 @@ const useRouteDetail = ({
   useSetRouteProduct: useAliasSetRouteProduct = useSetRouteProduct
 } = {}) => {
   const product = useAliasSetRouteProduct();
-  const { getBundleData = helpers.noop, updateDocumentTitle = helpers.noop } = {};// useAliasChrome();
+  const { getBundleData = helpers.noop, updateDocumentTitle = helpers.noop } = useAliasChrome();
   const bundleData = getBundleData();
-  const productGroup = product?.productGroup;
 
-  console.log('>>>>> ROUTE DETAIL HOOK', product?.firstMatch?.productId);
-  /*
   useEffect(() => {
     // Set platform document title, remove pre-baked suffix
     updateDocumentTitle(
       `${t(`curiosity-view.title`, {
         appName: helpers.UI_DISPLAY_NAME,
-        context: productGroup
+        context: product?.productGroup
       })} - ${helpers.UI_DISPLAY_NAME}${(bundleData?.bundleTitle && ` | ${bundleData?.bundleTitle}`) || ''}`,
       true
     );
-  }, [bundleData?.bundleTitle, productGroup, t, updateDocumentTitle]);
-  */
+  }, [bundleData?.bundleTitle, product?.productGroup, t, updateDocumentTitle]);
 
   return product;
 };
 
 const context = {
+  setRouteProduct,
   useNavigate,
   useRouteDetail,
   useSetRouteProduct
 };
 
-export { context as default, context, useNavigate, useRouteDetail, useSetRouteProduct };
+export { context as default, context, setRouteProduct, useNavigate, useRouteDetail, useSetRouteProduct };

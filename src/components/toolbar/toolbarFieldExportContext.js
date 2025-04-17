@@ -37,10 +37,6 @@ const useExportConfirmation = ({
   const confirmAppLoaded = useAliasAppLoad();
 
   useUnmount(() => {
-    /*
-     * Note: this dispatch updates state, which in turn causes the first selector hook used in the routing hook to
-     * re-fire on variant change
-     */
     dispatch(removeAliasNotification('swatch-exports-individual-status'));
   });
 
