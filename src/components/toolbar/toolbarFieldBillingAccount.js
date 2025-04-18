@@ -30,7 +30,9 @@ const useToolbarFieldOptions = ({
   const { [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: billingProvider } = useAliasProductQuery();
   const { productId } = useAliasProduct();
   const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
-  const billingAccounts = data?.accountsByProvider?.[billingProvider];
+  // const defaultAccount = data?.defaultAccount;
+  const defaultProvider = data?.defaultProvider;
+  const billingAccounts = data?.accountsByProvider?.[billingProvider || defaultProvider];
 
   console.log('>>> billing account options', billingAccounts);
 
@@ -100,17 +102,19 @@ const ToolbarFieldBillingAccount = ({
   const { [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID]: updatedValue } = useAliasProductQuery();
   const onSelect = useAliasOnSelect();
   const options = useAliasToolbarFieldOptions();
+  /*
   const updatedOptions = options.map(option => ({
     ...option,
     isSelected: (updatedValue && option.value === updatedValue) || option?.isSelected
   }));
+  */
 
   return (
     <Select
       aria-label={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'billing_account' })}
       onSelect={onSelect}
-      options={updatedOptions}
-      selectedOptions={updatedValue}
+      options={options}
+      selectedOptions={[updatedValue]}
       placeholder={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'billing_account' })}
       alignment={{ position }}
       data-test="toolbarFieldBillingAccount"

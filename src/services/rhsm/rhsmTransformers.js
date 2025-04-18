@@ -68,9 +68,11 @@ const rhsmBillingAccounts = (response = []) => {
   });
 
   const defaultProvider = billingProviders?.[0];
+  const defaultAccount = accountsByProvider?.[defaultProvider]?.[0];
 
   return {
     defaultProvider,
+    defaultAccount,
     billingProviders,
     accountsByProvider
   };
