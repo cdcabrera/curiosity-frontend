@@ -58,6 +58,8 @@ const rhsmBillingAccounts = (response = []) => {
   const billingProviders = [...new Set(accounts.map(({ provider }) => provider))].sort();
 
   const accountsByProvider = {};
+  const defaultAccountByProvider = {};
+
   accounts.forEach(({ id, provider }) => {
     accountsByProvider[provider] ??= [];
     accountsByProvider[provider].push(id);
@@ -65,14 +67,16 @@ const rhsmBillingAccounts = (response = []) => {
 
   Object.keys(accountsByProvider).forEach(key => {
     accountsByProvider[key].sort();
+    defaultAccountByProvider[key] = accountsByProvider[key]?.[0];
   });
 
   const defaultProvider = billingProviders?.[0];
-  const defaultAccount = accountsByProvider?.[defaultProvider]?.[0];
+  const defaultAccount = defaultAccountByProvider[defaultProvider];
 
   return {
     defaultProvider,
     defaultAccount,
+    defaultAccountByProvider,
     billingProviders,
     accountsByProvider
   };
