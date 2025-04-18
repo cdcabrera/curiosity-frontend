@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { useMount } from 'react-use';
 import { reduxTypes, storeHooks } from '../../redux';
 import { useProduct, useProductQuery } from '../productView/productViewContext';
 import { Select, SelectPosition } from '../form/select';
@@ -30,7 +31,9 @@ const useToolbarFieldOptions = ({
   const { [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: billingProvider } = useAliasProductQuery();
   const { productId } = useAliasProduct();
   const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
-  const billingAccounts = data?.accountsByProvider?.[billingProvider];
+  // const defaultAccount = data?.defaultAccount;
+  const defaultProvider = data?.defaultProvider;
+  const billingAccounts = data?.accountsByProvider?.[billingProvider || defaultProvider];
 
   console.log('>>> billing account options', billingAccounts);
 
@@ -97,16 +100,45 @@ const ToolbarFieldBillingAccount = ({
   useProductQuery: useAliasProductQuery = useProductQuery,
   useToolbarFieldOptions: useAliasToolbarFieldOptions = useToolbarFieldOptions
 }) => {
-  const { [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID]: updatedValue } = useAliasProductQuery();
+  const {
+    [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID]: updatedValue,
+    [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: provider
+  } = useAliasProductQuery();
   const onSelect = useAliasOnSelect();
   const options = useAliasToolbarFieldOptions();
+  /*
+   *const updatedOptions = options.map(option => ({
+   *  ...option,
+   *  // isSelected: (updatedValue && option.value === updatedValue) || option.isSelected
+   *  // isSelected: updatedValue && option.value === updatedValue
+   *  isSelected: option.value === updatedValue
+   *}));
+   */
+
   const updatedOptions = options.map(option => ({
     ...option,
-    isSelected: (updatedValue && option.value === updatedValue) || option?.isSelected
+    isSelected: option.value === updatedValue
+    // isSelected: (updatedValue && option.value === updatedValue) || (!updatedValue && option.isSelected) || false
+    /*
+     * isSelected: updatedValue && option.value === updatedValue
+     * isSelected: option.value === updatedValue
+     */
   }));
+
+  // console.log('>>>>> BILLING ACCOUNT', updatedValue, updatedOptions);
+
+  useEffect(() => {
+    console.log('>>>> BILLING PROVIDER', provider);
+    const defaultAccount = updatedOptions.find(({ isSelected }) => isSelected === true)?.value;
+
+    if (defaultAccount) {
+      onSelect({ value: defaultAccount });
+    }
+  }, [provider]);
 
   return (
     <Select
+      isDisabled={options.length === 1}
       aria-label={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'billing_account' })}
       onSelect={onSelect}
       options={updatedOptions}

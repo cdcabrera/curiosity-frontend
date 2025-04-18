@@ -55,9 +55,12 @@ const useToolbarFieldOptions = ({
  */
 const useOnSelect = ({
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
-  useProduct: useAliasProduct = useProduct
+  useProduct: useAliasProduct = useProduct,
+  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector
 } = {}) => {
   const { productId } = useAliasProduct();
+  const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
+  const accountsByProvider = data?.accountsByProvider;
   const dispatch = useAliasDispatch();
 
   return ({ value = null } = {}) => {
@@ -65,6 +68,12 @@ const useOnSelect = ({
       {
         type: reduxTypes.query.SET_QUERY_RESET_INVENTORY_LIST,
         viewId: productId
+      },
+      {
+        type: reduxTypes.query.SET_QUERY,
+        viewId: productId,
+        filter: RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID,
+        value: accountsByProvider[value][0]
       },
       {
         type: reduxTypes.query.SET_QUERY,
@@ -100,7 +109,10 @@ const ToolbarFieldBillingProvider = ({
   const { [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: updatedValue } = useAliasProductQuery();
   const onSelect = useAliasOnSelect();
   const options = useAliasToolbarFieldOptions();
-  const updatedOptions = options.map(option => ({ ...option, isSelected: option.value === updatedValue }));
+  const updatedOptions = options.map(option => ({
+    ...option,
+    isSelected: updatedValue && option.value === updatedValue
+  }));
 
   return (
     <React.Fragment>
@@ -109,7 +121,9 @@ const ToolbarFieldBillingProvider = ({
         onSelect={onSelect}
         options={updatedOptions}
         selectedOptions={updatedValue}
-        placeholder={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'billing_provider' })}
+        placeholder={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, {
+          context: 'billing_provider'
+        })}
         alignment={{ position }}
         data-test="toolbarFieldBillingProvider"
       />
