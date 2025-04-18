@@ -101,9 +101,10 @@ const useProductQueryConditional = ({
   return useMemo(
     () => ({
       [rhsmConstants.RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: billing?.data?.defaultProvider || undefined,
-      [rhsmConstants.RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID]: billing?.data?.defaultAccount || undefined
+      [rhsmConstants.RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID]:
+        billing?.data?.accountsByProvider?.[billing?.data?.defaultProvider]?.[0] || undefined
     }),
-    [billing?.data?.defaultAccount, billing?.data?.defaultProvider]
+    [billing?.data?.accountsByProvider, billing?.data?.defaultProvider]
   );
 };
 

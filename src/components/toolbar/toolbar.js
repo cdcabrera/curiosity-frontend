@@ -21,9 +21,11 @@ import { translate } from '../i18n/i18n';
  * @memberof Components
  * @module Toolbar
  * @property {module} ToolbarContext
+ * @property {module} ToolbarFieldBillingAccount
  * @property {module} ToolbarFieldBillingProvider
  * @property {module} ToolbarFieldCategory
  * @property {module} ToolbarFieldDisplayName
+ * @property {module} ToolbarFieldExport
  * @property {module} ToolbarFieldGranularity
  * @property {module} ToolbarFieldRangedMonthly
  * @property {module} ToolbarFieldSelectCategory
