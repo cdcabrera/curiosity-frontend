@@ -111,16 +111,21 @@ const useProductQueryConditional = ({
  * Return a base product query
  *
  * @param {object} options
- * @param {string} options.queryType
- * @param {Function} options.useProductQueryFactory
+ * @param {string} [options.queryType='query']
+ * @param {useProductQueryConditional} [options.useProductQueryConditional=useProductQueryConditional]
+ * @param {useProductQueryFactory} [options.useProductQueryFactory=useProductQueryFactory]
  * @param {object} options.options
  * @returns {object}
  */
 const useProductQuery = ({
   queryType = 'query',
+  useProductQueryConditional: useAliasProductQueryConditional = useProductQueryConditional,
   useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
   options
-} = {}) => useAliasProductQueryFactory(queryType, options);
+} = {}) => ({
+  ...useAliasProductQueryConditional(),
+  ...useAliasProductQueryFactory(queryType, options)
+});
 
 /**
  * Return the graph query based off of tally and capacity.
@@ -129,7 +134,6 @@ const useProductQuery = ({
  * @param {string} [options.queryType='graphTallyQuery']
  * @param {object} [options.schemaCheck=rhsmConstants.RHSM_API_QUERY_SET_TALLY_CAPACITY_TYPES]
  * @param {useProductQuery} [options.useProductQuery=useProductQuery]
- * @param {useProductQueryConditional} [options.useProductQueryConditional=useProductQueryConditional]
  * @param {useProductQueryFactory} [options.useProductQueryFactory=useProductQueryFactory]
  * @param {object} options.options
  * @returns {object}
@@ -138,13 +142,11 @@ const useProductGraphTallyQuery = ({
   queryType = 'graphTallyQuery',
   schemaCheck = rhsmConstants.RHSM_API_QUERY_SET_TALLY_CAPACITY_TYPES,
   useProductQuery: useAliasProductQuery = useProductQuery,
-  useProductQueryConditional: useAliasProductQueryConditional = useProductQueryConditional,
   useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
   options
 } = {}) =>
   reduxHelpers.setApiQuery(
     {
-      ...useAliasProductQueryConditional(),
       ...useAliasProductQuery(),
       ...useAliasProductQueryFactory(queryType, options)
     },
@@ -184,7 +186,6 @@ const useProductInventoryGuestsQuery = ({
  * @param {string} [options.queryType='inventoryHostsQuery']
  * @param {object} [options.schemaCheck=rhsmConstants.RHSM_API_QUERY_SET_INVENTORY_TYPES]
  * @param {useProductQuery} [options.useProductQuery=useProductQuery]
- * @param {useProductQueryConditional} [options.useProductQueryConditional=useProductQueryConditional]
  * @param {useProductQueryFactory} [options.useProductQueryFactory=useProductQueryFactory]
  * @param {object} options.options
  * @returns {object}
@@ -193,13 +194,11 @@ const useProductInventoryHostsQuery = ({
   queryType = 'inventoryHostsQuery',
   schemaCheck = rhsmConstants.RHSM_API_QUERY_SET_INVENTORY_TYPES,
   useProductQuery: useAliasProductQuery = useProductQuery,
-  useProductQueryConditional: useAliasProductQueryConditional = useProductQueryConditional,
   useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
   options
 } = {}) =>
   reduxHelpers.setApiQuery(
     {
-      ...useAliasProductQueryConditional(),
       ...useAliasProductQuery(),
       ...useAliasProductQueryFactory(queryType, options)
     },
@@ -213,7 +212,6 @@ const useProductInventoryHostsQuery = ({
  * @param {string} [options.queryType='inventorySubscriptionsQuery']
  * @param {object} [options.schemaCheck=rhsmConstants.RHSM_API_QUERY_SET_INVENTORY_TYPES]
  * @param {useProductQuery} [options.useProductQuery=useProductQuery]
- * @param {useProductQueryConditional} [options.useProductQueryConditional=useProductQueryConditional]
  * @param {useProductQueryFactory} [options.useProductQueryFactory=useProductQueryFactory]
  * @param {object} options.options
  * @returns {object}
@@ -222,13 +220,11 @@ const useProductInventorySubscriptionsQuery = ({
   queryType = 'inventorySubscriptionsQuery',
   schemaCheck = rhsmConstants.RHSM_API_QUERY_SET_INVENTORY_TYPES,
   useProductQuery: useAliasProductQuery = useProductQuery,
-  useProductQueryConditional: useAliasProductQueryConditional = useProductQueryConditional,
   useProductQueryFactory: useAliasProductQueryFactory = useProductQueryFactory,
   options
 } = {}) =>
   reduxHelpers.setApiQuery(
     {
-      ...useAliasProductQueryConditional(),
       ...useAliasProductQuery(),
       ...useAliasProductQueryFactory(queryType, options)
     },

@@ -54,7 +54,7 @@ const toolbarFieldOptions = [
     component: function BillingProvider(props) {
       return <ToolbarFieldBillingProvider key="selectCategory_billingProvider" {...props} />;
     },
-    options: billingProviderOptions,
+    options: [],
     isClearable: true
   },
   {

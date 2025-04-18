@@ -1,30 +1,48 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { reduxTypes, storeHooks } from '../../redux';
 import { useProduct, useProductQuery } from '../productView/productViewContext';
 import { Select, SelectPosition } from '../form/select';
-import {
-  RHSM_API_QUERY_BILLING_PROVIDER_TYPES as FIELD_TYPES,
-  RHSM_API_QUERY_SET_TYPES
-} from '../../services/rhsm/rhsmConstants';
+import { RHSM_API_QUERY_SET_TYPES } from '../../services/rhsm/rhsmConstants';
 import { translate } from '../i18n/i18n';
 
 /**
- * A standalone Billing Provider select filter.
+ * A dynamic Billing Provider select filter.
  *
  * @memberof Toolbar
  * @module ToolbarFieldBillingProvider
  */
 
 /**
- * Select field options.
+ * Generate select field options from config.
  *
- * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
+ * @param {object} options
+ * @param {translate} [options.t=translate]
+ * @param {useProduct} [options.useProduct=useProduct]
+ * @param {storeHooks.reactRedux.useSelector} [options.useSelector=storeHooks.reactRedux.useSelector]
+ * @returns {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
  */
-const toolbarFieldOptions = Object.values(FIELD_TYPES).map(type => ({
-  title: translate('curiosity-toolbar.label', { context: ['billing_provider', (type === '' && 'none') || type] }),
-  value: type,
-  isSelected: false
-}));
+const useToolbarFieldOptions = ({
+  t = translate,
+  useProduct: useAliasProduct = useProduct,
+  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector
+} = {}) => {
+  const { productId } = useAliasProduct();
+  const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
+  const defaultProvider = data?.defaultProvider;
+  const billingProviders = data?.billingProviders;
+
+  console.log('>>> billing provider options', defaultProvider, billingProviders);
+
+  return useMemo(
+    () =>
+      billingProviders.map(provider => ({
+        title: t('curiosity-toolbar.label', { context: ['billing_provider', (provider === '' && 'none') || provider] }),
+        value: provider,
+        isSelected: provider === defaultProvider
+      })),
+    [billingProviders, defaultProvider, t]
+  );
+};
 
 /**
  * On select update billing provider.
@@ -62,25 +80,25 @@ const useOnSelect = ({
  *
  * @param {object} props
  * @param {boolean} [props.isFilter=false]
- * @param {toolbarFieldOptions} [props.options=toolbarFieldOptions]
  * @param {SelectPosition} [props.position=SelectPosition.left]
  * @param {translate} [props.t=translate]
  * @param {useOnSelect} [props.useOnSelect=useOnSelect]
  * @param {useProductQuery} [props.useProductQuery=useProductQuery]
+ * @param {useToolbarFieldOptions} [props.useToolbarFieldOptions=useToolbarFieldOptions]
  * @fires onSelect
  * @returns {JSX.Element}
  */
 const ToolbarFieldBillingProvider = ({
   isFilter = false,
-  options = toolbarFieldOptions,
   position = SelectPosition.left,
   t = translate,
   useOnSelect: useAliasOnSelect = useOnSelect,
-  useProductQuery: useAliasProductQuery = useProductQuery
+  useProductQuery: useAliasProductQuery = useProductQuery,
+  useToolbarFieldOptions: useAliasToolbarFieldOptions = useToolbarFieldOptions
 }) => {
   const { [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: updatedValue } = useAliasProductQuery();
   const onSelect = useAliasOnSelect();
-
+  const options = useAliasToolbarFieldOptions();
   const updatedOptions = options.map(option => ({ ...option, isSelected: option.value === updatedValue }));
 
   return (
@@ -96,4 +114,4 @@ const ToolbarFieldBillingProvider = ({
   );
 };
 
-export { ToolbarFieldBillingProvider as default, ToolbarFieldBillingProvider, toolbarFieldOptions, useOnSelect };
+export { ToolbarFieldBillingProvider as default, ToolbarFieldBillingProvider, useOnSelect, useToolbarFieldOptions };
