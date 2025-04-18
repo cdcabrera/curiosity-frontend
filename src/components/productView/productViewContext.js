@@ -144,9 +144,9 @@ const useProductGraphTallyQuery = ({
 } = {}) =>
   reduxHelpers.setApiQuery(
     {
+      ...useAliasProductQueryConditional(),
       ...useAliasProductQuery(),
-      ...useAliasProductQueryFactory(queryType, options),
-      ...useAliasProductQueryConditional()
+      ...useAliasProductQueryFactory(queryType, options)
     },
     schemaCheck
   );
@@ -199,9 +199,9 @@ const useProductInventoryHostsQuery = ({
 } = {}) =>
   reduxHelpers.setApiQuery(
     {
+      ...useAliasProductQueryConditional(),
       ...useAliasProductQuery(),
-      ...useAliasProductQueryFactory(queryType, options),
-      ...useAliasProductQueryConditional()
+      ...useAliasProductQueryFactory(queryType, options)
     },
     schemaCheck
   );
@@ -228,9 +228,9 @@ const useProductInventorySubscriptionsQuery = ({
 } = {}) =>
   reduxHelpers.setApiQuery(
     {
+      ...useAliasProductQueryConditional(),
       ...useAliasProductQuery(),
-      ...useAliasProductQueryFactory(queryType, options),
-      ...useAliasProductQueryConditional()
+      ...useAliasProductQueryFactory(queryType, options)
     },
     schemaCheck
   );
