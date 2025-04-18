@@ -171,7 +171,9 @@ const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVar
       const { isSelected, title, value } = option;
       let updateIsSelected = isSelected;
 
-      if (updateIsSelected === true) {
+      console.log('>>>> SELECTED SET', selectedOptions, options);
+
+      if (updateIsSelected === true && !selectedOptions.length) {
         return option;
       }
 
@@ -273,7 +275,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
       selectedOptions: updateSelectedOptions.memo(selectedOptions),
       variant
     });
-
+    console.log('>>>>> ON SELECT', updatedOptions, updatedSelected, selectedOptions);
     setOptions(updatedOptions);
     setSelectedOption(updatedSelected);
   }, [baseOptions, selectedOptions]);

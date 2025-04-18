@@ -105,13 +105,16 @@ const ToolbarFieldGroupVariant = ({
   useToolbarFieldOptions: useAliasToolbarFieldOptions = useToolbarFieldOptions
 }) => {
   const { productGroup } = useAliasProduct();
-  const updatedValue = useAliasSelector(({ view }) => view?.product?.variant?.[productGroup], null);
+  const updatedValue = useAliasSelector(({ view }) => view?.product?.variant?.[productGroup]);
   const onSelect = useAliasOnSelect();
   const options = useAliasToolbarFieldOptions();
+  /*
   const updatedOptions = options.map(option => ({
     ...option,
     isSelected: (updatedValue && option.value === updatedValue) || option?.isSelected
   }));
+  */
+  console.log('>>>> UPDATED GROUP VARIANT', updatedValue);
 
   if (options?.length <= 1) {
     return null;
@@ -125,8 +128,8 @@ const ToolbarFieldGroupVariant = ({
       <Select
         aria-label={t('curiosity-toolbar.placeholder', { context: [isFilter && 'filter', 'groupVariant'] })}
         onSelect={onSelect}
-        options={updatedOptions}
-        selectedOptions={updatedValue}
+        options={options}
+        selectedOptions={updatedValue ?? undefined}
         placeholder={t('curiosity-toolbar.placeholder', { context: [isFilter && 'filter', 'groupVariant'] })}
         alignment={{ position }}
         maxHeight={310}
