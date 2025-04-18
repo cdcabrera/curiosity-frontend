@@ -40,7 +40,7 @@ const useToolbarFieldOptions = ({
   return useMemo(
     () =>
       billingAccounts?.map((account, index) => ({
-        title: t('curiosity-toolbar.label', { context: ['billing_account', account] }),
+        title: t('curiosity-toolbar.label', { context: ['billing_account_id', account] }),
         value: account,
         isSelected: index === 0
       })) || [],
@@ -138,7 +138,7 @@ const ToolbarFieldBillingAccount = ({
 
   return (
     <Select
-      isDisabled={options.length === 1}
+      isDisabled={options.length <= 1}
       aria-label={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'billing_account' })}
       onSelect={onSelect}
       options={updatedOptions}

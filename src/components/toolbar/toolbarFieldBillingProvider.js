@@ -60,7 +60,7 @@ const useOnSelect = ({
 } = {}) => {
   const { productId } = useAliasProduct();
   const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
-  const accountsByProvider = data?.accountsByProvider;
+  const defaultAccountByProvider = data?.defaultAccountByProvider;
   const dispatch = useAliasDispatch();
 
   return ({ value = null } = {}) => {
@@ -73,7 +73,7 @@ const useOnSelect = ({
         type: reduxTypes.query.SET_QUERY,
         viewId: productId,
         filter: RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID,
-        value: accountsByProvider[value][0]
+        value: defaultAccountByProvider[value]
       },
       {
         type: reduxTypes.query.SET_QUERY,
