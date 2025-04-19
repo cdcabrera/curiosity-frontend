@@ -171,7 +171,7 @@ const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVar
       const { isSelected, title, value } = option;
       let updateIsSelected = isSelected;
 
-      if (updateIsSelected === true) {
+      if (updateIsSelected === true && !selectedOptions.length) {
         return option;
       }
 
