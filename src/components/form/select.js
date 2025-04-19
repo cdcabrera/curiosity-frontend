@@ -168,7 +168,7 @@ updateSelectedOptions.memo = helpers.memo(updateSelectedOptions, { cacheLimit: 2
 const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVariant.single } = {}) =>
   options
     .map(option => {
-      const { isSelected, title, value } = option;
+      const { isSelected, title, value, ...meta } = option;
       let updateIsSelected = isSelected;
 
       if (updateIsSelected === true && !selectedOptions.length) {
@@ -186,16 +186,23 @@ const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVar
         updateIsSelected = selectedOptions.includes(value);
       }
 
+      if (!updateIsSelected && _isPlainObject(meta)) {
+        updateIsSelected =
+          selectedOptions.find(activeOption => Object.values(meta).includes(activeOption)) !== undefined;
+      }
+
       if (!updateIsSelected) {
         updateIsSelected = selectedOptions.includes(title);
       }
+
+      console.log('>>>>> SEL', selectedOptions, options, updateIsSelected);
 
       return {
         ...option,
         isSelected: updateIsSelected
       };
     })
-    [(variant === SelectVariant.single && 'find') || 'filter'](opt => opt.isSelected === true);
+    [(variant === SelectVariant.checkbox && 'filter') || 'find'](opt => opt.isSelected === true);
 
 /**
  * A memoized response for the updateSelectedProp function. Assigned to a property for testing function.
@@ -273,6 +280,8 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
       selectedOptions: updateSelectedOptions.memo(selectedOptions),
       variant
     });
+
+    console.log('>>>> SEL HOOK', updatedSelected, updatedOptions);
 
     setOptions(updatedOptions);
     setSelectedOption(updatedSelected);
