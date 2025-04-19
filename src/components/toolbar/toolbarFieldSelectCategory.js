@@ -10,7 +10,7 @@ import { ToolbarFieldBillingProvider } from './toolbarFieldBillingProvider';
 import { ToolbarFieldCategory } from './toolbarFieldCategory';
 import { ToolbarFieldDisplayName } from './toolbarFieldDisplayName';
 import { ToolbarFieldExport } from './toolbarFieldExport';
-import { ToolbarFieldGranularity, toolbarFieldOptions as granularityOptions } from './toolbarFieldGranularity';
+import { ToolbarFieldGranularity } from './toolbarFieldGranularity';
 import { ToolbarFieldRangedMonthly, toolbarFieldOptions as rangedMonthlyOptions } from './toolbarFieldRangedMonthly';
 import { ToolbarFieldSla, toolbarFieldOptions as slaOptions } from './toolbarFieldSla';
 import { ToolbarFieldUsage, toolbarFieldOptions as usageOptions } from './toolbarFieldUsage';
@@ -34,7 +34,7 @@ const toolbarFieldOptions = [
     component: function Granularity(props) {
       return <ToolbarFieldGranularity key="selectCategory_granularity" {...props} />;
     },
-    options: granularityOptions,
+    options: [],
     isClearable: false
   },
   {
