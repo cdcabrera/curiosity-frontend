@@ -119,8 +119,7 @@ const ToolbarFieldBillingAccount = ({
 
   return (
     <Select
-      isDisabled={options.length <= 1}
-      isReadOnly
+      isReadOnly={updatedOptions.length === 1}
       aria-label={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'billing_account' })}
       onSelect={onSelect}
       options={updatedOptions}
