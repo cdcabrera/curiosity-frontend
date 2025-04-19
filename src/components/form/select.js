@@ -281,9 +281,9 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
       variant
     });
 
-    console.log('>>>> SEL HOOK', updatedSelected, updatedOptions);
+    console.log('>>>> SEL HOOK 001', updatedSelected, updatedOptions);
 
-    setOptions(updatedOptions);
+    setOptions(() => updatedOptions);
     setSelectedOption(updatedSelected);
   }, [baseOptions, selectedOptions]);
 
@@ -325,6 +325,8 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
     },
     [onSelect, variant, options]
   );
+
+  console.log('>>>> SEL HOOK 002', selectedOption, options);
 
   return {
     selectedOption,
@@ -450,6 +452,8 @@ const Select = ({
     ),
     ...props
   };
+
+  console.log('>>>>>> SEL COMP', options);
 
   // Note: applying isExpanded to the options map helps remove animation flicker
   return (

@@ -1,29 +1,29 @@
 .curiosity-select {
-  position: relative;
+  //position: relative;
 
   &-pf__no-toggle-text {
     > button {
       div {
-        display: none;
+        //display: none;
       }
       span {
-        margin-left: 0.5em;
-        margin-right: 0.5em;
+        //margin-left: 0.5em;
+        //margin-right: 0.5em;
       }
     }
   }
 
   &-pf__position-right {
     > button + ul {
-      right: 0;
+      //right: 0;
     }
   }
 
   &__inline {
-    display: inline-block;
+    // display: inline-block;
   }
 
   &__not-inline {
-    width: 100%;
+    //width: 100%;
   }
 }
