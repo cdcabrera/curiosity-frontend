@@ -30,17 +30,18 @@ const useToolbarFieldOptions = ({
   const { [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: billingProvider } = useAliasProductQuery();
   const { productId } = useAliasProduct();
   const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
-  const defaultProvider = data?.defaultProvider;
-  const billingAccounts = data?.accountsByProvider?.[billingProvider || defaultProvider];
+  const updatedBillingProvider = billingProvider || data?.defaultProvider;
+  const defaultAccount = data?.defaultAccountByProvider?.[updatedBillingProvider];
+  const billingAccounts = data?.accountsByProvider?.[updatedBillingProvider];
 
   return useMemo(
     () =>
-      billingAccounts?.map((account, index) => ({
+      billingAccounts?.map(account => ({
         title: t('curiosity-toolbar.label', { context: ['billing_account_id', account] }),
         value: account,
-        isSelected: index === 0
+        isSelected: account === defaultAccount
       })) || [],
-    [billingAccounts, t]
+    [billingAccounts, defaultAccount, t]
   );
 };
 
