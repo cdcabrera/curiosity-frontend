@@ -18,6 +18,7 @@ import { translate } from '../i18n/i18n';
  * @param {object} options
  * @param {translate} [options.t=translate]
  * @param {useProduct} [options.useProduct=useProduct]
+ * @param {useProductQuery} [options.useProductQuery=useProductQuery]
  * @param {storeHooks.reactRedux.useSelector} [options.useSelector=storeHooks.reactRedux.useSelector]
  * @returns {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
  */
