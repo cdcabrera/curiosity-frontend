@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { reduxTypes, storeHooks } from '../../redux';
 import { useProduct, useProductGraphTallyQuery } from '../productView/productViewContext';
 import { Select, SelectPosition } from '../form/select';
@@ -17,15 +17,31 @@ import { translate } from '../i18n/i18n';
  */
 
 /**
- * Select field options.
+ * Generate select field options.
  *
- * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
+ * @param {object} params
+ * @param {Array<string>} [params.options=Object.values(FIELD_TYPES)]
+ * @param {translate} [params.t=translate]
+ * @param {useProductGraphTallyQuery} [params.useProductGraphTallyQuery=useProductGraphTallyQuery]
+ * @returns {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
  */
-const toolbarFieldOptions = Object.values(FIELD_TYPES).map(type => ({
-  title: translate('curiosity-toolbar.label', { context: ['granularity', type] }),
-  value: type,
-  isSelected: false
-}));
+const useToolbarFieldOptions = ({
+  options = Object.values(FIELD_TYPES),
+  t = translate,
+  useProductGraphTallyQuery: useAliasProductGraphTallyQuery = useProductGraphTallyQuery
+} = {}) => {
+  const { [RHSM_API_QUERY_SET_TYPES.GRANULARITY]: granularity } = useAliasProductGraphTallyQuery();
+
+  return useMemo(
+    () =>
+      options.map(type => ({
+        title: t('curiosity-toolbar.label', { context: ['granularity', type] }),
+        value: type,
+        isSelected: type === granularity
+      })),
+    [granularity, options, t]
+  );
+};
 
 /**
  * On select update granularity.
@@ -76,31 +92,31 @@ const useOnSelect = ({
  *
  * @param {object} props
  * @param {boolean} [props.isFilter=false]
- * @param {toolbarFieldOptions} [props.options=toolbarFieldOptions]
  * @param {SelectPosition} [props.position=SelectPosition.left]
  * @param {translate} [props.t=translate]
  * @param {useOnSelect} [props.useOnSelect=useOnSelect]
  * @param {useProductGraphTallyQuery} [props.useProductGraphTallyQuery=useProductGraphTallyQuery]
+ * @param {useToolbarFieldOptions} [props.useToolbarFieldOptions=useToolbarFieldOptions]
  * @fires onSelect
  * @returns {JSX.Element}
  */
 const ToolbarFieldGranularity = ({
   isFilter = false,
-  options = toolbarFieldOptions,
   position = SelectPosition.left,
   t = translate,
   useOnSelect: useAliasOnSelect = useOnSelect,
-  useProductGraphTallyQuery: useAliasProductGraphTallyQuery = useProductGraphTallyQuery
+  useProductGraphTallyQuery: useAliasProductGraphTallyQuery = useProductGraphTallyQuery,
+  useToolbarFieldOptions: useAliasToolbarFieldOptions = useToolbarFieldOptions
 }) => {
   const { [RHSM_API_QUERY_SET_TYPES.GRANULARITY]: updatedValue } = useAliasProductGraphTallyQuery();
+  const options = useAliasToolbarFieldOptions();
   const onSelect = useAliasOnSelect();
-  const updatedOptions = options.map(option => ({ ...option, isSelected: option.value === updatedValue }));
 
   return (
     <Select
       aria-label={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'granularity' })}
       onSelect={onSelect}
-      options={updatedOptions}
+      options={options}
       selectedOptions={updatedValue}
       placeholder={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'granularity' })}
       alignment={{ position }}
@@ -109,4 +125,4 @@ const ToolbarFieldGranularity = ({
   );
 };
 
-export { ToolbarFieldGranularity as default, ToolbarFieldGranularity, toolbarFieldOptions, useOnSelect };
+export { ToolbarFieldGranularity as default, ToolbarFieldGranularity, useOnSelect, useToolbarFieldOptions };
