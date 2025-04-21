@@ -93,14 +93,10 @@ const Toolbar = ({
   /**
    * Clear all active filters.
    *
-   * @param a
-   * @param b
-   * @param c
    * @event onClearAll
    * @returns {void}
    */
-  const onClearAll = (a, b, c) => {
-    console.log('>>> ON CLEAR ALL TOOLBAR', a, b, c);
+  const onClearAll = () => {
     clearAllFields(hardFilterReset);
   };
 
@@ -157,18 +153,11 @@ const Toolbar = ({
                   chipProps.deleteChip = () => onClearFilter({ value: updatedValue });
                 }
 
-                console.log('>>>> CHIPS', currentCategory, chipProps.chips);
-                console.log(
-                  '>>>> CHIPS 002',
-                  Array.isArray(updatedValue) && updatedValue.find(str => str === currentCategory)
-                );
-
                 return (
                   <ToolbarFilter
                     key={helpers.generateHash(updatedValue)}
                     showToolbarItem={
                       currentCategory === updatedValue ||
-                      // (Array.isArray(updatedValue) && updatedValue.find(str => str === currentCategory)) ||
                       options.length === 1
                     }
                     {...chipProps}

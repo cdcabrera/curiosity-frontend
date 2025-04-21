@@ -41,12 +41,9 @@ const useToolbarFieldClear = ({
   return field => {
     switch (field) {
       case RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID:
-        console.log('>>>>> ACCOUNTS RESET');
         billingAccountOnSelect();
-        billingProviderOnSelect();
         break;
       case RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER:
-        console.log('>>>>> PROVIDER RESET');
         billingProviderOnSelect();
         break;
       case RHSM_API_QUERY_SET_TYPES.CATEGORY:
@@ -101,12 +98,10 @@ const useToolbarFieldClearAll = ({
 
   return hardFilterReset => {
     if (typeof billingAccount === 'string') {
-      console.log('>>>> ACCOUNT CLEAR ALL');
       billingAccountOnSelect();
     }
 
     if (typeof billingProvider === 'string') {
-      console.log('>>>> PROVIDER CLEAR ALL');
       billingProviderOnSelect();
     }
 

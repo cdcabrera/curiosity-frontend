@@ -48,7 +48,6 @@ const toolbarFieldOptions = [
   {
     title: translate('curiosity-toolbar.label', { context: ['filter', RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER] }),
     value: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
-    // dynamicTitle: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER,
     dynamicValue: [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER, RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID],
     component: function BillingProvider(props) {
       return <ToolbarFieldBillingProvider key="selectCategory_billingProvider" {...props} />;
@@ -152,8 +151,6 @@ const useSelectCategoryOptions = ({
   const { productId } = useAliasProduct();
   const { currentFilter: updatedValue } = useAliasSelector(({ toolbar }) => toolbar.filters?.[productId], {});
   const { filters = [] } = useAliasProductToolbarConfig();
-
-  console.log('>>> FILTERS', filters);
 
   let initialValue;
 
