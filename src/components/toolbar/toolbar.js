@@ -7,6 +7,7 @@ import {
   ToolbarToggleGroup
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
+import _isPlainObject from 'lodash/isPlainObject';
 import { useProductToolbarQuery, useProduct } from '../productView/productViewContext';
 import { useToolbarFieldClear, useToolbarFieldClearAll, useToolbarFields } from './toolbarContext';
 import { ToolbarFilter } from './toolbarFilter';
@@ -105,11 +106,22 @@ const Toolbar = ({
    *
    * @param {object} params
    * @param {string|Array<string>} params.value
+   * @param params.chipProps
    * @returns {Array}
    */
-  const setSelectedOptions = ({ value: filterName, chipProps } = {}) => {
+  const setSelectedOptions = ({ value: filterName } = {}) => {
     const filterValues =
-      (Array.isArray(filterName) && filterName.map(filter => ({ name: filter, value: toolbarFieldQueries[filter] }))) ||
+      (Array.isArray(filterName) &&
+        filterName.map(filter => {
+          if (_isPlainObject(filter)) {
+            return {
+              ...filter,
+              value: toolbarFieldQueries[filter.name]
+            };
+          }
+
+          return { name: filter, value: toolbarFieldQueries[filter] };
+        })) ||
       (typeof toolbarFieldQueries[filterName] === 'string' && [
         { name: filterName, value: toolbarFieldQueries[filterName] }
       ]) ||
@@ -117,7 +129,7 @@ const Toolbar = ({
 
     return filterValues
       .filter(({ value }) => typeof value === 'string')
-      .map(({ name, value }) => {
+      .map(({ name, value, ...chipProps }) => {
         const node = t('curiosity-toolbar.label', { context: [name, (value === '' && 'none') || value] });
         return {
           ...chipProps,
@@ -146,40 +158,31 @@ const Toolbar = ({
                   <ToolbarFieldSelectCategory />
                 </ToolbarItem>
               )}
-              {options.map(
-                ({
-                  title,
-                  chipProps,
-                  dynamicValue,
-                  value: filterName,
-                  component: OptionComponent,
-                  isClearable
-                }) => {
-                  const filterProps = {
-                    categoryName: title
-                  };
+              {options.map(({ title, dynamicValue, value: filterName, component: OptionComponent, isClearable }) => {
+                const filterProps = {
+                  categoryName: title
+                };
 
-                  const updatedValue = dynamicValue || filterName;
+                const updatedValue = dynamicValue || filterName;
 
-                  if (isClearable !== false) {
-                    filterProps.chips = setSelectedOptions({ value: updatedValue, chipProps });
-                    filterProps.deleteChip = () => onClearFilter({ value: updatedValue });
-                  }
-
-                  console.log('>>> TOOLBAR FILTER PROPS', filterProps);
-                  console.log('>>> TOOLBAR CHIP PROPS', chipProps, filterProps.chips);
-
-                  return (
-                    <ToolbarFilter
-                      key={helpers.generateHash(updatedValue)}
-                      showToolbarItem={currentCategory === updatedValue || options.length === 1}
-                      {...filterProps}
-                    >
-                      <OptionComponent isFilter />
-                    </ToolbarFilter>
-                  );
+                if (isClearable !== false) {
+                  filterProps.chips = setSelectedOptions({ value: updatedValue });
+                  filterProps.deleteChip = () => onClearFilter({ value: updatedValue });
                 }
-              )}
+
+                console.log('>>> TOOLBAR FILTER PROPS', filterProps);
+                console.log('>>> TOOLBAR CHIP PROPS', filterProps.chips);
+
+                return (
+                  <ToolbarFilter
+                    key={helpers.generateHash(updatedValue)}
+                    showToolbarItem={currentCategory === updatedValue || options.length === 1}
+                    {...filterProps}
+                  >
+                    <OptionComponent isFilter />
+                  </ToolbarFilter>
+                );
+              })}
             </ToolbarGroup>
           </ToolbarToggleGroup>
         )}
