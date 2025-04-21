@@ -78,7 +78,10 @@ const ToolbarFilter = ({
 
   let chipGroup;
 
+  console.log('>>>> PRE CHIPS LENGTH', chips.length, chips);
+
   if (chips.length) {
+    console.log('>>>> CHIPS LENGTH', chips.length, chips);
     const chipGroupProps = { isClosable: false };
 
     if (deleteChipGroup) {

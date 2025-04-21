@@ -4,6 +4,7 @@ import { useProductQuery, useProductToolbarConfig } from '../productView/product
 import { RHSM_API_QUERY_SET_TYPES } from '../../services/rhsm/rhsmConstants';
 import { useOnSelect as useSelectCategoryOnSelect, toolbarFieldOptions } from './toolbarFieldSelectCategory';
 import { useOnSelect as useBillingProviderOnSelect } from './toolbarFieldBillingProvider';
+import { useOnSelect as useBillingAccountOnSelect } from './toolbarFieldBillingAccount';
 import { useOnSelect as useCategoryOnSelect } from './toolbarFieldCategory';
 import { useOnSelect as useSlaOnSelect } from './toolbarFieldSla';
 import { useOnSelect as useUsageOnSelect } from './toolbarFieldUsage';
@@ -25,20 +26,28 @@ import { helpers } from '../../common/helpers';
  * @returns {Function}
  */
 const useToolbarFieldClear = ({
+  useBillingAccountOnSelect: useAliasBillingAccountOnSelect = useBillingAccountOnSelect,
   useBillingProviderOnSelect: useAliasBillingProviderOnSelect = useBillingProviderOnSelect,
   useCategoryOnSelect: useAliasCategoryOnSelect = useCategoryOnSelect,
   useSlaOnSelect: useAliasSlaOnSelect = useSlaOnSelect,
   useUsageOnSelect: useAliasUsageOnSelect = useUsageOnSelect
 } = {}) => {
-  const billingOnSelect = useAliasBillingProviderOnSelect();
+  const billingProviderOnSelect = useAliasBillingProviderOnSelect();
+  const billingAccountOnSelect = useAliasBillingAccountOnSelect();
   const categoryOnSelect = useAliasCategoryOnSelect();
   const slaOnSelect = useAliasSlaOnSelect();
   const usageOnSelect = useAliasUsageOnSelect();
 
   return field => {
     switch (field) {
+      case RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID:
+        console.log('>>>>> ACCOUNTS RESET');
+        billingAccountOnSelect();
+        billingProviderOnSelect();
+        break;
       case RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER:
-        billingOnSelect();
+        console.log('>>>>> PROVIDER RESET');
+        billingProviderOnSelect();
         break;
       case RHSM_API_QUERY_SET_TYPES.CATEGORY:
         categoryOnSelect();
@@ -70,6 +79,7 @@ const useToolbarFieldClear = ({
 const useToolbarFieldClearAll = ({
   useProductQuery: useAliasProductQuery = useProductQuery,
   useSelectCategoryOnSelect: useAliasSelectCategoryOnSelect = useSelectCategoryOnSelect,
+  useBillingAccountOnSelect: useAliasBillingAccountOnSelect = useBillingAccountOnSelect,
   useBillingProviderOnSelect: useAliasBillingProviderOnSelect = useBillingProviderOnSelect,
   useCategoryOnSelect: useAliasCategoryOnSelect = useCategoryOnSelect,
   useSlaOnSelect: useAliasSlaOnSelect = useSlaOnSelect,
@@ -77,19 +87,27 @@ const useToolbarFieldClearAll = ({
 } = {}) => {
   const {
     [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: billingProvider,
+    [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID]: billingAccount,
     [RHSM_API_QUERY_SET_TYPES.CATEGORY]: category,
     [RHSM_API_QUERY_SET_TYPES.SLA]: sla,
     [RHSM_API_QUERY_SET_TYPES.USAGE]: usage
   } = useAliasProductQuery();
-  const billingOnSelect = useAliasBillingProviderOnSelect();
+  const billingProviderOnSelect = useAliasBillingProviderOnSelect();
+  const billingAccountOnSelect = useAliasBillingAccountOnSelect();
   const categoryOnSelect = useAliasCategoryOnSelect();
   const slaOnSelect = useAliasSlaOnSelect();
   const usageOnSelect = useAliasUsageOnSelect();
   const selectCategoryOnSelect = useAliasSelectCategoryOnSelect();
 
   return hardFilterReset => {
+    if (typeof billingAccount === 'string') {
+      console.log('>>>> ACCOUNT CLEAR ALL');
+      billingAccountOnSelect();
+    }
+
     if (typeof billingProvider === 'string') {
-      billingOnSelect();
+      console.log('>>>> PROVIDER CLEAR ALL');
+      billingProviderOnSelect();
     }
 
     if (typeof category === 'string') {
