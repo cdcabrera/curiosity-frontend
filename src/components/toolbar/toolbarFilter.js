@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useMount } from 'react-use';
 import { ToolbarContentContext, ToolbarContext } from '@patternfly/react-core/dist/dynamic/components/Toolbar';
 import { ToolbarItem, Chip, ChipGroup } from '@patternfly/react-core';
+import _isPlainObject from 'lodash/isPlainObject';
 import { helpers } from '../../common/helpers';
 
 /**
@@ -78,10 +79,7 @@ const ToolbarFilter = ({
 
   let chipGroup;
 
-  console.log('>>>> PRE CHIPS LENGTH', chips.length, chips);
-
   if (chips.length) {
-    console.log('>>>> CHIPS LENGTH', chips.length, chips);
     const chipGroupProps = { isClosable: false };
 
     if (deleteChipGroup) {
@@ -102,9 +100,11 @@ const ToolbarFilter = ({
         <ChipGroup key={normalizedCategoryKey} categoryName={normalizedCategoryName} {...chipGroupProps}>
           {chips.map(chip => {
             const normalizedChip = (typeof chip === 'string' && { key: chip, node: chip }) || chip;
+            const { key, node, ...chipProps } = normalizedChip;
+            console.log('>>>> CHIPPROPS', chipProps);
             return (
-              <Chip key={normalizedChip.key} onClick={() => deleteChip(normalizedCategoryKey, normalizedChip)}>
-                {normalizedChip.node}
+              <Chip {...chipProps} key={key} onClick={() => deleteChip(normalizedCategoryKey, normalizedChip)}>
+                {node}
               </Chip>
             );
           })}

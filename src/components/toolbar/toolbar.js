@@ -93,14 +93,10 @@ const Toolbar = ({
   /**
    * Clear all active filters.
    *
-   * @param a
-   * @param b
-   * @param c
    * @event onClearAll
    * @returns {void}
    */
-  const onClearAll = (a, b, c) => {
-    console.log('>>> ON CLEAR ALL TOOLBAR', a, b, c);
+  const onClearAll = () => {
     clearAllFields(hardFilterReset);
   };
 
@@ -111,7 +107,7 @@ const Toolbar = ({
    * @param {string|Array<string>} params.value
    * @returns {Array}
    */
-  const setSelectedOptions = ({ value: filterName } = {}) => {
+  const setSelectedOptions = ({ value: filterName, chipProps } = {}) => {
     const filterValues =
       (Array.isArray(filterName) && filterName.map(filter => ({ name: filter, value: toolbarFieldQueries[filter] }))) ||
       (typeof toolbarFieldQueries[filterName] === 'string' && [
@@ -119,11 +115,16 @@ const Toolbar = ({
       ]) ||
       [];
 
-    console.log('>>>> FILTER VALUES', filterValues);
-
     return filterValues
       .filter(({ value }) => typeof value === 'string')
-      .map(({ name, value }) => t('curiosity-toolbar.label', { context: [name, (value === '' && 'none') || value] }));
+      .map(({ name, value }) => {
+        const node = t('curiosity-toolbar.label', { context: [name, (value === '' && 'none') || value] });
+        return {
+          ...chipProps,
+          key: node,
+          node
+        };
+      });
   };
 
   return (
@@ -145,38 +146,40 @@ const Toolbar = ({
                   <ToolbarFieldSelectCategory />
                 </ToolbarItem>
               )}
-              {options.map(({ title, dynamicValue, value: filterName, component: OptionComponent, isClearable }) => {
-                const chipProps = {
-                  categoryName: title
-                };
+              {options.map(
+                ({
+                  title,
+                  chipProps,
+                  dynamicValue,
+                  value: filterName,
+                  component: OptionComponent,
+                  isClearable
+                }) => {
+                  const filterProps = {
+                    categoryName: title
+                  };
 
-                const updatedValue = dynamicValue || filterName;
+                  const updatedValue = dynamicValue || filterName;
 
-                if (isClearable !== false) {
-                  chipProps.chips = setSelectedOptions({ value: updatedValue });
-                  chipProps.deleteChip = () => onClearFilter({ value: updatedValue });
+                  if (isClearable !== false) {
+                    filterProps.chips = setSelectedOptions({ value: updatedValue, chipProps });
+                    filterProps.deleteChip = () => onClearFilter({ value: updatedValue });
+                  }
+
+                  console.log('>>> TOOLBAR FILTER PROPS', filterProps);
+                  console.log('>>> TOOLBAR CHIP PROPS', chipProps, filterProps.chips);
+
+                  return (
+                    <ToolbarFilter
+                      key={helpers.generateHash(updatedValue)}
+                      showToolbarItem={currentCategory === updatedValue || options.length === 1}
+                      {...filterProps}
+                    >
+                      <OptionComponent isFilter />
+                    </ToolbarFilter>
+                  );
                 }
-
-                console.log('>>>> CHIPS', currentCategory, chipProps.chips);
-                console.log(
-                  '>>>> CHIPS 002',
-                  Array.isArray(updatedValue) && updatedValue.find(str => str === currentCategory)
-                );
-
-                return (
-                  <ToolbarFilter
-                    key={helpers.generateHash(updatedValue)}
-                    showToolbarItem={
-                      currentCategory === updatedValue ||
-                      // (Array.isArray(updatedValue) && updatedValue.find(str => str === currentCategory)) ||
-                      options.length === 1
-                    }
-                    {...chipProps}
-                  >
-                    <OptionComponent isFilter />
-                  </ToolbarFilter>
-                );
-              })}
+              )}
             </ToolbarGroup>
           </ToolbarToggleGroup>
         )}
