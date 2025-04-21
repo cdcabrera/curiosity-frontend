@@ -31,7 +31,8 @@ const useToolbarFieldOptions = ({
   const { [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: billingProvider } = useAliasProductQuery();
   const { productId } = useAliasProduct();
   const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
-  const updatedBillingProvider = billingProvider || data?.defaultProvider;
+  // const updatedBillingProvider = billingProvider || data?.defaultProvider;
+  const updatedBillingProvider = billingProvider;
   const defaultAccount = data?.defaultAccountByProvider?.[updatedBillingProvider];
   const billingAccounts = data?.accountsByProvider?.[updatedBillingProvider];
 
