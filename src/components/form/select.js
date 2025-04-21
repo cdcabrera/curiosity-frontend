@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Badge,
   ButtonVariant,
@@ -13,7 +13,7 @@ import {
 import _cloneDeep from 'lodash/cloneDeep';
 import _isPlainObject from 'lodash/isPlainObject';
 import _findIndex from 'lodash/findIndex';
-import { useDeepCompareEffect, useMount } from 'react-use';
+import { useDeepCompareEffect, useMount, useShallowCompareEffect } from 'react-use';
 import { createMockEvent } from './formHelpers';
 import { helpers } from '../../common';
 
@@ -165,8 +165,8 @@ updateSelectedOptions.memo = helpers.memo(updateSelectedOptions, { cacheLimit: 2
  * @param {SelectVariant|string} params.variant
  * @returns {{isSelected:boolean}|undefined|Array<{isSelected:boolean}>|Array}
  */
-const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVariant.single } = {}) =>
-  options
+const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVariant.single } = {}) =>{
+  const updatedOptions = options
     .map(option => {
       const { isSelected, title, value, ...meta } = option;
       let updateIsSelected = isSelected;
@@ -201,8 +201,13 @@ const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVar
         ...option,
         isSelected: updateIsSelected
       };
-    })
-    [(variant === SelectVariant.checkbox && 'filter') || 'find'](opt => opt.isSelected === true);
+    });
+
+  return {
+    options: updatedOptions,
+    selected: updatedOptions[(variant === SelectVariant.checkbox && 'filter') || 'find'](opt => opt.isSelected === true)
+  };
+};
 
 /**
  * A memoized response for the updateSelectedProp function. Assigned to a property for testing function.
@@ -258,6 +263,23 @@ const setSelectElements = variant => ({
  */
 setSelectElements.memo = helpers.memo(setSelectElements);
 
+const setInitialOptions = ({ options, selectedOptions, variant } = {}) => {
+  const { options: intialOptions, selected } = updateSelectedProp.memo({
+    options: _cloneDeep(updateOptions.memo(options)),
+    selectedOptions: updateSelectedOptions.memo(selectedOptions),
+    variant
+  });
+
+  console.log('>>>> SEL HOOK 002', options);
+
+  return {
+    options: intialOptions,
+    selected
+  };
+};
+
+setInitialOptions.memo = helpers.memo(setInitialOptions, { cacheLimit: 25 });
+
 /**
  * Hook for handling option and selected option updates.
  *
@@ -269,23 +291,39 @@ setSelectElements.memo = helpers.memo(setSelectElements);
  * @returns {{options: Array, selectedOption: undefined, onSelect: Function}}
  */
 const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant } = {}) => {
+
+  const { options: initialOptions, selected: initialSelectedOption } = setInitialOptions.memo({
+    options: baseOptions,
+    selectedOptions,
+    variant
+  });
+
   const [selectedOption, setSelectedOption] = React.useState();
-  const [options, setOptions] = useState();
+  const [options, setOptions] = useState(initialOptions);
+
+  useEffect(() => {
+    console.log('>>> REFIRE INITIAL OPTION SELECTED');
+    setSelectedOption(initialSelectedOption);
+  }, [initialSelectedOption]);
 
   // Update, and allow "re-updating", base/initial options
-  useDeepCompareEffect(() => {
-    const updatedOptions = _cloneDeep(updateOptions.memo(baseOptions));
-    const updatedSelected = updateSelectedProp.memo({
-      options: updatedOptions,
-      selectedOptions: updateSelectedOptions.memo(selectedOptions),
-      variant
-    });
-
-    console.log('>>>> SEL HOOK 001', updatedSelected, updatedOptions);
-
-    setOptions(() => updatedOptions);
-    setSelectedOption(updatedSelected);
-  }, [baseOptions, selectedOptions]);
+  /*
+   *useEffect(() => {
+   *  console.log('>>>> SEL HOOK 001A', baseOptions, baseOptions === ogBase);
+   *  console.log('>>>> SEL HOOK 001B', selectedOptions, selectedOptions === ogBaseSelected);
+   *  const updatedOptions = _cloneDeep(updateOptions.memo(baseOptions));
+   *  const updatedSelected = updateSelectedProp.memo({
+   *    options: updatedOptions,
+   *    selectedOptions: updateSelectedOptions.memo(selectedOptions),
+   *    variant
+   *  });
+   *
+   *  console.log('>>>> SEL HOOK 002', updatedSelected, updatedOptions);
+   *
+   *  setOptions(() => updatedOptions);
+   *  setSelectedOption(updatedSelected);
+   *}, [selectedOptions]);
+   */
 
   // Update local state with user selected options
   const onSelectCallback = useCallback(
@@ -326,7 +364,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
     [onSelect, variant, options]
   );
 
-  console.log('>>>> SEL HOOK 002', selectedOption, options);
+  console.log('>>>> SEL HOOK 003', selectedOption, options);
 
   return {
     selectedOption,
