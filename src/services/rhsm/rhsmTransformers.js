@@ -79,16 +79,16 @@ const rhsmBillingAccounts = (response = []) => {
     const serviceType = typeArr[0].type;
 
     serviceTypeProviderAccountIdMetrics[serviceType] = {
-      providers: _differenceBy(typeArr, ...newTemp, 'provider'),
-      ids: _differenceBy(typeArr, ...newTemp, 'id')
+      accounts: _differenceBy(typeArr, ...newTemp, 'id'),
+      providers: _differenceBy(typeArr, ...newTemp, 'provider')
     };
+
+    if (serviceTypeProviderAccountIdMetrics[serviceType].accounts.length) {
+      serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueAccounts = true;
+    }
 
     if (serviceTypeProviderAccountIdMetrics[serviceType].providers.length) {
       serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueProviders = true;
-    }
-
-    if (serviceTypeProviderAccountIdMetrics[serviceType].ids.length) {
-      serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueAccounts = true;
     }
   });
 

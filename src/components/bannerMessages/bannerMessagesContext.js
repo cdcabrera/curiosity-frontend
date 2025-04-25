@@ -1,7 +1,11 @@
-import { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useMount } from 'react-use';
+import { AlertVariant, Button } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { reduxTypes, storeHooks } from '../../redux';
 import { useProduct } from '../productView/productViewContext';
 import { helpers } from '../../common/helpers';
+import { translate } from '../i18n/i18nHelpers';
 
 /**
  * @memberof BannerMessages
@@ -94,8 +98,7 @@ const useSetBannerMessages = ({
         const updatedMessages = (Array.isArray(messages) && messages) || [messages];
 
         dispatch({
-          type: 'balls',
-          // type: reduxTypes.message.SET_BANNER_MESSAGES,
+          type: reduxTypes.message.SET_BANNER_MESSAGES,
           viewId: productId,
           bannerMessages: [
             ...(bannerMessages || []),
@@ -127,10 +130,94 @@ const useSetBannerMessages = ({
   );
 };
 
+const useUsageBanner = ({
+  t = translate,
+  useProduct: useAliasProduct = useProduct,
+  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector,
+  useSetBannerMessages: useAliasSetBannerMessages = useSetBannerMessages
+} = {}) => {
+  const setBannerMessages = useAliasSetBannerMessages();
+  const { productId } = useAliasProduct();
+  const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
+  const isUsageError = data?.isUsageError || false;
+
+  useMount(() => {
+    if (isUsageError === true) {
+      const { hasUniqueAccounts, hasUniqueProviders, accounts, providers } = data.usageMetrics;
+      const message = {};
+      const pluralCount = [];
+
+      if (hasUniqueAccounts) {
+        accounts?.forEach(({ id, provider }) => {
+          message[provider] ??= [];
+          message[provider].push(id);
+          pluralCount.push(id);
+        });
+      }
+
+      if (hasUniqueProviders) {
+        providers?.forEach(({ id, provider }) => {
+          message[provider] ??= [];
+          message[provider].push(id);
+          pluralCount.push(id);
+        });
+      }
+
+      console.log('>>>> BUSTED MESSAGE', message);
+
+      const providersAccounts = Object.entries(message)
+        .map(([key, value]) => `${key}:${value}`)
+        .join(', ');
+
+      // let firstProvider;
+      // let firstAccount;
+
+      const [firstProvider, firstProviderAccounts] = Object.entries(message).shift();
+      console.log('>>>> FIRST ENTRY', firstProvider, firstProviderAccounts);
+
+      setBannerMessages({
+        variant: AlertVariant.warning,
+        id: 'somethings broken',
+        title: t('curiosity-banner.usage', { context: ['title'], product: productId }),
+        message: t(
+          'curiosity-banner.usage',
+          {
+            context: ['description', Object.keys(message).length >= 2 && 'provider'],
+            count:
+              (Object.keys(message).length === 2 && 1) || (Object.keys(message).length > 2 && 2) || pluralCount.length,
+            provider: firstProvider,
+            account: firstProviderAccounts[0],
+            providersAccounts
+          },
+          [
+            <Button
+              isInline
+              component="a"
+              variant="link"
+              icon={<ExternalLinkAltIcon />}
+              iconPosition="right"
+              target="_blank"
+              href={helpers.UI_LINK_LEARN_MORE}
+            />
+          ]
+        )
+      });
+    }
+  });
+};
+
 const context = {
   useBannerMessages,
   useRemoveBannerMessages,
-  useSetBannerMessages
+  useSetBannerMessages,
+  useUsageBanner
 };
 
-export { context as default, context, useBannerMessages, useRemoveBannerMessages, useSetBannerMessages };
+export {
+  context as default,
+  context,
+  useBannerMessages,
+  useRemoveBannerMessages,
+  useSetBannerMessages,
+  useUsageBanner
+};
