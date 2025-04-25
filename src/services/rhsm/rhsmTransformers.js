@@ -48,61 +48,53 @@ const rhsmBillingAccounts = (response = []) => {
     .flat()
     .filter(res => typeof res?.provider === 'string' && typeof res?.id === 'string');
 
-  console.log('>>>>>>> ACCOUNT ISSUE', accountResponseSizes);
-  const billingIssues = {
-    data: {},
-    hasIssues: false,
-    hasDifferentProvidersBetweenTypes: {},
-    hasDifferentProviderAccountsBetweenTypes: {},
-    hasDifferentProviderAccounts: {}
-    /*
-     * typeHasDifferentProviders,
-     * typeHasDifferentProviderAccounts,
-     */
-  };
-  const hasBillingCountDiffBetweenServiceTypes = accountResponseSizes.size > 1;
+  const isBillingCountDiffBetweenServiceTypes = accountResponseSizes.size > 1;
   const accountsByProvider = {};
   const defaultAccountByProvider = {};
-  const flattened = {};
+  const baseMetrics = {};
 
+  /**
+   * Finish processing service responses
+   */
   successResponse.forEach(({ id, provider, type }) => {
-    billingIssues.data[type] ??= {};
-    billingIssues.data[type][provider] ??= new Set();
-    billingIssues.data[type][provider].add(id);
+    baseMetrics[type] ??= [];
 
-    flattened[type] ??= [];
-
-    if (!flattened[type].find(({ id: existingId }) => id === existingId)) {
-      flattened[type].push({ id, provider, type });
+    if (!baseMetrics[type].find(({ id: existingId }) => id === existingId)) {
+      baseMetrics[type].push({ id, provider, type });
     }
 
     accountsByProvider[provider] ??= new Set();
     accountsByProvider[provider].add(id);
   });
 
-  const flatBreakdown = {};
-  const flatArrs = Object.values(flattened);
-  flatArrs.forEach((typeArr, index) => {
-    const newTemp = flatArrs.toSpliced(index, 1);
+  // ToDo: Review and consider creating a helper for this section.
+  /**
+   * Attempt agnostic metric generator to determine unique providers, accounts by service type.
+   * Allow a potentially unlimited number of service response comparisons to avoid "business logic"
+   */
+  const serviceTypeProviderAccountIdMetrics = {};
+  const baseMetricsValues = Object.values(baseMetrics);
+  baseMetricsValues.forEach((typeArr, index) => {
+    const newTemp = baseMetricsValues.toSpliced(index, 1);
     const serviceType = typeArr[0].type;
 
-    flatBreakdown[serviceType] = {
+    serviceTypeProviderAccountIdMetrics[serviceType] = {
       providers: _differenceBy(typeArr, ...newTemp, 'provider'),
       ids: _differenceBy(typeArr, ...newTemp, 'id')
     };
 
-    if (flatBreakdown[serviceType].providers.length) {
-      flatBreakdown[serviceType].hasUniqueProviders = true;
+    if (serviceTypeProviderAccountIdMetrics[serviceType].providers.length) {
+      serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueProviders = true;
     }
 
-    if (flatBreakdown[serviceType].ids.length) {
-      flatBreakdown[serviceType].hasUniqueAccounts = true;
+    if (serviceTypeProviderAccountIdMetrics[serviceType].ids.length) {
+      serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueAccounts = true;
     }
   });
 
-  console.log('>>>> flat diff', flatBreakdown);
-  console.log('>>>> providersByType', billingIssues.data);
-
+  /**
+   * Breakdown accounts by provider, defaults for convenient display
+   */
   const billingProviders = [...Object.keys(accountsByProvider)].sort();
 
   billingProviders.forEach(provider => {
@@ -114,18 +106,19 @@ const rhsmBillingAccounts = (response = []) => {
   const defaultAccount = defaultAccountByProvider[defaultProvider];
 
   return {
-    isBillingActive: defaultAccount !== undefined && defaultProvider !== undefined,
-    // isBillingError: isBillingCountError,
-    hasBillingCountDiffBetweenServiceTypes,
-    isUsageError: flatBreakdown?.instances?.hasUniqueAccounts || flatBreakdown?.instances?.hasUniqueProviders || false,
-    usageErrorMetrics: flatBreakdown?.instances || {},
+    accountsByProvider,
+    billingProviders,
     defaultProvider,
     defaultAccount,
     defaultAccountByProvider,
-    billingIssues,
-    billingUniqueIdsProvidersByServiceType: flatBreakdown,
-    billingProviders,
-    accountsByProvider
+    isBillingActive: defaultAccount !== undefined && defaultProvider !== undefined,
+    isBillingCountDiffBetweenServiceTypes,
+    isUsageError:
+      serviceTypeProviderAccountIdMetrics?.instances?.hasUniqueAccounts ||
+      serviceTypeProviderAccountIdMetrics?.instances?.hasUniqueProviders ||
+      false,
+    serviceTypeProviderAccountIdMetrics,
+    usageMetrics: serviceTypeProviderAccountIdMetrics?.instances || {}
   };
 };
 
