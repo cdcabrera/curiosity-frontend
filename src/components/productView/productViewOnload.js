@@ -19,10 +19,17 @@ import { translate } from '../i18n/i18n';
  * @param {React.ReactNode} props.children
  * @param {translate} [props.t=translate]
  * @param {useProductOnload} [props.useProductOnload=useProductOnload]
+ * @param {useUsageBanner} [props.useUsageBanner=useUsageBanner]
  * @returns {JSX.Element}
  */
-const ProductViewOnload = ({ children, t = translate, useProductOnload: useAliasProductOnload = useProductOnload }) => {
+const ProductViewOnload = ({
+  children,
+  t = translate,
+  useProductOnload: useAliasProductOnload = useProductOnload,
+  useUsageBanner: useAliasUsageBanner = useUsageBanner
+}) => {
   const { isReady, error, message, productId } = useAliasProductOnload();
+  useAliasUsageBanner();
 
   return (
     (error && (
