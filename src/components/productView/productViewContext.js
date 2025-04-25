@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useSession } from '../authentication/authenticationContext';
+import { useSetBannerMessages } from '../bannerMessages/bannerMessagesContext';
 import { reduxActions, reduxHelpers, storeHooks } from '../../redux';
 import { rhsmConstants } from '../../services/rhsm/rhsmConstants';
 import { platformConstants } from '../../services/platform/platformConstants';
@@ -407,16 +408,19 @@ const useProductExportQuery = ({
  * @param {useProductViewContext} [options.useProductViewContext=useProductViewContext]
  * @param {useProductBillingAccountsQuery} [options.useProductBillingAccountsQuery=useProductBillingAccountsQuery]
  * @param {storeHooks.reactRedux.useSelectorsResponse} [options.useSelectorsResponse=useSelectorsResponse]
+ * @param options.useSetBannerMessages
  * @returns {{data: object, productId: string, pending: boolean, isReady: boolean, fulfilled: boolean,
  *     responses: object}}
  */
 const useProductOnload = ({
   getBillingAccounts = reduxActions.rhsm.getBillingAccounts,
+  useSetBannerMessages: useAliasSetBannerMessages = useSetBannerMessages,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
   useProductViewContext: useAliasProductViewContext = useProductViewContext,
   useProductBillingAccountsQuery: useAliasProductBillingAccountsQuery = useProductBillingAccountsQuery,
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
 } = {}) => {
+  const setBannerMessages = useAliasSetBannerMessages();
   const { onloadProduct, productId } = useAliasProductViewContext();
   const billingAccountsQuery = useAliasProductBillingAccountsQuery();
   const dispatch = useAliasDispatch();
@@ -435,6 +439,16 @@ const useProductOnload = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBillingAccountRequired, productId]);
+
+  useEffect(() => {
+    console.log('>>>> WORK 002', response?.data?.billing);
+    if (response?.data?.billing?.data?.isBillingError === true) {
+      console.log('>>>> BUSTED MESSAGE');
+      setBannerMessages('somethings broken');
+    }
+  }, [response?.data?.billing, setBannerMessages]);
+
+  console.log('>>>> WORK 003', response);
 
   return {
     ...response,

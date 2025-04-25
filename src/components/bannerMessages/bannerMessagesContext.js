@@ -94,7 +94,8 @@ const useSetBannerMessages = ({
         const updatedMessages = (Array.isArray(messages) && messages) || [messages];
 
         dispatch({
-          type: reduxTypes.message.SET_BANNER_MESSAGES,
+          type: 'balls',
+          // type: reduxTypes.message.SET_BANNER_MESSAGES,
           viewId: productId,
           bannerMessages: [
             ...(bannerMessages || []),

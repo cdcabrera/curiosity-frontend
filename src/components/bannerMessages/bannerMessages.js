@@ -33,6 +33,18 @@ const BannerMessages = ({
   const bannerMessages = useAliasBannerMessages();
   const removeBannerMessages = useAliasRemoveBannerMessages();
 
+  console.log('>>>>>', bannerMessages);
+
+  return (
+    <div className="curiosity-banner-messages">
+      <AlertGroup isLiveRegion>
+        <Alert isInline>
+          message: {bannerMessages.length}
+        </Alert>
+      </AlertGroup>
+    </div>
+  );
+
   if (bannerMessages?.length) {
     return (
       <div className="curiosity-banner-messages">

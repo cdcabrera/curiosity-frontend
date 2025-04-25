@@ -1,4 +1,5 @@
 import moment from 'moment';
+import _differenceBy from 'lodash/differenceBy';
 import {
   RHSM_API_QUERY_SET_TYPES,
   RHSM_API_RESPONSE_INSTANCES_DATA_TYPES as INSTANCES_DATA_TYPES,
@@ -26,10 +27,14 @@ import { dateHelpers, helpers } from '../../common';
  * @returns {object}
  */
 const rhsmBillingAccounts = (response = []) => {
+  const accountResponseSizes = new Set();
   const successResponse = response
     .filter(({ status }) => status === 200)
-    .map(({ data = {}, config }) =>
-      data?.[rhsmConstants.RHSM_API_RESPONSE_ID]?.map(
+    .map(({ data = {}, config }) => {
+      const accountIdData = data?.[rhsmConstants.RHSM_API_RESPONSE_ID] || [];
+      accountResponseSizes.add(accountIdData.length);
+
+      return accountIdData.map(
         ({
           [BILLING_ACCOUNT_ID_TYPES.BILLING_ACCOUNT_ID]: id,
           [BILLING_ACCOUNT_ID_TYPES.BILLING_PROVIDER]: provider
@@ -38,33 +43,87 @@ const rhsmBillingAccounts = (response = []) => {
           type: config?._accountType || 'unknown',
           provider
         })
-      )
-    )
+      );
+    })
     .flat()
     .filter(res => typeof res?.provider === 'string' && typeof res?.id === 'string');
 
+  console.log('>>>>>>> ACCOUNT ISSUE', accountResponseSizes);
+  const billingIssues = {
+    data: {},
+    hasIssues: false,
+    hasDifferentProvidersBetweenTypes: {},
+    hasDifferentProviderAccountsBetweenTypes: {},
+    hasDifferentProviderAccounts: {}
+    /*
+     * typeHasDifferentProviders,
+     * typeHasDifferentProviderAccounts,
+     */
+  };
+  const hasBillingCountDiffBetweenServiceTypes = accountResponseSizes.size > 1;
   const accountsByProvider = {};
   const defaultAccountByProvider = {};
+  const flattened = {};
 
-  successResponse.forEach(({ id, provider }) => {
-    accountsByProvider[provider] ??= [];
-    accountsByProvider[provider].push(id);
+  successResponse.forEach(({ id, provider, type }) => {
+    billingIssues.data[type] ??= {};
+    billingIssues.data[type][provider] ??= new Set();
+    billingIssues.data[type][provider].add(id);
+
+    flattened[type] ??= [];
+
+    if (!flattened[type].find(({ id: existingId }) => id === existingId)) {
+      flattened[type].push({ id, provider, type });
+    }
+
+    accountsByProvider[provider] ??= new Set();
+    accountsByProvider[provider].add(id);
   });
+
+  const flatBreakdown = {};
+  const flatArrs = Object.values(flattened);
+  flatArrs.forEach((typeArr, index) => {
+    const newTemp = flatArrs.toSpliced(index, 1);
+    const serviceType = typeArr[0].type;
+
+    flatBreakdown[serviceType] = {
+      providers: _differenceBy(typeArr, ...newTemp, 'provider'),
+      ids: _differenceBy(typeArr, ...newTemp, 'id')
+    };
+
+    if (flatBreakdown[serviceType].providers.length) {
+      flatBreakdown[serviceType].hasUniqueProviders = true;
+    }
+
+    if (flatBreakdown[serviceType].ids.length) {
+      flatBreakdown[serviceType].hasUniqueAccounts = true;
+    }
+  });
+
+  console.log('>>>> flat diff', flatBreakdown);
+  console.log('>>>> providersByType', billingIssues.data);
 
   const billingProviders = [...Object.keys(accountsByProvider)].sort();
 
-  Object.keys(accountsByProvider).forEach(key => {
-    accountsByProvider[key] = [...new Set(accountsByProvider[key])].sort();
-    defaultAccountByProvider[key] = accountsByProvider[key]?.[0];
+  billingProviders.forEach(provider => {
+    accountsByProvider[provider] = Array.from(accountsByProvider[provider]).sort();
+    defaultAccountByProvider[provider] = accountsByProvider[provider]?.[0];
   });
 
   const defaultProvider = billingProviders?.[0];
   const defaultAccount = defaultAccountByProvider[defaultProvider];
 
   return {
+    isBillingActive: defaultAccount !== undefined && defaultProvider !== undefined,
+    // isBillingError: isBillingCountError,
+    hasBillingCountDiffBetweenServiceTypes,
+    isUsageError: flatBreakdown?.instances?.hasUniqueAccounts || flatBreakdown?.instances?.hasUniqueProviders || false,
+    usageErrorMetrics: flatBreakdown?.instances || {},
     defaultProvider,
     defaultAccount,
     defaultAccountByProvider,
+    billingIssues,
+    billingUniqueIdsProvidersByServiceType: flatBreakdown,
     billingProviders,
     accountsByProvider
   };
