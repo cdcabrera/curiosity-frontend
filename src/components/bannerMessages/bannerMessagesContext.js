@@ -145,35 +145,52 @@ const useUsageBanner = ({
     if (isUsageError === true) {
       const { hasUniqueAccounts, hasUniqueProviders, accounts, providers } = data.usageMetrics;
       const message = {};
-      const pluralCount = [];
+      // const pluralCount = [];
 
+      // look at moving these over to the transformer
       if (hasUniqueAccounts) {
         accounts?.forEach(({ id, provider }) => {
           message[provider] ??= [];
           message[provider].push(id);
-          pluralCount.push(id);
+          // pluralCount.push(id);
         });
       }
 
+      // look at moving these over to the transformer
       if (hasUniqueProviders) {
         providers?.forEach(({ id, provider }) => {
           message[provider] ??= [];
           message[provider].push(id);
-          pluralCount.push(id);
+          // pluralCount.push(id);
         });
       }
 
-      console.log('>>>> BUSTED MESSAGE', message);
+      // console.log('>>>> BUSTED MESSAGE', message);
 
-      const providersAccounts = Object.entries(message)
-        .map(([key, value]) => `${key}:${value}`)
-        .join(', ');
+      /*
+       * const providersAccounts = Object.entries(message)
+       *  .map(([key, value]) => `${key}:${value}`)
+       *  .join(', ');
+       */
 
-      // let firstProvider;
-      // let firstAccount;
+      /*
+       * let firstProvider;
+       * let firstAccount;
+       */
 
       const [firstProvider, firstProviderAccounts] = Object.entries(message).shift();
-      console.log('>>>> FIRST ENTRY', firstProvider, firstProviderAccounts);
+      /*
+       *console.log('>>>> FIRST ENTRY', firstProvider, firstProviderAccounts);
+       *
+       *console.log(
+       *  '>>>> COUNT',
+       *  Object.keys(message).length === 2 && 2,
+       *  Object.keys(message).length > 2 && Object.keys(message).length - 1,
+       *  Object.keys(message).length === 2 && 1,
+       *  Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1,
+       *  0
+       *);
+       */
 
       setBannerMessages({
         variant: AlertVariant.warning,
@@ -182,12 +199,33 @@ const useUsageBanner = ({
         message: t(
           'curiosity-banner.usage',
           {
-            context: ['description', Object.keys(message).length >= 2 && 'provider'],
-            count:
-              (Object.keys(message).length === 2 && 1) || (Object.keys(message).length > 2 && 2) || pluralCount.length,
+            context: ['description'],
+            // trigger remaining copy with plural
+            count: (Object.keys(message).length >= 2 && 2) || (Object.entries(message)[0][1].length > 2 && 2) || 0,
+
+            /*
+             * (Object.keys(message).length === 2 && 2) ||
+             * (Object.keys(message).length > 2 && Object.keys(message).length - 1) ||
+             * (Object.keys(message).length === 2 && 1) ||
+             * (Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1) ||
+             * 0,
+             */
+            /*
+             * (Object.keys(message).length === 1 && Object.entries(message)[0][1].length) ||
+             * pluralCount.length,
+             */
+            remaining: t('curiosity-banner.usage', {
+              context: ['description', 'remaining', Object.keys(message).length >= 2 && 'provider'],
+              count:
+                (Object.keys(message).length === 2 && 1) ||
+                (Object.keys(message).length > 2 && Object.keys(message).length - 1) ||
+                (Object.keys(message).length === 2 && 1) ||
+                (Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1) ||
+                0
+            }),
             provider: firstProvider,
-            account: firstProviderAccounts[0],
-            providersAccounts
+            account: firstProviderAccounts[0]
+            // providersAccounts
           },
           [
             <Button
