@@ -1,7 +1,12 @@
-import { useEffect } from 'react';
-import { useProductBillingAccountsQuery, useProductViewContext } from './productViewContext';
+import React, { useEffect } from 'react';
+import { AlertVariant, Button } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { useProduct, useProductBillingAccountsQuery, useProductViewContext } from './productViewContext';
+import { useSetBannerMessages } from '../bannerMessages/bannerMessagesContext';
 import { reduxActions, storeHooks } from '../../redux';
 import { rhsmConstants } from '../../services/rhsm/rhsmConstants';
+import { helpers } from '../../common';
+import { translate } from '../i18n/i18nHelpers';
 
 /**
  * Product view onload hooks. Hooks intended to fire AFTER product query and configuration is set.
@@ -55,8 +60,124 @@ const useProductOnload = ({
   };
 };
 
-const context = {
-  useProductOnload
+const useUsageBanner = ({
+  t = translate,
+  useProduct: useAliasProduct = useProduct,
+  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector,
+  useSetBannerMessages: useAliasSetBannerMessages = useSetBannerMessages
+} = {}) => {
+  const setBannerMessages = useAliasSetBannerMessages();
+  const { productId } = useAliasProduct();
+  const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
+  const isUsageError = data?.isUsageError || false;
+
+  useEffect(() => {
+    if (isUsageError === true) {
+      const { hasUniqueAccounts, hasUniqueProviders, accounts, providers } = data.usageMetrics;
+      const message = {};
+      // const pluralCount = [];
+
+      // look at moving these over to the transformer
+      if (hasUniqueAccounts) {
+        accounts?.forEach(({ id, provider }) => {
+          message[provider] ??= [];
+          message[provider].push(id);
+          // pluralCount.push(id);
+        });
+      }
+
+      // look at moving these over to the transformer
+      if (hasUniqueProviders) {
+        providers?.forEach(({ id, provider }) => {
+          message[provider] ??= [];
+          message[provider].push(id);
+          // pluralCount.push(id);
+        });
+      }
+
+      // console.log('>>>> BUSTED MESSAGE', message);
+
+      /*
+       * const providersAccounts = Object.entries(message)
+       *  .map(([key, value]) => `${key}:${value}`)
+       *  .join(', ');
+       */
+
+      /*
+       * let firstProvider;
+       * let firstAccount;
+       */
+
+      const [firstProvider, firstProviderAccounts] = Object.entries(message).shift();
+      /*
+       *console.log('>>>> FIRST ENTRY', firstProvider, firstProviderAccounts);
+       *
+       *console.log(
+       *  '>>>> COUNT',
+       *  Object.keys(message).length === 2 && 2,
+       *  Object.keys(message).length > 2 && Object.keys(message).length - 1,
+       *  Object.keys(message).length === 2 && 1,
+       *  Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1,
+       *  0
+       *);
+       */
+
+      setBannerMessages({
+        variant: AlertVariant.warning,
+        id: 'somethings broken',
+        title: t('curiosity-banner.usage', { context: ['title'], product: productId }),
+        message: t(
+          'curiosity-banner.usage',
+          {
+            context: ['description'],
+            // trigger remaining copy with plural
+            count: (Object.keys(message).length >= 2 && 2) || (Object.entries(message)[0][1].length > 2 && 2) || 0,
+
+            /*
+             * (Object.keys(message).length === 2 && 2) ||
+             * (Object.keys(message).length > 2 && Object.keys(message).length - 1) ||
+             * (Object.keys(message).length === 2 && 1) ||
+             * (Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1) ||
+             * 0,
+             */
+            /*
+             * (Object.keys(message).length === 1 && Object.entries(message)[0][1].length) ||
+             * pluralCount.length,
+             */
+            remaining: t('curiosity-banner.usage', {
+              context: ['description', 'remaining', Object.keys(message).length >= 2 && 'provider'],
+              count:
+                (Object.keys(message).length === 2 && 1) ||
+                (Object.keys(message).length > 2 && Object.keys(message).length - 1) ||
+                (Object.keys(message).length === 2 && 1) ||
+                (Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1) ||
+                0
+            }),
+            provider: firstProvider,
+            account: firstProviderAccounts[0]
+            // providersAccounts
+          },
+          [
+            <strong />,
+            <Button
+              isInline
+              component="a"
+              variant="link"
+              icon={<ExternalLinkAltIcon />}
+              iconPosition="right"
+              target="_blank"
+              href={helpers.UI_LINK_LEARN_MORE}
+            />
+          ]
+        )
+      });
+    }
+  }, [isUsageError]);
 };
 
-export { context as default, context, useProductOnload };
+const context = {
+  useProductOnload,
+  useUsageBanner
+};
+
+export { context as default, context, useProductOnload, useUsageBanner };

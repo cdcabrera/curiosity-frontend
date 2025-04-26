@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardBody } from '@patternfly/react-core';
 import { BinocularsIcon } from '@patternfly/react-icons';
-import { useProductOnload } from './productViewOnloadContext';
+import { useProductOnload, useUsageBanner } from './productViewOnloadContext';
 import { ErrorMessage } from '../errorMessage/errorMessage';
 import { MessageView } from '../messageView/messageView';
 import { translate } from '../i18n/i18n';
