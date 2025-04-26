@@ -1,11 +1,7 @@
-import React, { useCallback, useEffect } from 'react';
-import { useMount } from 'react-use';
-import { AlertVariant, Button } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { useCallback } from 'react';
 import { reduxTypes, storeHooks } from '../../redux';
 import { useProduct } from '../productView/productViewContext';
 import { helpers } from '../../common/helpers';
-import { translate } from '../i18n/i18nHelpers';
 
 /**
  * @memberof BannerMessages
@@ -130,132 +126,10 @@ const useSetBannerMessages = ({
   );
 };
 
-const useUsageBanner = ({
-  t = translate,
-  useProduct: useAliasProduct = useProduct,
-  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector,
-  useSetBannerMessages: useAliasSetBannerMessages = useSetBannerMessages
-} = {}) => {
-  const setBannerMessages = useAliasSetBannerMessages();
-  const { productId } = useAliasProduct();
-  const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
-  const isUsageError = data?.isUsageError || false;
-
-  useMount(() => {
-    if (isUsageError === true) {
-      const { hasUniqueAccounts, hasUniqueProviders, accounts, providers } = data.usageMetrics;
-      const message = {};
-      // const pluralCount = [];
-
-      // look at moving these over to the transformer
-      if (hasUniqueAccounts) {
-        accounts?.forEach(({ id, provider }) => {
-          message[provider] ??= [];
-          message[provider].push(id);
-          // pluralCount.push(id);
-        });
-      }
-
-      // look at moving these over to the transformer
-      if (hasUniqueProviders) {
-        providers?.forEach(({ id, provider }) => {
-          message[provider] ??= [];
-          message[provider].push(id);
-          // pluralCount.push(id);
-        });
-      }
-
-      // console.log('>>>> BUSTED MESSAGE', message);
-
-      /*
-       * const providersAccounts = Object.entries(message)
-       *  .map(([key, value]) => `${key}:${value}`)
-       *  .join(', ');
-       */
-
-      /*
-       * let firstProvider;
-       * let firstAccount;
-       */
-
-      const [firstProvider, firstProviderAccounts] = Object.entries(message).shift();
-      /*
-       *console.log('>>>> FIRST ENTRY', firstProvider, firstProviderAccounts);
-       *
-       *console.log(
-       *  '>>>> COUNT',
-       *  Object.keys(message).length === 2 && 2,
-       *  Object.keys(message).length > 2 && Object.keys(message).length - 1,
-       *  Object.keys(message).length === 2 && 1,
-       *  Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1,
-       *  0
-       *);
-       */
-
-      setBannerMessages({
-        variant: AlertVariant.warning,
-        id: 'somethings broken',
-        title: t('curiosity-banner.usage', { context: ['title'], product: productId }),
-        message: t(
-          'curiosity-banner.usage',
-          {
-            context: ['description'],
-            // trigger remaining copy with plural
-            count: (Object.keys(message).length >= 2 && 2) || (Object.entries(message)[0][1].length > 2 && 2) || 0,
-
-            /*
-             * (Object.keys(message).length === 2 && 2) ||
-             * (Object.keys(message).length > 2 && Object.keys(message).length - 1) ||
-             * (Object.keys(message).length === 2 && 1) ||
-             * (Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1) ||
-             * 0,
-             */
-            /*
-             * (Object.keys(message).length === 1 && Object.entries(message)[0][1].length) ||
-             * pluralCount.length,
-             */
-            remaining: t('curiosity-banner.usage', {
-              context: ['description', 'remaining', Object.keys(message).length >= 2 && 'provider'],
-              count:
-                (Object.keys(message).length === 2 && 1) ||
-                (Object.keys(message).length > 2 && Object.keys(message).length - 1) ||
-                (Object.keys(message).length === 2 && 1) ||
-                (Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1) ||
-                0
-            }),
-            provider: firstProvider,
-            account: firstProviderAccounts[0]
-            // providersAccounts
-          },
-          [
-            <Button
-              isInline
-              component="a"
-              variant="link"
-              icon={<ExternalLinkAltIcon />}
-              iconPosition="right"
-              target="_blank"
-              href={helpers.UI_LINK_LEARN_MORE}
-            />
-          ]
-        )
-      });
-    }
-  });
-};
-
 const context = {
   useBannerMessages,
   useRemoveBannerMessages,
-  useSetBannerMessages,
-  useUsageBanner
+  useSetBannerMessages
 };
 
-export {
-  context as default,
-  context,
-  useBannerMessages,
-  useRemoveBannerMessages,
-  useSetBannerMessages,
-  useUsageBanner
-};
+export { context as default, context, useBannerMessages, useRemoveBannerMessages, useSetBannerMessages };

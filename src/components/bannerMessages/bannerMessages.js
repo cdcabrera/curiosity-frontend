@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, AlertActionCloseButton, AlertGroup, AlertVariant } from '@patternfly/react-core';
-import { useBannerMessages, useRemoveBannerMessages, useUsageBanner } from './bannerMessagesContext';
+import { useBannerMessages, useRemoveBannerMessages } from './bannerMessagesContext';
 
 /**
  * Banner alert messages for a product view.
@@ -24,29 +24,14 @@ const BannerMessageVariant = { ...AlertVariant };
  * @param {object} props
  * @param {useBannerMessages} [props.useBannerMessages=useBannerMessages]
  * @param {useRemoveBannerMessages} [props.useRemoveBannerMessages=useRemoveBannerMessages]
- * @param props.useUsageBanner
  * @returns {JSX.Element}
  */
 const BannerMessages = ({
   useBannerMessages: useAliasBannerMessages = useBannerMessages,
-  useRemoveBannerMessages: useAliasRemoveBannerMessages = useRemoveBannerMessages,
-  useUsageBanner: useAliasUsageBanner = useUsageBanner
+  useRemoveBannerMessages: useAliasRemoveBannerMessages = useRemoveBannerMessages
 }) => {
   const bannerMessages = useAliasBannerMessages();
   const removeBannerMessages = useAliasRemoveBannerMessages();
-  useAliasUsageBanner();
-
-  /*
-  console.log('>>>>>', bannerMessages);
-
-  return (
-    <div className="curiosity-banner-messages">
-      <AlertGroup isLiveRegion>
-        <Alert isInline>message: {bannerMessages.length}</Alert>
-      </AlertGroup>
-    </div>
-  );
-  */
 
   if (bannerMessages?.length) {
     return (
