@@ -159,16 +159,40 @@ const getBillingAccountsInstances = (id, params = {}, options = {}) => {
  *     {
  *       "ids": [
  *         {
- *           "billing_account_id": "6c12361-cf37-47f4-bd76-6mock126",
+ *           "billing_account_id": "2cfa4d67-cf37-47f4-bd76-2mock91242",
  *           "billing_provider": "aws"
  *         },
  *         {
- *           "billing_account_id": "451968c3-cf37-47f4-bd76-4mock91245",
+ *           "billing_account_id": "3c12361-cf37-47f4-bd76-3mock123",
  *           "billing_provider": "aws"
  *         },
  *         {
- *           "billing_account_id": "5cfa4d67-cf37-47f4-bd76-5mock91245",
+ *           "billing_account_id": "151968c3-cf37-47f4-bd76-1mock91241",
  *           "billing_provider": "aws"
+ *         },
+ *         {
+ *             "org_id": "18955857",
+ *             "product_tag": "rhel-for-x86-els-payg-addon",
+ *             "billing_provider": "_ANY",
+ *             "billing_account_id": "_ANY"
+ *         },
+ *         {
+ *             "org_id": "18955857",
+ *             "product_tag": "rhel-for-x86-els-payg-addon",
+ *             "billing_provider": "_ANY",
+ *             "billing_account_id": "swatch-demo"
+ *         },
+ *         {
+ *             "org_id": "18955857",
+ *             "product_tag": "rhel-for-x86-els-payg-addon",
+ *             "billing_provider": "aws",
+ *             "billing_account_id": "_ANY"
+ *         },
+ *         {
+ *             "org_id": "18955857",
+ *             "product_tag": "rhel-for-x86-els-payg-addon",
+ *             "billing_provider": "aws",
+ *             "billing_account_id": "swatch-demo"
  *         }
  *       ]
  *     }
