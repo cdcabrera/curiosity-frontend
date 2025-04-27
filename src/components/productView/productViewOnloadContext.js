@@ -109,6 +109,10 @@ const useUsageBanner = ({
        */
 
       const [firstProvider, firstProviderAccounts] = Object.entries(message).shift();
+
+      console.log('>>>>>>>>>>> HOOK 001', data);
+      console.log('>>>>>>>>>>> HOOK 001', message);
+      console.log('>>>>>>>>>>> HOOK 001', firstProvider, firstProviderAccounts);
       /*
        *console.log('>>>> FIRST ENTRY', firstProvider, firstProviderAccounts);
        *
@@ -166,12 +170,13 @@ const useUsageBanner = ({
               icon={<ExternalLinkAltIcon />}
               iconPosition="right"
               target="_blank"
-              href={helpers.UI_LINK_LEARN_MORE}
+              href={helpers.UI_LINK_USAGE_SUBSCRIPTIONS}
             />
           ]
         )
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUsageError]);
 };
 

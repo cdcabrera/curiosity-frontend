@@ -80,15 +80,70 @@ const rhsmBillingAccounts = (response = []) => {
 
     serviceTypeProviderAccountIdMetrics[serviceType] = {
       accounts: _differenceBy(typeArr, ...newTemp, 'id'),
-      providers: _differenceBy(typeArr, ...newTemp, 'provider')
+      providers: _differenceBy(typeArr, ...newTemp, 'provider'),
+      firstProvider: undefined,
+      firstProviderAccount: undefined,
+      firstProviderNumberAccounts: 0,
+      numberProviders: 0
     };
+
+    const aggregatedAccountsProviders = [
+      ...serviceTypeProviderAccountIdMetrics[serviceType].accounts,
+      ...serviceTypeProviderAccountIdMetrics[serviceType].providers
+    ];
+
+    const filterAggregatedAccountsProviders = {};
+    aggregatedAccountsProviders.forEach(({ id, provider }) => {
+      filterAggregatedAccountsProviders[provider] ??= [];
+      filterAggregatedAccountsProviders[provider].push(id);
+    });
+
+    const numberProviders = Object.keys(filterAggregatedAccountsProviders).length;
+    const [firstProvider, firstProviderAccounts = []] = Object.entries(filterAggregatedAccountsProviders).shift();
+    const firstProviderNumberAccounts = firstProviderAccounts.length;
+    const firstProviderAccount = firstProviderAccounts[0];
+
+    serviceTypeProviderAccountIdMetrics[serviceType].numberProviders = numberProviders;
+    serviceTypeProviderAccountIdMetrics[serviceType].firstProvider = firstProvider;
+    serviceTypeProviderAccountIdMetrics[serviceType].firstProviderNumberAccounts = firstProviderNumberAccounts;
+    serviceTypeProviderAccountIdMetrics[serviceType].firstProviderAccount = firstProviderAccount;
+
+    /*
+    const numberProviders = Array.from(
+      new Set(aggregatedAccountsProviders.map(({ provider: aggregatedProvider }) => aggregatedProvider))
+    ).length;
+    const numberAccounts = aggregatedAccountsProviders.length;
+    */
+    /*
+    const firstUsageAccount = aggregatedAccountsProviders?.[0]?.id;
+    const firstUsageProvider = aggregatedAccountsProviders?.[0]?.provider;
+
+    serviceTypeProviderAccountIdMetrics[serviceType].numberAccounts =
+      serviceTypeProviderAccountIdMetrics[serviceType].accounts.length;
+    serviceTypeProviderAccountIdMetrics[serviceType].numberProviders =
+      serviceTypeProviderAccountIdMetrics[serviceType].providers.length;
+    */
 
     if (serviceTypeProviderAccountIdMetrics[serviceType].accounts.length) {
       serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueAccounts = true;
+      /*
+       *const { id: firstAccountId, provider: firstAccountProvider } =
+       *  serviceTypeProviderAccountIdMetrics[serviceType].accounts[0];
+       *serviceTypeProviderAccountIdMetrics[serviceType].firstProvider = firstAccountProvider;
+       *serviceTypeProviderAccountIdMetrics[serviceType].firstAccount = firstAccountId;
+       */
     }
 
     if (serviceTypeProviderAccountIdMetrics[serviceType].providers.length) {
       serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueProviders = true;
+      /*
+       *if (serviceTypeProviderAccountIdMetrics[serviceType].firstProvider === undefined) {
+       *  const { id: firstProviderId, provider: firstProviderProvider } =
+       *    serviceTypeProviderAccountIdMetrics[serviceType].providers[0];
+       *  serviceTypeProviderAccountIdMetrics[serviceType].firstProvider = firstProviderProvider;
+       *  serviceTypeProviderAccountIdMetrics[serviceType].firstAccount = firstProviderId;
+       *}
+       */
     }
   });
 
