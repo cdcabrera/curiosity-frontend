@@ -71,61 +71,6 @@ const rhsmBillingAccounts = (response = []) => {
     accountsByProvider[provider].add(id);
   });
 
-  // ToDo: Review and consider creating a helper for this section.
-  /**
-   * Attempt agnostic metric generator to determine unique providers, accounts by service type.
-   * Allow a potentially unlimited number of service response comparisons to avoid "business logic"
-   */
-  /*
-   *const serviceTypeProviderAccountIdMetrics = {};
-   *const baseMetricsValues = Object.values(baseMetrics);
-   *baseMetricsValues.forEach((typeArr, index) => {
-   *  const newTemp = baseMetricsValues.toSpliced(index, 1);
-   *  const serviceType = typeArr[0].type;
-   *
-   *  serviceTypeProviderAccountIdMetrics[serviceType] = {
-   *    accounts: _differenceBy(typeArr, ...newTemp, 'id'),
-   *    providers: _differenceBy(typeArr, ...newTemp, 'provider'),
-   *    firstProvider: undefined,
-   *    firstProviderAccount: undefined,
-   *    firstProviderNumberAccounts: 0,
-   *    numberProviders: 0
-   *  };
-   *
-   *  const aggregatedAccountsProviders = [
-   *    ...serviceTypeProviderAccountIdMetrics[serviceType].accounts,
-   *    ...serviceTypeProviderAccountIdMetrics[serviceType].providers
-   *  ];
-   *
-   *  const filterAggregatedAccountsProviders = {};
-   *  aggregatedAccountsProviders.forEach(({ id, provider }) => {
-   *    filterAggregatedAccountsProviders[provider] ??= new Set();
-   *    filterAggregatedAccountsProviders[provider].add(id);
-   *  });
-   *
-   *  console.log('>>>>> LOOP 001', aggregatedAccountsProviders);
-   *  console.log('>>>>> LOOP 002', filterAggregatedAccountsProviders);
-   *
-   *  const numberProviders = Object.keys(filterAggregatedAccountsProviders).length;
-   *  const [firstProvider, firstProviderAccounts = []] = Object.entries(filterAggregatedAccountsProviders).shift();
-   *  const firstProviderNumberAccounts = firstProviderAccounts.size;
-   *  const firstProviderAccount = Array.from(firstProviderAccounts)[0];
-   *
-   *  serviceTypeProviderAccountIdMetrics[serviceType].numberProviders = numberProviders;
-   *  serviceTypeProviderAccountIdMetrics[serviceType].firstProvider = firstProvider;
-   *  serviceTypeProviderAccountIdMetrics[serviceType].firstProviderNumberAccounts = firstProviderNumberAccounts;
-   *  serviceTypeProviderAccountIdMetrics[serviceType].firstProviderAccount = firstProviderAccount;
-   *
-   *  if (serviceTypeProviderAccountIdMetrics[serviceType].accounts.length) {
-   *    serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueAccounts = true;
-   *  }
-   *
-   *  if (serviceTypeProviderAccountIdMetrics[serviceType].providers.length) {
-   *    serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueProviders = true;
-   *  }
-   *});
-   */
-
   /**
    * Breakdown accounts by provider, defaults for convenient display
    */
@@ -138,6 +83,10 @@ const rhsmBillingAccounts = (response = []) => {
 
   const defaultProvider = billingProviders?.[0];
   const defaultAccount = defaultAccountByProvider[defaultProvider];
+
+  /**
+   * Apply metrics, determine unique providers, accounts by service type.
+   */
   const serviceTypeProviderAccountIdMetrics = rhsmHelpers.billingMetrics(baseMetrics);
 
   return {

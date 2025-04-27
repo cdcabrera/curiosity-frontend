@@ -5,59 +5,63 @@ import _differenceBy from 'lodash/differenceBy';
  *
  * Attempt to avoid business specific logic by looping and using each "service type" as a diff base
  * to pull unique providers and account ids.
+ *
+ * @param {{ instances: Array<{id:string, provider:string, type:string}>|undefined,
+ *     subscriptions: Array<{id:string, provider:string, type:string}>|undefined }} baseMetrics
+ * @returns {{
+ *   instances: {accounts:Array, providers:Array, firstProvider:string, firstProviderAccount:object,
+ *       firstProviderNumberAccounts:number, numberProviders:number}|undefined
+ *   subscriptions: {accounts:Array, providers:Array, firstProvider:string, firstProviderAccount:object,
+ *       firstProviderNumberAccounts:number, numberProviders:number}|undefined
+ * }}
  */
-const billingMetrics = ((baseMetrics, other) => {
+const billingMetrics = baseMetrics => {
   const serviceTypeProviderAccountIdMetrics = {};
-
-  console.log('>>>>>>>> BASE METRICS 001', baseMetrics);
-  console.log('>>>>>>>> BASE METRICS 002', other);
-
   const baseMetricsValues = Object.values(baseMetrics);
+
   baseMetricsValues.forEach((typeArr, index) => {
     const newTemp = baseMetricsValues.toSpliced(index, 1);
-    // const typeArr = [obj];
     const serviceType = typeArr[0].type;
 
-    serviceTypeProviderAccountIdMetrics[serviceType] = {
-      accounts: _differenceBy(typeArr, ...newTemp, 'id'),
-      providers: _differenceBy(typeArr, ...newTemp, 'provider'),
-      firstProvider: undefined,
-      firstProviderAccount: undefined,
-      firstProviderNumberAccounts: 0,
-      numberProviders: 0
-    };
-
-    const aggregatedAccountsProviders = [
-      ...serviceTypeProviderAccountIdMetrics[serviceType].accounts,
-      ...serviceTypeProviderAccountIdMetrics[serviceType].providers
-    ];
+    const uniqueAccounts = _differenceBy(typeArr, ...newTemp, 'id');
+    const uniqueProviders = _differenceBy(typeArr, ...newTemp, 'provider');
+    const aggregatedAccountsProviders = [...uniqueAccounts, ...uniqueProviders];
 
     const filterAggregatedAccountsProviders = {};
+
     aggregatedAccountsProviders.forEach(({ id, provider }) => {
       filterAggregatedAccountsProviders[provider] ??= new Set();
       filterAggregatedAccountsProviders[provider].add(id);
     });
-
-    console.log('>>>>> LOOP 001', aggregatedAccountsProviders);
-    console.log('>>>>> LOOP 002', filterAggregatedAccountsProviders);
 
     const numberProviders = Object.keys(filterAggregatedAccountsProviders).length;
     const [firstProvider, firstProviderAccounts = []] = Object.entries(filterAggregatedAccountsProviders).shift();
     const firstProviderNumberAccounts = firstProviderAccounts.size;
     const firstProviderAccount = Array.from(firstProviderAccounts)[0];
 
-    serviceTypeProviderAccountIdMetrics[serviceType].numberProviders = numberProviders;
-    serviceTypeProviderAccountIdMetrics[serviceType].firstProvider = firstProvider;
-    serviceTypeProviderAccountIdMetrics[serviceType].firstProviderNumberAccounts = firstProviderNumberAccounts;
-    serviceTypeProviderAccountIdMetrics[serviceType].firstProviderAccount = firstProviderAccount;
+    // serviceTypeProviderAccountIdMetrics[serviceType].numberProviders = numberProviders;
+    // serviceTypeProviderAccountIdMetrics[serviceType].firstProvider = firstProvider;
+    // serviceTypeProviderAccountIdMetrics[serviceType].firstProviderNumberAccounts = firstProviderNumberAccounts;
+    // serviceTypeProviderAccountIdMetrics[serviceType].firstProviderAccount = firstProviderAccount;
 
-    if (serviceTypeProviderAccountIdMetrics[serviceType].accounts.length) {
-      serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueAccounts = true;
-    }
+    // if (uniqueAccounts.length) {
+    //  serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueAccounts = true;
+    // }
 
-    if (serviceTypeProviderAccountIdMetrics[serviceType].providers.length) {
-      serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueProviders = true;
-    }
+    // if (uniqueProviders.length) {
+    //  serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueProviders = true;
+    // }
+
+    serviceTypeProviderAccountIdMetrics[serviceType] = {
+      hasUniqueAccounts: uniqueAccounts.length > 0,
+      hasUniqueProviders: uniqueProviders.length > 0,
+      accounts: uniqueAccounts,
+      providers: uniqueProviders,
+      firstProvider,
+      firstProviderAccount,
+      firstProviderNumberAccounts,
+      numberProviders
+    };
   });
 
   return serviceTypeProviderAccountIdMetrics;

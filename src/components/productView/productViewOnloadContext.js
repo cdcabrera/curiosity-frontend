@@ -60,6 +60,15 @@ const useProductOnload = ({
   };
 };
 
+/**
+ * Apply a usage related banner notification per product variant
+ *
+ * @param {object} options
+ * @param {translate} [options.t=translate]
+ * @param {useProduct} [options.useProduct=useProduct]
+ * @param {storeHooks.reactRedux.useSelector} [options.useSelector=storeHooks.reactRedux.useSelector]
+ * @param {useSetBannerMessages} [options.useSetBannerMessages=useSetBannerMessages]
+ */
 const useUsageBanner = ({
   t = translate,
   useProduct: useAliasProduct = useProduct,
@@ -73,93 +82,28 @@ const useUsageBanner = ({
 
   useEffect(() => {
     if (isUsageError === true) {
-      const { hasUniqueAccounts, hasUniqueProviders, accounts, providers } = data.usageMetrics;
-      const message = {};
-      // const pluralCount = [];
-
-      // look at moving these over to the transformer
-      if (hasUniqueAccounts) {
-        accounts?.forEach(({ id, provider }) => {
-          message[provider] ??= [];
-          message[provider].push(id);
-          // pluralCount.push(id);
-        });
-      }
-
-      // look at moving these over to the transformer
-      if (hasUniqueProviders) {
-        providers?.forEach(({ id, provider }) => {
-          message[provider] ??= [];
-          message[provider].push(id);
-          // pluralCount.push(id);
-        });
-      }
-
-      // console.log('>>>> BUSTED MESSAGE', message);
-
-      /*
-       * const providersAccounts = Object.entries(message)
-       *  .map(([key, value]) => `${key}:${value}`)
-       *  .join(', ');
-       */
-
-      /*
-       * let firstProvider;
-       * let firstAccount;
-       */
-
-      const [firstProvider, firstProviderAccounts] = Object.entries(message).shift();
-
-      console.log('>>>>>>>>>>> HOOK 001', data);
-      console.log('>>>>>>>>>>> HOOK 001', message);
-      console.log('>>>>>>>>>>> HOOK 001', firstProvider, firstProviderAccounts);
-      /*
-       *console.log('>>>> FIRST ENTRY', firstProvider, firstProviderAccounts);
-       *
-       *console.log(
-       *  '>>>> COUNT',
-       *  Object.keys(message).length === 2 && 2,
-       *  Object.keys(message).length > 2 && Object.keys(message).length - 1,
-       *  Object.keys(message).length === 2 && 1,
-       *  Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1,
-       *  0
-       *);
-       */
+      const { firstProvider, firstProviderAccount, firstProviderNumberAccounts, numberProviders } = data.usageMetrics;
 
       setBannerMessages({
         variant: AlertVariant.warning,
-        id: 'somethings broken',
+        id: 'usage-warning',
         title: t('curiosity-banner.usage', { context: ['title'], product: productId }),
         message: t(
           'curiosity-banner.usage',
           {
             context: ['description'],
-            // trigger remaining copy with plural
-            count: (Object.keys(message).length >= 2 && 2) || (Object.entries(message)[0][1].length > 2 && 2) || 0,
-
-            /*
-             * (Object.keys(message).length === 2 && 2) ||
-             * (Object.keys(message).length > 2 && Object.keys(message).length - 1) ||
-             * (Object.keys(message).length === 2 && 1) ||
-             * (Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1) ||
-             * 0,
-             */
-            /*
-             * (Object.keys(message).length === 1 && Object.entries(message)[0][1].length) ||
-             * pluralCount.length,
-             */
+            count: (numberProviders >= 2 && 2) || (firstProviderNumberAccounts > 2 && 2) || 0,
             remaining: t('curiosity-banner.usage', {
-              context: ['description', 'remaining', Object.keys(message).length >= 2 && 'provider'],
+              context: ['description', 'remaining', numberProviders >= 2 && 'provider'],
               count:
-                (Object.keys(message).length === 2 && 1) ||
-                (Object.keys(message).length > 2 && Object.keys(message).length - 1) ||
-                (Object.keys(message).length === 2 && 1) ||
-                (Object.entries(message)[0][1].length > 2 && Object.entries(message)[0][1].length - 1) ||
+                (numberProviders === 2 && 1) ||
+                (numberProviders > 2 && numberProviders - 1) ||
+                (numberProviders === 2 && 1) ||
+                (firstProviderNumberAccounts > 2 && firstProviderNumberAccounts - 1) ||
                 0
             }),
             provider: firstProvider,
-            account: firstProviderAccounts[0]
-            // providersAccounts
+            account: firstProviderAccount
           },
           [
             <strong />,
