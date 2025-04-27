@@ -12,6 +12,7 @@ import {
   rhsmConstants
 } from './rhsmConstants';
 import { dateHelpers, helpers } from '../../common';
+import { rhsmHelpers } from './rhsmHelpers';
 
 /**
  * Transform RHSM responses. Replaces selector usage.
@@ -52,6 +53,7 @@ const rhsmBillingAccounts = (response = []) => {
   const accountsByProvider = {};
   const defaultAccountByProvider = {};
   const baseMetrics = {};
+  // const baseMetricsValues = [];
 
   /**
    * Finish processing service responses
@@ -59,7 +61,11 @@ const rhsmBillingAccounts = (response = []) => {
   successResponse.forEach(({ id, provider, type }) => {
     baseMetrics[type] ??= [];
 
-    if (!baseMetrics[type].find(({ id: existingId }) => id === existingId)) {
+    if (
+      !baseMetrics[type].find(
+        ({ id: existingId, provider: existingProvider }) => id === existingId && provider === existingProvider
+      )
+    ) {
       baseMetrics[type].push({ id, provider, type });
     }
 
@@ -94,56 +100,29 @@ const rhsmBillingAccounts = (response = []) => {
 
     const filterAggregatedAccountsProviders = {};
     aggregatedAccountsProviders.forEach(({ id, provider }) => {
-      filterAggregatedAccountsProviders[provider] ??= [];
-      filterAggregatedAccountsProviders[provider].push(id);
+      filterAggregatedAccountsProviders[provider] ??= new Set();
+      filterAggregatedAccountsProviders[provider].add(id);
     });
+
+    console.log('>>>>> LOOP 001', aggregatedAccountsProviders);
+    console.log('>>>>> LOOP 002', filterAggregatedAccountsProviders);
 
     const numberProviders = Object.keys(filterAggregatedAccountsProviders).length;
     const [firstProvider, firstProviderAccounts = []] = Object.entries(filterAggregatedAccountsProviders).shift();
-    const firstProviderNumberAccounts = firstProviderAccounts.length;
-    const firstProviderAccount = firstProviderAccounts[0];
+    const firstProviderNumberAccounts = firstProviderAccounts.size;
+    const firstProviderAccount = Array.from(firstProviderAccounts)[0];
 
     serviceTypeProviderAccountIdMetrics[serviceType].numberProviders = numberProviders;
     serviceTypeProviderAccountIdMetrics[serviceType].firstProvider = firstProvider;
     serviceTypeProviderAccountIdMetrics[serviceType].firstProviderNumberAccounts = firstProviderNumberAccounts;
     serviceTypeProviderAccountIdMetrics[serviceType].firstProviderAccount = firstProviderAccount;
 
-    /*
-    const numberProviders = Array.from(
-      new Set(aggregatedAccountsProviders.map(({ provider: aggregatedProvider }) => aggregatedProvider))
-    ).length;
-    const numberAccounts = aggregatedAccountsProviders.length;
-    */
-    /*
-    const firstUsageAccount = aggregatedAccountsProviders?.[0]?.id;
-    const firstUsageProvider = aggregatedAccountsProviders?.[0]?.provider;
-
-    serviceTypeProviderAccountIdMetrics[serviceType].numberAccounts =
-      serviceTypeProviderAccountIdMetrics[serviceType].accounts.length;
-    serviceTypeProviderAccountIdMetrics[serviceType].numberProviders =
-      serviceTypeProviderAccountIdMetrics[serviceType].providers.length;
-    */
-
     if (serviceTypeProviderAccountIdMetrics[serviceType].accounts.length) {
       serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueAccounts = true;
-      /*
-       *const { id: firstAccountId, provider: firstAccountProvider } =
-       *  serviceTypeProviderAccountIdMetrics[serviceType].accounts[0];
-       *serviceTypeProviderAccountIdMetrics[serviceType].firstProvider = firstAccountProvider;
-       *serviceTypeProviderAccountIdMetrics[serviceType].firstAccount = firstAccountId;
-       */
     }
 
     if (serviceTypeProviderAccountIdMetrics[serviceType].providers.length) {
       serviceTypeProviderAccountIdMetrics[serviceType].hasUniqueProviders = true;
-      /*
-       *if (serviceTypeProviderAccountIdMetrics[serviceType].firstProvider === undefined) {
-       *  const { id: firstProviderId, provider: firstProviderProvider } =
-       *    serviceTypeProviderAccountIdMetrics[serviceType].providers[0];
-       *  serviceTypeProviderAccountIdMetrics[serviceType].firstProvider = firstProviderProvider;
-       *  serviceTypeProviderAccountIdMetrics[serviceType].firstAccount = firstProviderId;
-       *}
-       */
     }
   });
 
@@ -168,6 +147,7 @@ const rhsmBillingAccounts = (response = []) => {
     defaultAccountByProvider,
     isBillingActive: defaultAccount !== undefined && defaultProvider !== undefined,
     isBillingCountDiffBetweenServiceTypes,
+    // ...rhsmHelpers.billingMetrics(baseMetrics)
     isUsageError:
       serviceTypeProviderAccountIdMetrics?.instances?.hasUniqueAccounts ||
       serviceTypeProviderAccountIdMetrics?.instances?.hasUniqueProviders ||
