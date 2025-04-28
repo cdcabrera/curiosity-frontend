@@ -39,9 +39,6 @@ const billingMetrics = baseMetrics => {
       Array.from(value).forEach(valueId => uniqueAccountsProvidersList.push([key, valueId]));
     });
 
-    // console.log('>>> string', JSON.stringify(copyPasteAccountsProviders, null, 2));
-    // console.log('>>> string', JSON.stringify(copyPasteAccountsProviders.join(' \n'), null, 2));
-
     const numberProviders = Object.keys(filterAggregatedAccountsProviders).length;
     const [firstProvider, firstProviderAccounts = []] = Object.entries(filterAggregatedAccountsProviders).shift();
     const firstProviderNumberAccounts = firstProviderAccounts.size;

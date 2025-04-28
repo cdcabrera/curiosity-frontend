@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { AlertVariant, Button, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
-import { CopyIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { useProduct, useProductBillingAccountsQuery, useProductViewContext } from './productViewContext';
 import { useSetBannerMessages } from '../bannerMessages/bannerMessagesContext';
 import { reduxActions, storeHooks } from '../../redux';
@@ -90,7 +90,7 @@ const useUsageBanner = ({
         uniqueAccountsProvidersList
       } = data.usageMetrics;
 
-      const ClipBoardWrapper = ({ children }) => (
+      const ClipboardWrapper = ({ children }) => (
         <ClipboardCopy
           className="curiosity-banner-messages__clipboard-copy-text"
           hoverTip="Copy"
@@ -124,7 +124,7 @@ const useUsageBanner = ({
             account: firstProviderAccount
           },
           [
-            <ClipBoardWrapper />,
+            <ClipboardWrapper />,
             <Button
               isInline
               component="a"
