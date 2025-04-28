@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { AlertVariant, Button } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { AlertVariant, Button, clipboardCopyFunc } from '@patternfly/react-core';
+import { CopyIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { useProduct, useProductBillingAccountsQuery, useProductViewContext } from './productViewContext';
 import { useSetBannerMessages } from '../bannerMessages/bannerMessagesContext';
 import { reduxActions, storeHooks } from '../../redux';
@@ -82,8 +82,9 @@ const useUsageBanner = ({
 
   useEffect(() => {
     if (isUsageError === true) {
-      const { firstProvider, firstProviderAccount, firstProviderNumberAccounts, numberProviders } = data.usageMetrics;
-
+      const { firstProvider, firstProviderAccount, firstProviderNumberAccounts, numberProviders, ...rest } =
+        data.usageMetrics;
+      console.log('>>>> REST', rest);
       setBannerMessages({
         variant: AlertVariant.warning,
         id: 'usage-warning',
@@ -106,7 +107,15 @@ const useUsageBanner = ({
             account: firstProviderAccount
           },
           [
-            <strong />,
+            <Button
+              isInline
+              className="curiosity-banner-messages__clipboard-copy-text"
+              component="a"
+              variant="link"
+              icon={<CopyIcon />}
+              iconPosition="right"
+              onClick={() => clipboardCopyFunc(undefined, 'ballz world')}
+            />,
             <Button
               isInline
               component="a"
