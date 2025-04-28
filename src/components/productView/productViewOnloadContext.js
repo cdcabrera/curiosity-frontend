@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { AlertVariant, Button } from '@patternfly/react-core';
+import { AlertVariant, Button, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { useProduct, useProductBillingAccountsQuery, useProductViewContext } from './productViewContext';
 import { useSetBannerMessages } from '../bannerMessages/bannerMessagesContext';
@@ -82,7 +82,25 @@ const useUsageBanner = ({
 
   useEffect(() => {
     if (isUsageError === true) {
-      const { firstProvider, firstProviderAccount, firstProviderNumberAccounts, numberProviders } = data.usageMetrics;
+      const {
+        firstProvider,
+        firstProviderAccount,
+        firstProviderNumberAccounts,
+        numberProviders,
+        uniqueAccountsProvidersList
+      } = data.usageMetrics;
+
+      const ClipboardWrapper = ({ children }) => (
+        <ClipboardCopy
+          className="curiosity-banner-messages__clipboard-copy-text"
+          hoverTip="Copy"
+          clickTip="Copied"
+          variant="inline-compact"
+          onCopy={() => clipboardCopyFunc(undefined, JSON.stringify(uniqueAccountsProvidersList, null, 2))}
+        >
+          {children}
+        </ClipboardCopy>
+      );
 
       setBannerMessages({
         variant: AlertVariant.warning,
@@ -106,7 +124,7 @@ const useUsageBanner = ({
             account: firstProviderAccount
           },
           [
-            <strong />,
+            <ClipboardWrapper />,
             <Button
               isInline
               component="a"

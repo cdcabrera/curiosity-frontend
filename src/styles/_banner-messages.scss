@@ -3,4 +3,8 @@
   padding-left: var(--pf-c-page__main-section--PaddingLeft);
   padding-right: var(--pf-c-page__main-section--PaddingRight);
   padding-bottom: var(--pf-global--spacer--md);
+
+  &__clipboard-copy-text {
+    background-color: #fae19d !important;
+  }
 }
