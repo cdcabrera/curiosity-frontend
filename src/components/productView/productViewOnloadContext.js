@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { AlertVariant, Button, clipboardCopyFunc } from '@patternfly/react-core';
+import { AlertVariant, Button, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
 import { CopyIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { useProduct, useProductBillingAccountsQuery, useProductViewContext } from './productViewContext';
 import { useSetBannerMessages } from '../bannerMessages/bannerMessagesContext';
@@ -82,9 +82,26 @@ const useUsageBanner = ({
 
   useEffect(() => {
     if (isUsageError === true) {
-      const { firstProvider, firstProviderAccount, firstProviderNumberAccounts, numberProviders, ...rest } =
-        data.usageMetrics;
-      console.log('>>>> REST', rest);
+      const {
+        firstProvider,
+        firstProviderAccount,
+        firstProviderNumberAccounts,
+        numberProviders,
+        uniqueAccountsProvidersList
+      } = data.usageMetrics;
+
+      const ClipBoardWrapper = ({ children }) => (
+        <ClipboardCopy
+          className="curiosity-banner-messages__clipboard-copy-text"
+          hoverTip="Copy"
+          clickTip="Copied"
+          variant="inline-compact"
+          onCopy={() => clipboardCopyFunc(undefined, JSON.stringify(uniqueAccountsProvidersList, null, 2))}
+        >
+          {children}
+        </ClipboardCopy>
+      );
+
       setBannerMessages({
         variant: AlertVariant.warning,
         id: 'usage-warning',
@@ -107,15 +124,7 @@ const useUsageBanner = ({
             account: firstProviderAccount
           },
           [
-            <Button
-              isInline
-              className="curiosity-banner-messages__clipboard-copy-text"
-              component="a"
-              variant="link"
-              icon={<CopyIcon />}
-              iconPosition="right"
-              onClick={() => clipboardCopyFunc(undefined, 'ballz world')}
-            />,
+            <ClipBoardWrapper />,
             <Button
               isInline
               component="a"

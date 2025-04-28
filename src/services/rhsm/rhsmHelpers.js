@@ -28,11 +28,19 @@ const billingMetrics = baseMetrics => {
     const aggregatedAccountsProviders = [...uniqueAccounts, ...uniqueProviders];
 
     const filterAggregatedAccountsProviders = {};
+    const uniqueAccountsProvidersList = [];
 
     aggregatedAccountsProviders.forEach(({ id, provider }) => {
       filterAggregatedAccountsProviders[provider] ??= new Set();
       filterAggregatedAccountsProviders[provider].add(id);
     });
+
+    Object.entries(filterAggregatedAccountsProviders).forEach(([key, value]) => {
+      Array.from(value).forEach(valueId => uniqueAccountsProvidersList.push([key, valueId]));
+    });
+
+    // console.log('>>> string', JSON.stringify(copyPasteAccountsProviders, null, 2));
+    // console.log('>>> string', JSON.stringify(copyPasteAccountsProviders.join(' \n'), null, 2));
 
     const numberProviders = Object.keys(filterAggregatedAccountsProviders).length;
     const [firstProvider, firstProviderAccounts = []] = Object.entries(filterAggregatedAccountsProviders).shift();
@@ -47,7 +55,8 @@ const billingMetrics = baseMetrics => {
       firstProvider,
       firstProviderAccount,
       firstProviderNumberAccounts,
-      numberProviders
+      numberProviders,
+      uniqueAccountsProvidersList
     };
   });
 
