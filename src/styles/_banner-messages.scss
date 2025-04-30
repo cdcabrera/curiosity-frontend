@@ -7,6 +7,18 @@
   &__clipboard-copy-text {
     color: inherit !important;
 
+    &-danger {
+      background-color: #faa69d !important;
+    }
+
+    &-info {
+      background-color: #9dd3fa !important;
+    }
+
+    &-success {
+      background-color: #abfa9d !important;
+    }
+
     &-warning {
       background-color: #fae19d !important;
     }
