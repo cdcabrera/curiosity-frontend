@@ -5,6 +5,10 @@
   padding-bottom: var(--pf-global--spacer--md);
 
   &__clipboard-copy-text {
-    background-color: #fae19d !important;
+    color: inherit !important;
+
+    &-warning {
+      background-color: #fae19d !important;
+    }
   }
 }

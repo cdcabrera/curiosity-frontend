@@ -7,6 +7,8 @@ import { reduxActions, storeHooks } from '../../redux';
 import { rhsmConstants } from '../../services/rhsm/rhsmConstants';
 import { helpers } from '../../common';
 import { translate } from '../i18n/i18nHelpers';
+import BannerMessagesClipboard from '../bannerMessages/bannerMessagesClipboard';
+import BannerMessagesModal from '../bannerMessages/bannerMessagesModal';
 
 /**
  * Product view onload hooks. Hooks intended to fire AFTER product query and configuration is set.
@@ -91,21 +93,60 @@ const useUsageBanner = ({
       } = data.usageMetrics;
 
       const ClipboardWrapper = ({ children }) => (
-        <ClipboardCopy
+        <Button
           className="curiosity-banner-messages__clipboard-copy-text"
           hoverTip="Copy"
           clickTip="Copied"
           variant="inline-compact"
-          onCopy={() => clipboardCopyFunc(undefined, JSON.stringify(uniqueAccountsProvidersList, null, 2))}
+          // onCopy={() => clipboardCopyFunc(undefined, JSON.stringify(uniqueAccountsProvidersList, null, 2))}
         >
-          {children}
-        </ClipboardCopy>
+          <span>123456</span>
+        </Button>
+      );
+
+      const modalTitle = t('curiosity-banner.usage', {
+        context: ['modal', 'title'],
+        count: uniqueAccountsProvidersList.length
+      });
+
+      const modalContent = (
+        <label aria-live="polite">
+          <p>
+            {t(
+              'curiosity-banner.usage',
+              {
+                context: ['modal', 'description'],
+                count: uniqueAccountsProvidersList.length
+              },
+              [
+                <Button
+                  isInline
+                  component="a"
+                  variant="link"
+                  icon={<ExternalLinkAltIcon />}
+                  iconPosition="right"
+                  target="_blank"
+                  href={helpers.UI_LINK_USAGE_SUBSCRIPTIONS}
+                />
+              ]
+            )}
+          </p>
+          <textarea
+            className="curiosity-error__textarea"
+            readOnly
+            rows="10"
+            value={JSON.stringify(uniqueAccountsProvidersList, null, 2)}
+          />
+        </label>
       );
 
       setBannerMessages({
         variant: AlertVariant.warning,
         id: 'usage-warning',
-        title: t('curiosity-banner.usage', { context: ['title'], product: productId }),
+        title: t('curiosity-banner.usage', {
+          context: ['title'],
+          product: productId
+        }),
         message: t(
           'curiosity-banner.usage',
           {
@@ -124,7 +165,17 @@ const useUsageBanner = ({
             account: firstProviderAccount
           },
           [
-            <ClipboardWrapper />,
+            /*
+             *<BannerMessagesClipboard
+             *  alertVariant={AlertVariant.warning}
+             *  data={JSON.stringify(uniqueAccountsProvidersList, null, 2)}
+             * />,
+             */
+            <BannerMessagesModal
+              alertVariant={AlertVariant.warning}
+              modalTitle={modalTitle}
+              modalContent={modalContent}
+            />,
             <Button
               isInline
               component="a"
