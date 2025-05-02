@@ -56,7 +56,7 @@ const BannerMessagesModal = ({
       </Modal>
       <Button
         data-test="bannerMessageModalButton"
-        className={`curiosity-banner-messages__clipboard-copy-text ${(alertVariant && `curiosity-banner-messages__clipboard-copy-text-${alertVariant}`) || ''}`}
+        className={`curiosity-banner-messages__modal-link ${(alertVariant && `curiosity-banner-messages__modal-link-${alertVariant}`) || ''}`}
         isInline
         component="a"
         variant="link"
