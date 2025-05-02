@@ -3,24 +3,4 @@
   padding-left: var(--pf-c-page__main-section--PaddingLeft);
   padding-right: var(--pf-c-page__main-section--PaddingRight);
   padding-bottom: var(--pf-global--spacer--md);
-
-  &__modal-link {
-    color: inherit !important;
-
-    &-danger {
-      background-color: #faa69d !important;
-    }
-
-    &-info {
-      background-color: #9dd3fa !important;
-    }
-
-    &-success {
-      background-color: #d1ffcc !important;
-    }
-
-    &-warning {
-      background-color: #fae19d !important;
-    }
-  }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { AlertVariant, Button } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { AlertVariant, AlertActionLink, Button, List, ListItem, ListVariant } from '@patternfly/react-core';
+import { ExternalLinkAltIcon, InfoIcon } from '@patternfly/react-icons';
 import { useProduct, useProductBillingAccountsQuery, useProductViewContext } from './productViewContext';
 import { BannerMessagesModal, useSetBannerMessages } from '../bannerMessages/bannerMessages';
 import { reduxActions, storeHooks } from '../../redux';
@@ -138,16 +138,37 @@ const useUsageBanner = ({
         dataTest: 'bannerUsage',
         id: 'usage-warning',
         title: t('curiosity-banner.usage', {
-          context: ['title'],
+          context: ['alert', 'title'],
           product: productId
         }),
+        actionLinks: (
+          <React.Fragment>
+            <BannerMessagesModal
+              alertVariant={AlertVariant.warning}
+              modalTitle={modalTitle}
+              modalContent={modalContent}
+            >
+              {t('curiosity-banner.usage', { context: ['alert', 'link', 'modal'] })}
+            </BannerMessagesModal>
+            <AlertActionLink
+              data-test="bannerUsageLearnMoreLink"
+              component="a"
+              icon={<ExternalLinkAltIcon />}
+              iconPosition="right"
+              target="_blank"
+              href={helpers.UI_LINK_USAGE_SUBSCRIPTIONS}
+            >
+              {t('curiosity-banner.usage', { context: ['alert', 'link'] })}
+            </AlertActionLink>
+          </React.Fragment>
+        ),
         message: t(
           'curiosity-banner.usage',
           {
-            context: ['description'],
+            context: ['alert', 'description'],
             count: (isMultipleProviders && numberProviders) || (isMultipleAccounts && firstProviderNumberAccounts) || 1,
             remaining: t('curiosity-banner.usage', {
-              context: ['description', 'remaining', isMultipleProviders && 'provider'],
+              context: ['alert', 'description', 'remaining', isMultipleProviders && 'provider'],
               count: (isMultipleProviders && remainingProviders) || (isMultipleAccounts && remainingAccounts) || 1
             }),
             provider: t('curiosity-toolbar.label', {
@@ -156,23 +177,7 @@ const useUsageBanner = ({
             }),
             account: firstProviderAccount
           },
-          [
-            <BannerMessagesModal
-              alertVariant={AlertVariant.warning}
-              modalTitle={modalTitle}
-              modalContent={modalContent}
-            />,
-            <Button
-              data-test="bannerUsageLearnMoreLink"
-              isInline
-              component="a"
-              variant="link"
-              icon={<ExternalLinkAltIcon />}
-              iconPosition="right"
-              target="_blank"
-              href={helpers.UI_LINK_USAGE_SUBSCRIPTIONS}
-            />
-          ]
+          [<strong />]
         )
       });
     }

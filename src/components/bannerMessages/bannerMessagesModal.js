@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button, Modal, ModalVariant } from '@patternfly/react-core';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { AlertActionLink, Button, Modal, ModalVariant } from '@patternfly/react-core';
 import { translate } from '../i18n/i18nHelpers';
 
 /**
@@ -12,22 +11,13 @@ import { translate } from '../i18n/i18nHelpers';
  * A self-contained modal wrapper for banner messages.
  *
  * @param {object} props
- * @param {success|warning|danger|info} [props.alertVariant] Used to apply a background color to the modal open link.
- * @param {React.ReactNode} [props.buttonIcon=InfoCircleIcon]
  * @param {React.ReactNode} [props.modalTitle]
  * @param {React.ReactNode} [props.modalContent]
  * @param {React.ReactNode} props.children
  * @param {translate} [props.t=translate]
  * @returns {JSX.Element}
  */
-const BannerMessagesModal = ({
-  alertVariant,
-  buttonIcon = <InfoCircleIcon />,
-  modalTitle,
-  modalContent = '...',
-  children,
-  t = translate
-}) => {
+const BannerMessagesModal = ({ modalTitle, modalContent = '...', children, t = translate }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const onClose = () => {
@@ -48,24 +38,15 @@ const BannerMessagesModal = ({
         variant={ModalVariant.small}
         actions={[
           <Button key="confirm" variant="secondary" onClick={onClose}>
-            {t('curiosity-banner.label', { context: 'close' })}
+            {t('curiosity-banner.modal', { context: ['label', 'close'] })}
           </Button>
         ]}
       >
         <div data-test="bannerMessageModalContent">{modalContent}</div>
       </Modal>
-      <Button
-        data-test="bannerMessageModalButton"
-        className={`curiosity-banner-messages__modal-link ${(alertVariant && `curiosity-banner-messages__modal-link-${alertVariant}`) || ''}`}
-        isInline
-        component="a"
-        variant="link"
-        icon={buttonIcon}
-        iconPosition="right"
-        onClick={onClick}
-      >
+      <AlertActionLink data-test="bannerMessageModalLink" isInline component="a" onClick={onClick}>
         {children}
-      </Button>
+      </AlertActionLink>
     </React.Fragment>
   );
 };

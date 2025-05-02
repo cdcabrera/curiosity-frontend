@@ -39,17 +39,18 @@ const BannerMessages = ({
     return (
       <div className="curiosity-banner-messages">
         <AlertGroup isLiveRegion>
-          {bannerMessages?.map(({ id, message, title, dataTest, variant = BannerMessageVariant.info }) => {
+          {bannerMessages?.map(({ id, message, title, dataTest, actionLinks, variant = BannerMessageVariant.info }) => {
             const actionClose = <AlertActionCloseButton onClose={() => removeBannerMessages(id || title)} />;
 
             return (
               <Alert
-                data-test={dataTest}
                 actionClose={actionClose}
+                actionLinks={actionLinks}
+                data-test={dataTest}
                 key={id || title}
+                isInline
                 title={title}
                 variant={variant}
-                isInline
               >
                 {message}
               </Alert>
