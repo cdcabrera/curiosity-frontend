@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, AlertActionCloseButton, AlertGroup, AlertVariant } from '@patternfly/react-core';
-import { useBannerMessages, useRemoveBannerMessages } from './bannerMessagesContext';
+import { useBannerMessages, useRemoveBannerMessages, useSetBannerMessages } from './bannerMessagesContext';
+import { BannerMessagesModal } from './bannerMessagesModal';
 
 /**
  * Banner alert messages for a product view.
@@ -8,6 +9,7 @@ import { useBannerMessages, useRemoveBannerMessages } from './bannerMessagesCont
  * @memberof Components
  * @module BannerMessages
  * @property {module} BannerMessagesContext
+ * @property {module} BannerMessagesModal
  */
 
 /**
@@ -37,11 +39,18 @@ const BannerMessages = ({
     return (
       <div className="curiosity-banner-messages">
         <AlertGroup isLiveRegion>
-          {bannerMessages?.map(({ id, message, title, variant = BannerMessageVariant.info }) => {
+          {bannerMessages?.map(({ id, message, title, dataTest, variant = BannerMessageVariant.info }) => {
             const actionClose = <AlertActionCloseButton onClose={() => removeBannerMessages(id || title)} />;
 
             return (
-              <Alert actionClose={actionClose} key={id || title} title={title} variant={variant} isInline>
+              <Alert
+                data-test={dataTest}
+                actionClose={actionClose}
+                key={id || title}
+                title={title}
+                variant={variant}
+                isInline
+              >
                 {message}
               </Alert>
             );
@@ -54,4 +63,11 @@ const BannerMessages = ({
   return null;
 };
 
-export { BannerMessages as default, BannerMessages, BannerMessageVariant };
+export {
+  BannerMessages as default,
+  BannerMessages,
+  BannerMessageVariant,
+  BannerMessagesModal,
+  useRemoveBannerMessages,
+  useSetBannerMessages
+};

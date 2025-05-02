@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { AlertVariant, Button } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { useProduct, useProductBillingAccountsQuery, useProductViewContext } from './productViewContext';
-import { useSetBannerMessages } from '../bannerMessages/bannerMessagesContext';
+import { BannerMessagesModal, useSetBannerMessages } from '../bannerMessages/bannerMessages';
 import { reduxActions, storeHooks } from '../../redux';
 import { rhsmConstants } from '../../services/rhsm/rhsmConstants';
 import { helpers } from '../../common';
@@ -82,25 +82,73 @@ const useUsageBanner = ({
 
   useEffect(() => {
     if (isUsageError === true) {
-      const { firstProvider, firstProviderAccount, firstProviderNumberAccounts, numberProviders } = data.usageMetrics;
+      const {
+        firstProvider,
+        firstProviderAccount,
+        firstProviderNumberAccounts,
+        numberProviders,
+        uniqueAccountsProvidersList
+      } = data.usageMetrics;
+
+      const isMultipleProviders = numberProviders >= 2;
+      const isMultipleAccounts = firstProviderNumberAccounts >= 2;
+      const remainingAccounts = firstProviderNumberAccounts - 1;
+      const remainingProviders = numberProviders - 1;
+
+      const modalTitle = t('curiosity-banner.usage', {
+        context: ['modal', 'title'],
+        count: uniqueAccountsProvidersList.length
+      });
+
+      const modalContent = (
+        <label aria-live="polite">
+          <p>
+            {t(
+              'curiosity-banner.usage',
+              {
+                context: ['modal', 'description'],
+                count: uniqueAccountsProvidersList.length
+              },
+              [
+                <Button
+                  data-test="bannerUsageLearnMoreLink"
+                  isInline
+                  component="a"
+                  variant="link"
+                  icon={<ExternalLinkAltIcon />}
+                  iconPosition="right"
+                  target="_blank"
+                  href={helpers.UI_LINK_USAGE_SUBSCRIPTIONS}
+                />
+              ]
+            )}
+          </p>
+          <textarea
+            data-test="bannerUsageAccountsProvidersList"
+            className="curiosity-error__textarea"
+            readOnly
+            rows="10"
+            value={JSON.stringify(uniqueAccountsProvidersList, null, 2)}
+          />
+        </label>
+      );
 
       setBannerMessages({
         variant: AlertVariant.warning,
+        dataTest: 'bannerUsage',
         id: 'usage-warning',
-        title: t('curiosity-banner.usage', { context: ['title'], product: productId }),
+        title: t('curiosity-banner.usage', {
+          context: ['title'],
+          product: productId
+        }),
         message: t(
           'curiosity-banner.usage',
           {
             context: ['description'],
-            count: (numberProviders >= 2 && 2) || (firstProviderNumberAccounts > 2 && 2) || 0,
+            count: (isMultipleProviders && numberProviders) || (isMultipleAccounts && firstProviderNumberAccounts) || 1,
             remaining: t('curiosity-banner.usage', {
-              context: ['description', 'remaining', numberProviders >= 2 && 'provider'],
-              count:
-                (numberProviders === 2 && 1) ||
-                (numberProviders > 2 && numberProviders - 1) ||
-                (numberProviders === 2 && 1) ||
-                (firstProviderNumberAccounts > 2 && firstProviderNumberAccounts - 1) ||
-                0
+              context: ['description', 'remaining', isMultipleProviders && 'provider'],
+              count: (isMultipleProviders && remainingProviders) || (isMultipleAccounts && remainingAccounts) || 1
             }),
             provider: t('curiosity-toolbar.label', {
               context: ['billing_provider', (firstProvider === '' && 'none') || firstProvider],
@@ -109,8 +157,13 @@ const useUsageBanner = ({
             account: firstProviderAccount
           },
           [
-            <strong />,
+            <BannerMessagesModal
+              alertVariant={AlertVariant.warning}
+              modalTitle={modalTitle}
+              modalContent={modalContent}
+            />,
             <Button
+              data-test="bannerUsageLearnMoreLink"
               isInline
               component="a"
               variant="link"
