@@ -85,14 +85,14 @@ global.window.insights = {
     appNavClick: Function.prototype,
     auth: {
       getUser: () =>
-        new Promise(resolve =>
+        new Promise(resolve => {
           resolve({
             identity: {
               account_number: '0',
               type: 'User'
             }
-          })
-        )
+          });
+        })
     },
     getBundleData: Function.prototype,
     getUserPermissions: () => [],
@@ -165,8 +165,8 @@ global.screenRender = {
  *
  * @param {React.ReactNode} testComponent
  * @param {object} options
- * @param {boolean} options.includeInstanceRef The component includes an instance ref for class components. If the component instance
- *     includes functions, they are wrapped in "act" for convenience.
+ * @param {boolean} options.includeInstanceRef The component includes an instance ref for class components.
+ *     If the component instance includes functions, they are wrapped in "act" for convenience.
  * @returns {HTMLElement}
  */
 global.renderComponent = (testComponent, options = {}) => {
@@ -274,7 +274,8 @@ global.renderComponent = (testComponent, options = {}) => {
  *
  * @param {Function} useHook
  * @param {object} options
- * @param {boolean} options.includeInstanceContext The hook result, if it includes functions, is wrapped in "act" for convenience.
+ * @param {boolean} options.includeInstanceContext The hook result, if it includes functions,
+ *     is wrapped in "act" for convenience.
  * @param {object} options.state An object representing a mock Redux store's state.
  * @returns {*}
  */
@@ -403,10 +404,12 @@ global.shallowComponent = async testComponent => {
   return localRenderHook(testComponent);
 };
 
-// ToDo: revisit squashing log and group messaging, redux leaks log messaging
-// ToDo: revisit squashing PF4 "popper" alerts
-// ToDo: revisit squashing PF4 "validateDOMNesting" select alerts
-// ToDo: revisit squashing PF4 "validateDOMNesting" table alerts
+/*
+ * ToDo: revisit squashing log and group messaging, redux leaks log messaging
+ * ToDo: revisit squashing PF4 "popper" alerts
+ * ToDo: revisit squashing PF4 "validateDOMNesting" select alerts
+ * ToDo: revisit squashing PF4 "validateDOMNesting" table alerts
+ */
 /*
  * For applying a global Jest "beforeAll", based on
  * - consoledot/platform console messaging
