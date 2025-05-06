@@ -1,5 +1,6 @@
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { includeIgnoreFile } from '@eslint/compat';
+import globals from 'globals';
 import babelParser from '@babel/eslint-parser';
 import eslintPluginJs from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
@@ -7,38 +8,82 @@ import jestPlugin from 'eslint-plugin-jest';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import nodePlugin from 'eslint-plugin-n';
-import prettierPlugin from 'eslint-plugin-prettier/recommended'; // per docs prettier/recommended includes eslint-config-prettier
+import prettierPlugin from 'eslint-plugin-prettier/recommended';
+import stylisticJsPlugin from '@stylistic/eslint-plugin-js'
+import importResolverWebpack from 'eslint-import-resolver-webpack';
+import commentLengthPlugin from 'eslint-plugin-comment-length';
+import airbnbBaseConfig from './config/eslint.config.airbnbbase.js';
+
+// import airbnbConfig from 'eslint-config-airbnb/rules/react.js';
+
+
 //
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
+  stylisticJsPlugin.configs.all,
+  commentLengthPlugin.configs['flat/recommended'],
   jestPlugin.configs['flat/recommended'],
   jsdocPlugin.configs['flat/recommended'],
   jsxA11yPlugin.flatConfigs.recommended,
-  nodePlugin.configs['flat/recommended'],
+  // nodePlugin.configs['flat/recommended'],
   importPlugin.flatConfigs.recommended,
   eslintPluginJs.configs.recommended,
   reactPlugin.configs.flat.recommended,
+  reactHooksPlugin.configs['recommended-latest'],
+  ...airbnbBaseConfig,
   prettierPlugin,
   {
+    // ...reactPlugin.configs.flat.recommended,
     languageOptions: {
-      parser: babelParser,
       parserOptions: {
-        ecmaVersion: 2022
+        ecmaVersion: 2022,
+        ecmaFeatures: {
+          jsx: true
+        },
+        sourceType: 'module'
       },
+      ...reactPlugin.configs.flat.recommended.languageOptions,
+      parser: babelParser,
       globals: {
+        ...globals.browser,
+        ...globals.node,
         'mockObjectProperty': 'readonly',
         'mockWindowLocation': 'readonly',
         'renderHook': 'readonly',
         'renderComponent': 'readonly',
         'shallowComponent': 'readonly',
         'skipIt': 'readonly'
-      },
-      ecmaVersion: 2022
+      }
+      // ecmaVersion: 2022
+    },
+    settings: {
+      react: {
+        version: 'detect'
+      }
     },
     rules: {
+      '@stylistic/js/multiline-comment-style': [
+        "warn",
+        "starred-block"
+      ],
       'arrow-parens': ['error', 'as-needed'],
       'comma-dangle': 0,
+      "comment-length/limit-single-line-comments": [
+        "warn",
+        {
+          "maxLength": 120,
+          "logicalWrap": true
+        }
+      ],
+      "comment-length/limit-multi-line-comments": [
+        "warn",
+        {
+          "maxLength": 120,
+          "logicalWrap": true
+        }
+      ],
       'consistent-return': 1,
       'import/extensions': [
         "error",
@@ -109,9 +154,10 @@ export default [
           ignoreUrls: true
         }
       ],
-      'n/no-unsupported-features/es-syntax': 1,
-      'n/shebang': 0,
-      'n/no-unpublished-bin': 0,
+      // 'n/no-unpublished-bin': 0,
+      // 'n/no-unsupported-features/es-syntax': 1,
+      // 'n/shebang': 0,
+      // 'n/no-missing-import': 0,
       'no-case-declarations': 0,
       'no-console': 0,
       'no-continue': 0,
