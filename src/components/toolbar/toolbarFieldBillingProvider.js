@@ -33,7 +33,6 @@ const useToolbarFieldOptions = ({
   const { [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: billingProvider } = useAliasProductQuery();
   const { productId } = useAliasProduct();
   const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
-  const updatedBillingProvider = billingProvider || data?.defaultProvider;
   const billingProviders = data?.billingProviders;
 
   return useMemo(
@@ -44,9 +43,9 @@ const useToolbarFieldOptions = ({
           value: provider
         }),
         value: provider,
-        isSelected: provider === updatedBillingProvider
+        isSelected: provider === billingProvider
       })) || [],
-    [billingProviders, updatedBillingProvider, t]
+    [billingProviders, billingProvider, t]
   );
 };
 
@@ -118,10 +117,8 @@ const ToolbarFieldBillingProvider = ({
   const { [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: updatedValue } = useAliasProductQuery();
   const onSelect = useAliasOnSelect();
   const options = useAliasToolbarFieldOptions();
-  const updatedOptions = options.map(option => ({
-    ...option,
-    isSelected: updatedValue && option.value === updatedValue
-  }));
+
+  console.log('>>>>> TESTING BILLING PROVIDER', updatedValue, options);
 
   return (
     <React.Fragment>
@@ -132,7 +129,7 @@ const ToolbarFieldBillingProvider = ({
             context: 'billing_provider'
           })}
           onSelect={onSelect}
-          options={updatedOptions}
+          options={options}
           selectedOptions={updatedValue}
           placeholder={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, {
             context: 'billing_provider'

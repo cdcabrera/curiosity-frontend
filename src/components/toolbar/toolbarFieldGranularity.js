@@ -30,16 +30,16 @@ const useToolbarFieldOptions = ({
   t = translate,
   useProductGraphTallyQuery: useAliasProductGraphTallyQuery = useProductGraphTallyQuery
 } = {}) => {
-  // const { [RHSM_API_QUERY_SET_TYPES.GRANULARITY]: granularity } = useAliasProductGraphTallyQuery();
+  const { [RHSM_API_QUERY_SET_TYPES.GRANULARITY]: granularity } = useAliasProductGraphTallyQuery();
 
   return useMemo(
     () =>
       options.map(type => ({
         title: t('curiosity-toolbar.label', { context: ['granularity', type] }),
         value: type,
-        isSelected: false
+        isSelected: type === granularity
       })),
-    [options, t]
+    [granularity, options, t]
   );
 };
 

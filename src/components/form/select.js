@@ -225,9 +225,9 @@ updateSelectedProp.memo = helpers.memo(updateSelectedProp, { cacheLimit: 25 });
  */
 const formatEvent = ({ event, options, variant = SelectVariant.single } = {}) => {
   const mockUpdatedOptions = helpers.memoClone(options);
-  const mockSelected =
-    (variant === SelectVariant.checkbox && mockUpdatedOptions.filter(({ isSelected }) => isSelected === true)) ||
-    mockUpdatedOptions.find(({ isSelected }) => isSelected === true);
+  const mockSelected = mockUpdatedOptions[(variant === SelectVariant.checkbox && 'filter') || 'find'](
+    opt => opt.isSelected === true
+  );
 
   const mockSelectedIndex = mockUpdatedOptions
     .filter(({ isSelected }) => isSelected === true)
@@ -295,13 +295,18 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
     variant
   });
 
+  console.log('>>>> SEL HOOK 003', initialOptions, initialSelectedOption);
+
   const [selectedOption, setSelectedOption] = React.useState();
   const [options, setOptions] = useState(initialOptions);
 
   useEffect(() => {
-    console.log('>>> REFIRE INITIAL OPTION SELECTED');
     setSelectedOption(initialSelectedOption);
   }, [initialSelectedOption]);
+
+  useEffect(() => {
+    setOptions(initialOptions);
+  }, [initialOptions]);
 
   // Update local state with user selected options
   const onSelectCallback = useCallback(
@@ -342,7 +347,7 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
     [onSelect, variant, options]
   );
 
-  console.log('>>>> SEL HOOK 003', selectedOption, options);
+  console.log('>>>> SEL HOOK 004', selectedOption, options);
   return {
     selectedOption,
     options,

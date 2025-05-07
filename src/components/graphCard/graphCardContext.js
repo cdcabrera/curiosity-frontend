@@ -71,6 +71,7 @@ const useMetricsSelector = ({
   const { metrics = [] } = settings;
 
   const {
+    cancelled,
     error,
     fulfilled,
     pending,
@@ -103,7 +104,7 @@ const useMetricsSelector = ({
     dataSets: dataByList,
     error,
     fulfilled,
-    pending
+    pending: pending || cancelled
   };
 };
 

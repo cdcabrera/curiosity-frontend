@@ -42,16 +42,21 @@ const useToolbarFieldOptions = ({
   const defaultAccount = data?.defaultAccountByProvider?.[updatedBillingProvider];
   const billingAccounts = data?.accountsByProvider?.[updatedBillingProvider];
 
+  console.log('>>>>> BILLING ACCOUNT OPTIONS', updatedBillingProvider, billingAccounts);
+
   return useMemo(
-    () =>
-      billingAccounts?.map(account => ({
-        title: t('curiosity-toolbar.label', {
-          context: ['billing_account_id', account === '' && 'none'],
-          value: account
-        }),
-        value: account,
-        isSelected: account === defaultAccount
-      })) || [],
+    () => ({
+      defaultAccount,
+      options:
+        billingAccounts?.map(account => ({
+          title: t('curiosity-toolbar.label', {
+            context: ['billing_account_id', account === '' && 'none'],
+            value: account
+          }),
+          value: account,
+          isSelected: account === defaultAccount
+        })) || []
+    }),
     [billingAccounts, defaultAccount, t]
   );
 };
@@ -113,28 +118,26 @@ const ToolbarFieldBillingAccount = ({
     [RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER]: billingProvider
   } = useAliasProductQuery();
   const onSelect = useAliasOnSelect();
-  const options = useAliasToolbarFieldOptions();
-  const updatedOptions = options.map(option => ({
-    ...option,
-    isSelected: option.value === updatedValue
-  }));
+  const { defaultAccount, options } = useAliasToolbarFieldOptions();
 
   // Select an account on provider update
   useEffect(() => {
-    const selectedAccount = updatedOptions.find(({ isSelected }) => isSelected === true)?.value;
+    // const selectedAccount = options.find(({ isSelected }) => isSelected === true)?.value;
 
-    if (selectedAccount) {
-      onSelect({ value: selectedAccount });
+    if (defaultAccount) {
+      onSelect({ value: defaultAccount });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [billingProvider]);
 
+  console.log('>>>> billing account', options);
+
   return (
     <Select
-      isReadOnly={updatedOptions.length === 1}
+      isReadOnly={options.length === 1}
       aria-label={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'billing_account' })}
       onSelect={onSelect}
-      options={updatedOptions}
+      options={options}
       selectedOptions={updatedValue}
       placeholder={t(`curiosity-toolbar.placeholder${(isFilter && '_filter') || ''}`, { context: 'billing_account' })}
       alignment={{ position }}
