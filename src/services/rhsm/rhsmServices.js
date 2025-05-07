@@ -1365,7 +1365,7 @@ const getBillingAccounts = async (id, params = {}, options = {}) => {
  *     }
  */
 /**
- * @apiMock {DelayResponse} 250
+ * @apiMock {DelayResponse} 2000
  * @apiMock {RandomSuccess}
  * @api {get} /api/rhsm-subscriptions/v1/tally/products/:product_id/:metric_id Get RHSM graph data
  * @apiDescription Retrieve graph data.
