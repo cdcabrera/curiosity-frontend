@@ -7,7 +7,7 @@ Contributing encompasses repository specific requirements.
 
 Curiosity makes use of
 - GitHub's fork and pull workflow.
-- A linear commit process and rebasing. GitHub merge commits, and squashing are discouraged in favor of smaller independent commits
+- A linear commit process and rebasing. GitHub merge commits and squashing are discouraged in favor of smaller independent commits
 
 > Working directly on the main repository is highly discouraged. Continuous Integration is dependent on branch structure.
 
@@ -32,7 +32,7 @@ Linear commit history for Curiosity makes syncing concise
 </details>
 
 <details>
-<summary><h3 style="display: inline-block">Pull request workflow, and testing</h3></summary>
+<summary><h3 style="display: inline-block">Pull request workflow and testing</h3></summary>
 
 All development work should be handled through GitHub's fork and pull workflow.
 
@@ -45,7 +45,7 @@ represents environment. However, exceptions are allowed, as long those updates a
 > If your pull request work contains any of the following warning signs 
 >  - out of sync commits (is not rebased against the `main` branch)
 >  - poorly structured commits and messages
->  - any one commit relies on other commits to work at all, in the same pull request
+>  - any one commit relies on other commits to work completely, in the same pull request
 >  - dramatic file restructures that attempt complex behavior
 >  - missing, relaxed, or removed unit tests
 >  - dramatic unit test snapshot updates
@@ -97,7 +97,7 @@ Commit messages follow three basic guidelines
 Creating a pull request activates the following checks through GitHub actions.
 - Commit message linting, see [commit_lint.yml](./.github/workflows/commit_lint.yml)
 - Code documentation linting, see [documentation_lint.yml](./.github/workflows/documentation_lint.yml)
-- Pull request spelling, code linting, unit tests and repo-level integration tests, see [integration](./.github/workflows/integration.yml)
+- Pull request spelling, code linting, unit tests, and repo-level integration tests, see [integration](./.github/workflows/integration.yml)
   - The spelling config dictionary is here [cspell.config.json](./config/cspell.config.json)
 - Jenkins integration testing. Currently, Jenkins re-runs the same tests being used in [integration](./.github/workflows/integration.yml)
 
@@ -157,7 +157,7 @@ To merge code into production stable a maintainer must run the release commit pr
    1. `$ npm run release --dry-run` to confirm the release output version and commits.
    1. `$ npm run release` to generate file changes, and then commit them.
       
-      >If the version recommended should be different you can run the command with an override version following a semver format
+      >If the version recommended should be different, you can run the command with an override version following a semver format
       >  ```
       >  $ npm run release --override X.X.X
       >  ``` 
@@ -165,13 +165,13 @@ To merge code into production stable a maintainer must run the release commit pr
    - [`package.json`](./package.json)
    - [`CHANGELOG.md`](./CHANGELOG.md)
 
-   If there are issues with the file updates you can correct them and squish any fixes into the `chore(release): X.X.X` commit
+   If there are issues with the file updates, you can correct them and squish any fixes into the `chore(release): X.X.X` commit
 1. Push the **SINGLE** commit to `origin` `stable`
 1. Using the [Curiosity GitHub releases interface](https://github.com/RedHatInsights/curiosity-frontend/releases)
    1. Draft a new release from `stable` confirming you are aligned with the `chore(release): X.X.X` commit hash
    1. Create the new tag using the **SAME** semver version created by the release commit but add a `v` prefix to it, i.e. `vX.X.X`, for consistency.
    
-   > To avoid issues with inconsistent Git tagging use it is recommended you use the GitHub releases interface.
+   > To avoid issues with inconsistent Git tagging use, it is recommended you use the GitHub releases interface.
 1. Finally, submit a merge request to update the `app-interface` deployment yaml
    - Copy the tagged Git hash and update the `app-interface` configuration hash within `[app-interface-insights-rhsm]/deploy-clowder.yml`
 </details>
@@ -188,7 +188,7 @@ Our current schedule for automated dependency updates
 
 #### Manual cycle for updating NPMs
 Our schedule for updating NPMs
-- 1x a month: running our aggregated dependency update script for all low level packages that require only testing confirmation
+- 1x a month: running our aggregated dependency update script for all low-level packages that require only testing confirmation
    - `$ npm run build:deps`
 - 1x a month: running updates on NPMs that require additional visual and build confirmation. **These packages' semver confidence is labeled as suspect. Breaking changes have been introduced as minor and patch versions. If a package consistently adheres to semver, subject to discussion, they'll be removed from this list.** This includes...
    - dependency-name: "@patternfly/*"
@@ -196,7 +196,7 @@ Our schedule for updating NPMs
    - dependency-name: "victory*"
 
 #### Process for manually updating NPMs
-To update packages in bulk there are 2 pre-defined paths, "basic" and "core".
+To update packages in bulk, there are two pre-defined paths, "basic" and "core."
 
 > For most users, it is **highly discouraged** that you rely on updating ANY `lock` file section ONLY. This potentially creates long-term issues when NPM references in `package.json` potentially require specific
 > dependencies, or have built around specific package functionality that could be inadvertently altered by updating a dependencies' dependency.
@@ -204,19 +204,19 @@ To update packages in bulk there are 2 pre-defined paths, "basic" and "core".
 > For the knowledge, there is a parallel technique for forcing dependency updates based on the syntax leveraged inside of [`package.json`](./package.json). The `caret` character used in
 > [`package.json`](./package.json), for example, indicates `minor` and `patch` versions are backwards compatible with a major package version. By deleting the entire `lock` file, and for simplicity the `node_modules`
 > directory too, then running `$ npm install` you can effectively trigger NPM's install process for leveraging the syntax inside your [`package.json`](./package.json) along with subsequent dependencies.
-> This is useful in scenarios where a dependency of a dependency spans multiple packages and is triggering an alert, or when debugging problematic packages becomes time intensive. However, this should be used sparingly,
+> This is useful in scenarios where a dependency of a dependency spans multiple packages and is triggering an alert, or when debugging problematic packages becomes time-intensive. However, this should be used sparingly,
 > to avoid breaking changes, and tested thoroughly.
 
 ##### Basic NPM updates
 > You can see a listing of all outdated packages by running `$ npm outdated` in the repo context.
 
-1. Clone the repository locally, or bring your fork up-to-date with the development branch. [Make sure development tooling is installed](#install-tooling). 
+1. Clone the repository locally or bring your fork up to date with the development branch. [Make sure development tooling is installed](#install-tooling). 
 1. Open a terminal instance in the repository context and run
     ```
     $ npm run build:deps
     ```
-   This will cycle through ALL basic NPM dependencies, running both unit tests, build and local integration checks. If
-   any errors are throw the package update is skipped.
+   This will cycle through ALL basic NPM dependencies, running both unit tests, build, and local integration checks. If
+   any errors are thrown, the package update is skipped.
 1. After the updates have completed **YOU MUST VISUALLY CONFIRM** the updates were successful by running both local development start scripts.
    - Visually confirm that local development still functions and can be navigated with... 
       ```
@@ -240,7 +240,7 @@ To update packages in bulk there are 2 pre-defined paths, "basic" and "core".
     ```
     $ npm run build:deps-core
     ```
-   This will cycle through ALL core NPM dependencies, running both unit tests, build and local integration checks. If
+   This will cycle through ALL core NPM dependencies, running both unit tests, build, and local integration checks. If
    any errors are throw the package update is skipped.
 1. After the updates have completed **YOU MUST VISUALLY CONFIRM** the updates were successful by running both local development start scripts.
    - Visually confirm that local development still functions and can be navigated with... 
@@ -649,7 +649,7 @@ To update snapshots from the terminal run
   $ npm run test:dev
   ```
 
-From there you'll be presented with a few choices, one of them is "update", you can then hit the "u" key. Once the update script has run you should see additional changed files within Git, make sure to commit them along with your changes or continuous integration testing will fail.
+From there you'll be presented with a few choices, one of them is "update", you can then hit the "u" key. Once the update script has run you should see additional changed files within Git, make sure to commit them along with your changes, or continuous integration testing will fail.
 
 ##### Checking code coverage
 To check the coverage report from the terminal run
