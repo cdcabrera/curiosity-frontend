@@ -1,4 +1,9 @@
-const importPlugin = require('eslint-plugin-import');
+/**
+ * pulled from
+ * - eslint-config-airbnb-base - ^15.0.0
+ * - eslint-config-airbnb - ^19.0.4
+ */
+// const importPlugin = require('eslint-plugin-import');
 const confusingBrowserGlobals = require('confusing-browser-globals');
 
 module.exports = [

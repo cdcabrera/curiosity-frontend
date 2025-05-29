@@ -18,7 +18,6 @@ import airbnbBaseConfig from './config/eslint.config.airbnbbase.js';
 
 // import airbnbConfig from 'eslint-config-airbnb/rules/react.js';
 
-
 //
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
@@ -49,12 +48,12 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
-        'mockObjectProperty': 'readonly',
-        'mockWindowLocation': 'readonly',
-        'renderHook': 'readonly',
-        'renderComponent': 'readonly',
-        'shallowComponent': 'readonly',
-        'skipIt': 'readonly'
+        mockObjectProperty: 'readonly',
+        mockWindowLocation: 'readonly',
+        renderHook: 'readonly',
+        renderComponent: 'readonly',
+        shallowComponent: 'readonly',
+        skipIt: 'readonly'
       }
       // ecmaVersion: 2022
     },
@@ -64,29 +63,26 @@ export default [
       }
     },
     rules: {
-      '@stylistic/multiline-comment-style': [
-        "warn",
-        "starred-block"
-      ],
+      '@stylistic/multiline-comment-style': ['warn', 'starred-block'],
       'arrow-parens': ['error', 'as-needed'],
       'comma-dangle': 0,
-      "comment-length/limit-single-line-comments": [
-        "warn",
+      'comment-length/limit-single-line-comments': [
+        'warn',
         {
-          "maxLength": 120,
-          "logicalWrap": true
+          maxLength: 120,
+          logicalWrap: true
         }
       ],
-      "comment-length/limit-multi-line-comments": [
-        "warn",
+      'comment-length/limit-multi-line-comments': [
+        'warn',
         {
-          "maxLength": 120,
-          "logicalWrap": true
+          maxLength: 120,
+          logicalWrap: true
         }
       ],
       'consistent-return': 1,
       'import/extensions': [
-        "error",
+        'error',
         {
           json: 'always'
         }
@@ -94,7 +90,7 @@ export default [
       'import/first': 0,
       'import/newline-after-import': 0,
       'import/no-extraneous-dependencies': [
-        "error",
+        'error',
         {
           devDependencies: true
         }
@@ -102,10 +98,7 @@ export default [
       'import/no-named-as-default': 0,
       'import/no-named-as-default-member': 0,
       'jest/no-done-callback': 0,
-      'jest/no-standalone-expect': [
-        2,
-        { additionalTestBlockFunctions: ["skipIt"] }
-      ],
+      'jest/no-standalone-expect': [2, { additionalTestBlockFunctions: ['skipIt'] }],
       'jest/prefer-to-have-length': 0,
       'jsdoc/check-tag-names': [
         2,
@@ -140,9 +133,9 @@ export default [
         'warn',
         'always',
         {
-          'count': 0,
-          'applyToEndTag': false,
-          'startLines': 1
+          count: 0,
+          applyToEndTag: false,
+          startLines: 1
         }
       ],
       'max-len': [
@@ -154,10 +147,12 @@ export default [
           ignoreUrls: true
         }
       ],
-      // 'n/no-unpublished-bin': 0,
-      // 'n/no-unsupported-features/es-syntax': 1,
-      // 'n/shebang': 0,
-      // 'n/no-missing-import': 0,
+      /*
+       * 'n/no-unpublished-bin': 0,
+       * 'n/no-unsupported-features/es-syntax': 1,
+       * 'n/shebang': 0,
+       * 'n/no-missing-import': 0,
+       */
       'no-case-declarations': 0,
       'no-console': 0,
       'no-continue': 0,
@@ -165,8 +160,8 @@ export default [
       'no-lonely-if': 1,
       'no-plusplus': 0,
       'no-promise-executor-return': 1,
-      'no-restricted-exports': [1, {restrictedNamedExports:  []}],
-      'no-restricted-properties': [0, {object: 'Math', property: 'pow'}],
+      'no-restricted-exports': [1, { restrictedNamedExports: [] }],
+      'no-restricted-properties': [0, { object: 'Math', property: 'pow' }],
       'no-underscore-dangle': 0,
       'no-unsafe-optional-chaining': 1,
       'prefer-exponentiation-operator': 0,
@@ -182,10 +177,13 @@ export default [
         }
       ],
       'react/forbid-prop-types': 0,
-      'react/function-component-definition': [2, { namedComponents: "arrow-function", unnamedComponents: "arrow-function" }],
+      'react/function-component-definition': [
+        2,
+        { namedComponents: 'arrow-function', unnamedComponents: 'arrow-function' }
+      ],
       'react/jsx-curly-newline': 0,
       'react/jsx-filename-extension': 0,
-      'react/jsx-fragments': [ 1, "element" ],
+      'react/jsx-fragments': [1, 'element'],
       'react/jsx-props-no-spreading': 0,
       'react/jsx-one-expression-per-line': 0,
       'react/jsx-no-constructed-context-values': 1,
@@ -193,21 +191,27 @@ export default [
       'react/no-unused-prop-types': 1,
       'react/no-unstable-nested-components': 0,
       'react/prop-types': 0,
-      'react/state-in-constructor': [ 1, "never" ],
-      "space-before-function-paren": 0,
+      'react/state-in-constructor': [1, 'never'],
+      'space-before-function-paren': 0,
       'jsx-a11y/anchor-is-valid': 1,
-      'jsx-a11y/label-has-associated-control': [ 2, {
-        labelComponents: ['CustomInputLabel'],
-        labelAttributes: ['label'],
-        controlComponents: ['CustomInput'],
-        depth: 3
-      }],
-      'jsx-a11y/label-has-for': [ 2, {
-        components: [ "Label" ],
-        required: {
-          some: [ "nesting", "id" ]
+      'jsx-a11y/label-has-associated-control': [
+        2,
+        {
+          labelComponents: ['CustomInputLabel'],
+          labelAttributes: ['label'],
+          controlComponents: ['CustomInput'],
+          depth: 3
         }
-      }]
+      ],
+      'jsx-a11y/label-has-for': [
+        2,
+        {
+          components: ['Label'],
+          required: {
+            some: ['nesting', 'id']
+          }
+        }
+      ]
     }
   }
 ];
