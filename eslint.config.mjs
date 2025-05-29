@@ -21,12 +21,12 @@ import airbnbBaseConfig from './config/eslint.config.airbnbbase.mjs';
 //
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
+  nodePlugin.configs['flat/recommended'],
   stylisticJsPlugin.configs.all,
   commentLengthPlugin.configs['flat/recommended'],
   jestPlugin.configs['flat/recommended'],
   jsdocPlugin.configs['flat/recommended'],
   jsxA11yPlugin.flatConfigs.recommended,
-  // nodePlugin.configs['flat/recommended'],
   importPlugin.flatConfigs.recommended,
   eslintPluginJs.configs.recommended,
   reactPlugin.configs.flat.recommended,
@@ -34,11 +34,11 @@ export default [
   ...airbnbBaseConfig,
   prettierPlugin,
   /*
-  {
-    ...nodePlugin.configs['flat/recommended'],
-    files: ['config/** /*.js', 'scripts/** /*.js']
-  },
-  */
+   *{
+   *  ...nodePlugin.configs['flat/recommended'],
+   *  files: ['config/** /*.js', 'scripts/** /*.js']
+   *},
+   */
   {
     languageOptions: {
       parserOptions: {
@@ -157,6 +157,20 @@ export default [
        * 'n/shebang': 0,
        * 'n/no-missing-import': 0,
        */
+      'n/no-missing-import': [
+        'error',
+        {
+          allowModules: [],
+          // resolvePaths: [],
+          tryExtensions: ['.js', '.jsx', '.ts', '.tsx'],
+          // "resolvePaths": ["/path/to/a/modules/directory"]
+          resolverConfig: {
+            convertPath: {
+
+            }
+          }
+        }
+      ],
       'no-case-declarations': 0,
       'no-console': 0,
       'no-continue': 0,
