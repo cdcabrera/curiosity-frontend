@@ -12,7 +12,7 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import nodePlugin from 'eslint-plugin-n';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import stylisticJsPlugin from '@stylistic/eslint-plugin';
-import importResolverWebpack from 'eslint-import-resolver-webpack';
+// import importResolverWebpack from 'eslint-import-resolver-webpack';
 import commentLengthPlugin from 'eslint-plugin-comment-length';
 import airbnbBaseConfig from './config/eslint.config.airbnbbase.mjs';
 
@@ -21,11 +21,11 @@ import airbnbBaseConfig from './config/eslint.config.airbnbbase.mjs';
 //
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
-  nodePlugin.configs['flat/recommended'],
   stylisticJsPlugin.configs.all,
   commentLengthPlugin.configs['flat/recommended'],
   jestPlugin.configs['flat/recommended'],
   jsdocPlugin.configs['flat/recommended'],
+  nodePlugin.configs['flat/recommended'],
   jsxA11yPlugin.flatConfigs.recommended,
   importPlugin.flatConfigs.recommended,
   eslintPluginJs.configs.recommended,
@@ -157,17 +157,14 @@ export default [
        * 'n/shebang': 0,
        * 'n/no-missing-import': 0,
        */
+      'n/no-unsupported-features/node-builtins': 0,
       'n/no-missing-import': [
         'error',
         {
           allowModules: [],
-          // resolvePaths: [],
-          tryExtensions: ['.js', '.jsx', '.ts', '.tsx'],
-          // "resolvePaths": ["/path/to/a/modules/directory"]
           resolverConfig: {
-            convertPath: {
-
-            }
+            extensions: ['.js', '.jsx', '.ts', '.tsx'],
+            mainFiles: ['index']
           }
         }
       ],

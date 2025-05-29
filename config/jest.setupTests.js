@@ -85,14 +85,14 @@ global.window.insights = {
     appNavClick: Function.prototype,
     auth: {
       getUser: () =>
-        new Promise(resolve =>
+        new Promise(resolve => {
           resolve({
             identity: {
               account_number: '0',
               type: 'User'
             }
-          })
-        )
+          });
+        })
     },
     getBundleData: Function.prototype,
     getUserPermissions: () => [],
