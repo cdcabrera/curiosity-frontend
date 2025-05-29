@@ -11,7 +11,7 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import nodePlugin from 'eslint-plugin-n';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
-import stylisticJsPlugin from '@stylistic/eslint-plugin-js'
+import stylisticJsPlugin from '@stylistic/eslint-plugin';
 import importResolverWebpack from 'eslint-import-resolver-webpack';
 import commentLengthPlugin from 'eslint-plugin-comment-length';
 import airbnbBaseConfig from './config/eslint.config.airbnbbase.js';
@@ -64,7 +64,7 @@ export default [
       }
     },
     rules: {
-      '@stylistic/js/multiline-comment-style': [
+      '@stylistic/multiline-comment-style': [
         "warn",
         "starred-block"
       ],
