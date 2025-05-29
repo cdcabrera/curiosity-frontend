@@ -68,7 +68,7 @@
     "test:integration": "jest ./tests",
     "test:integration-ephemeral": "TZ=UTC jest ./tests --no-cache --testPathIgnorePatterns ./tests/dist.test.js",
     "test:integration-dev": "jest --roots=./tests --watch",
-    "test:lint": "eslint ./src ",
+    "test:lint": "eslint",
     "test:lintbuild": "eslint --ext=json --ext=js --ext=jsx ./**/*.js eslint.config.mjs",
     "test:lintfix": "eslint --ext=js --ext=jsx --fix ./src",
     "test:spell-support": "cspell ./README.md ./config/README.md ./CONTRIBUTING.md --config ./config/cspell.config.json",

@@ -1,12 +1,59 @@
 /**
- * pulled from
- * - eslint-config-airbnb-base - ^15.0.0
- * - eslint-config-airbnb - ^19.0.4
+ * Package, eslint-config-airbnb-base - ^15.0.0
+ *
+ * MIT License
+ *
+ * Copyright (c) 2012 Airbnb
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+ * Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-// const importPlugin = require('eslint-plugin-import');
-const confusingBrowserGlobals = require('confusing-browser-globals');
 
-module.exports = [
+/**
+ * Package, eslint-config-airbnb - ^19.0.4
+ *
+ * MIT License
+ *
+ * Copyright (c) 2012 Airbnb
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+ * Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+import globals from 'globals';
+
+const ignoreBrowserGlobals = ['window', 'blob', 'console', 'document', 'textEncoder', 'url'];
+const browserGlobals = Object.keys(globals.browser).filter(
+  value => !new RegExp(ignoreBrowserGlobals.join('|'), 'gi').test(value)
+);
+
+// value !== 'window' && value !== 'document' && value !== 'console'
+
+export default [
   {
     // Best practices
     rules: {
@@ -69,8 +116,10 @@ module.exports = [
        */
       'default-case-last': 'error',
 
-      // https://eslint.org/docs/rules/default-param-last
-      // 'default-param-last': 'error',
+      /*
+       * https://eslint.org/docs/rules/default-param-last
+       * 'default-param-last': 'error',
+       */
 
       /*
        * encourages use of dot notation whenever possible
@@ -2297,7 +2346,7 @@ module.exports = [
           name: 'isNaN',
           message: 'Use Number.isNaN instead https://github.com/airbnb/javascript#standard-library--isnan'
         }
-      ].concat(confusingBrowserGlobals),
+      ].concat(browserGlobals),
 
       // disallow declaration of variables already declared in the outer scope
       'no-shadow': 'error',
@@ -2318,8 +2367,10 @@ module.exports = [
        */
       'no-undefined': 'off',
 
-      // disallow declaration of variables that are not used in the code
-      // 'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
+      /*
+       * disallow declaration of variables that are not used in the code
+       * 'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
+       */
       'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true, caughtErrors: 'none' }],
 
       // disallow use of variables before they are defined

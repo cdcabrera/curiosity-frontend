@@ -1,4 +1,4 @@
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import { includeIgnoreFile } from '@eslint/compat';
 import globals from 'globals';
 import babelParser from '@babel/eslint-parser';
@@ -14,7 +14,7 @@ import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import stylisticJsPlugin from '@stylistic/eslint-plugin';
 import importResolverWebpack from 'eslint-import-resolver-webpack';
 import commentLengthPlugin from 'eslint-plugin-comment-length';
-import airbnbBaseConfig from './config/eslint.config.airbnbbase.js';
+import airbnbBaseConfig from './config/eslint.config.airbnbbase.mjs';
 
 // import airbnbConfig from 'eslint-config-airbnb/rules/react.js';
 
@@ -33,8 +33,13 @@ export default [
   reactHooksPlugin.configs['recommended-latest'],
   ...airbnbBaseConfig,
   prettierPlugin,
+  /*
   {
-    // ...reactPlugin.configs.flat.recommended,
+    ...nodePlugin.configs['flat/recommended'],
+    files: ['config/** /*.js', 'scripts/** /*.js']
+  },
+  */
+  {
     languageOptions: {
       parserOptions: {
         ecmaVersion: 2022,
@@ -55,7 +60,6 @@ export default [
         shallowComponent: 'readonly',
         skipIt: 'readonly'
       }
-      // ecmaVersion: 2022
     },
     settings: {
       react: {
