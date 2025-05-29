@@ -1,44 +1,34 @@
 import { join } from 'node:path';
 import { includeIgnoreFile } from '@eslint/compat';
-import globals from 'globals';
 import babelParser from '@babel/eslint-parser';
-import eslintPluginJs from '@eslint/js';
-import importPlugin from 'eslint-plugin-import';
+import globals from 'globals';
+import stylisticJsPlugin from '@stylistic/eslint-plugin';
+import commentLengthPlugin from 'eslint-plugin-comment-length';
 import jestPlugin from 'eslint-plugin-jest';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import nodePlugin from 'eslint-plugin-n';
+import importPlugin from 'eslint-plugin-import';
+import eslintPluginJs from '@eslint/js';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import nodePlugin from 'eslint-plugin-n';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
-import stylisticJsPlugin from '@stylistic/eslint-plugin';
-// import importResolverWebpack from 'eslint-import-resolver-webpack';
-import commentLengthPlugin from 'eslint-plugin-comment-length';
-import airbnbBaseConfig from './config/eslint.config.airbnbbase.mjs';
+import airbnbConfig from './config/eslint.config.airbnb.mjs';
 
-// import airbnbConfig from 'eslint-config-airbnb/rules/react.js';
-
-//
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
   stylisticJsPlugin.configs.all,
   commentLengthPlugin.configs['flat/recommended'],
   jestPlugin.configs['flat/recommended'],
   jsdocPlugin.configs['flat/recommended'],
-  nodePlugin.configs['flat/recommended'],
   jsxA11yPlugin.flatConfigs.recommended,
+  nodePlugin.configs['flat/recommended'],
   importPlugin.flatConfigs.recommended,
   eslintPluginJs.configs.recommended,
   reactPlugin.configs.flat.recommended,
   reactHooksPlugin.configs['recommended-latest'],
-  ...airbnbBaseConfig,
+  ...airbnbConfig,
   prettierPlugin,
-  /*
-   *{
-   *  ...nodePlugin.configs['flat/recommended'],
-   *  files: ['config/** /*.js', 'scripts/** /*.js']
-   *},
-   */
   {
     languageOptions: {
       parserOptions: {
@@ -151,13 +141,6 @@ export default [
           ignoreUrls: true
         }
       ],
-      /*
-       * 'n/no-unpublished-bin': 0,
-       * 'n/no-unsupported-features/es-syntax': 1,
-       * 'n/shebang': 0,
-       * 'n/no-missing-import': 0,
-       */
-      'n/no-unsupported-features/node-builtins': 0,
       'n/no-missing-import': [
         'error',
         {
@@ -168,6 +151,7 @@ export default [
           }
         }
       ],
+      'n/no-unsupported-features/node-builtins': 0,
       'no-case-declarations': 0,
       'no-console': 0,
       'no-continue': 0,
