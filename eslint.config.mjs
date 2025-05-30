@@ -17,27 +17,34 @@ import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import airbnbConfig from './config/eslint.config.airbnb.mjs';
 
 const json = {
-  name: 'json',
   files: ['public/**/*.json', 'src/**/*.json'],
+  // language: 'json/json',
   ...eslintPluginJson.configs.recommended
+};
+
+/*
+export default [
+  includeIgnoreFile(join(process.cwd(), '.gitignore')),
+  json
+];
+*/
+
+const commentLength = {
+  // FixMe: JSON plugin borks Comment Plugin. Removing JSON or including commentLength as a plugin bypasses the issue
+  name: 'comment-length',
+  plugins: {
+    'comment-length': commentLengthPlugin
+  }
+  // ...commentLengthPlugin.configs['flat/recommended']
 };
 
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
   stylisticJsPlugin.configs.all,
   // eslintPluginJson.configs.recommended,
-  commentLengthPlugin.configs['flat/recommended'],
-  /*
-  {
-    // FixMe: JSON plugin borks Comment Plugin. Removing JSON or including commentLength as a plugin bypasses the issue
-    name: 'comment-length',
-    // plugins: {
-    //  'comment-length': commentLengthPlugin
-    // },
-    ...commentLengthPlugin.configs['flat/recommended']
-  },
-  */
-  //
+  // commentLengthPlugin.configs['flat/recommended'],
+  // commentLength,
+  json,
   jestPlugin.configs['flat/recommended'],
   jsdocPlugin.configs['flat/recommended'],
   jsxA11yPlugin.flatConfigs.recommended,
@@ -63,11 +70,10 @@ export default [
   // ...commentLengthPlugin.configs['flat/recommended'].rules
   // },
   {
-    /*
-     * plugins: {
-     *  'comment-length': commentLengthPlugin
-     * },
-     */
+    plugins: {
+      'comment-length': commentLengthPlugin
+    },
+    ignores: ['**/*.json'],
     languageOptions: {
       parserOptions: {
         ecmaVersion: 2022,
