@@ -10,15 +10,34 @@ import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import nodePlugin from 'eslint-plugin-n';
 import importPlugin from 'eslint-plugin-import';
 import eslintPluginJs from '@eslint/js';
+import eslintPluginJson from '@eslint/json';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import airbnbConfig from './config/eslint.config.airbnb.mjs';
 
+const json = {
+  name: 'json',
+  files: ['public/**/*.json', 'src/**/*.json'],
+  ...eslintPluginJson.configs.recommended
+};
+
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
   stylisticJsPlugin.configs.all,
+  // eslintPluginJson.configs.recommended,
   commentLengthPlugin.configs['flat/recommended'],
+  /*
+  {
+    // FixMe: JSON plugin borks Comment Plugin. Removing JSON or including commentLength as a plugin bypasses the issue
+    name: 'comment-length',
+    // plugins: {
+    //  'comment-length': commentLengthPlugin
+    // },
+    ...commentLengthPlugin.configs['flat/recommended']
+  },
+  */
+  //
   jestPlugin.configs['flat/recommended'],
   jsdocPlugin.configs['flat/recommended'],
   jsxA11yPlugin.flatConfigs.recommended,
@@ -29,7 +48,26 @@ export default [
   reactHooksPlugin.configs['recommended-latest'],
   ...airbnbConfig,
   prettierPlugin,
+  // {
+  //  files: ['public/** /*.json', 'src/** /*.json'],
+  //  plugins: {
+  //    json: eslintPluginJson
+  //  }
+  // },
+  // {
+  //  files: ['public/**/*.json', 'src/**/*.json'],
+  //  ...eslintPluginJson.configs.recommended
+  // },
+  // {
+  // files: ['public/**/*.js', 'src/**/*.js'],
+  // ...commentLengthPlugin.configs['flat/recommended'].rules
+  // },
   {
+    /*
+     * plugins: {
+     *  'comment-length': commentLengthPlugin
+     * },
+     */
     languageOptions: {
       parserOptions: {
         ecmaVersion: 2022,
