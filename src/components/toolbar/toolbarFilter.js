@@ -101,6 +101,7 @@ const ToolbarFilter = ({
           {chips.map(chip => {
             const normalizedChip = (typeof chip === 'string' && { key: chip, node: chip }) || chip;
             return (
+              // eslint-disable-next-line jsx-a11y/label-has-for
               <Label
                 variant="outline"
                 key={normalizedChip.key}

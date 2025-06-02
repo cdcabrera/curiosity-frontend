@@ -31,7 +31,13 @@ const TableEmpty = ({
 }) => (
   <PlatformEmptyTableWrapper>
     <table aria-label={ariaLabel} {...props} />
-    <EmptyState headingLevel={tableHeading} titleText={title} variant={variant} icon={icon} className="fadein">
+    <EmptyState
+      headingLevel={tableHeading}
+      titleText={title}
+      variant={variant}
+      icon={(typeof icon === 'function' && icon) || (icon && (() => icon)) || undefined}
+      className="fadein"
+    >
       <EmptyStateBody>{message}</EmptyStateBody>
     </EmptyState>
   </PlatformEmptyTableWrapper>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { EmptyState, EmptyStateBody, EmptyStateVariant, Title } from '@patternfly/react-core';
+import { EmptyState, EmptyStateBody, EmptyStateVariant } from '@patternfly/react-core';
 import { PageLayout, PageHeader, PageSection } from '../pageLayout/pageLayout';
 import { helpers } from '../../common';
 
@@ -26,7 +26,13 @@ const MessageView = ({ children, icon, message, pageTitle, title }) => (
     <PageHeader>{pageTitle || helpers.UI_DISPLAY_NAME}</PageHeader>
     <PageSection>
       {children ?? (
-        <EmptyState variant={EmptyStateVariant.full} className="fadein" icon={icon} titleText={title} headingLevel="h2">
+        <EmptyState
+          variant={EmptyStateVariant.full}
+          className="fadein"
+          icon={(typeof icon === 'function' && icon) || (icon && (() => icon)) || undefined}
+          titleText={title}
+          headingLevel="h2"
+        >
           {message && <EmptyStateBody>{message}</EmptyStateBody>}
         </EmptyState>
       )}
