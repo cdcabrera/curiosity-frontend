@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from '@patternfly/react-core';
+import { Button, EmptyState, EmptyStateBody, EmptyStateVariant, Title } from '@patternfly/react-core';
 import { ExportIcon, CogIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { helpers, downloadHelpers } from '../../common';
 import { translate } from '../i18n/i18n';
@@ -94,14 +94,14 @@ const ErrorMessage = ({
   return (
     <div className="fadein" aria-live="polite">
       {isCauseOrError && (
-        <Button
+        <Button icon={<CogIcon />}
           className="curiosity-error__link"
           title={t('curiosity-view.error', { context: 'debug' })}
           style={{ float: 'right' }}
           variant="link"
           onClick={() => onClickShowErrorDisplay()}
         >
-          <CogIcon />
+          
           <span className="sr-only">{t('curiosity-view.error', { context: 'debug' })}</span>
         </Button>
       )}
@@ -111,11 +111,9 @@ const ErrorMessage = ({
         </Button>
       )}
       {(isErrorDisplay && (cause || errorStr)) || (
-        <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={ExclamationCircleIcon} />
-          <Title headingLevel="h2" size="lg">
+        <EmptyState titleText={<Title headingLevel="h2" size="lg">
             {title || t('curiosity-view.error', { context: 'title', appName: helpers.UI_INTERNAL_NAME })}
-          </Title>
+          </Title>} icon={ExclamationCircleIcon} variant={EmptyStateVariant.full}>
           <EmptyStateBody>
             {description ||
               t('curiosity-view.error', { context: 'description' }, [
