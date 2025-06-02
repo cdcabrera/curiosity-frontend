@@ -1,8 +1,9 @@
 // Framework
-@import '~@redhat-cloud-services/frontend-components-utilities/index';
-@import '~@patternfly/patternfly/sass-utilities/all';
+// @import '~@redhat-cloud-services/frontend-components-utilities/index';
+// @import '~@patternfly/patternfly/sass-utilities/all';
 
 // Remap variables, avoid search and replaces.
+/*
 $pf-global--breakpoint--sm: $pf-v5-global--breakpoint--sm;
 $pf-global--breakpoint--md: $pf-v5-global--breakpoint--md;
 $pf-global--breakpoint--lg: $pf-v5-global--breakpoint--lg;
@@ -36,22 +37,23 @@ $pf-global--breakpoint--lg: $pf-v5-global--breakpoint--lg;
   --pf-c-page__main-section--PaddingLeft: var(--pf-v5-c-page__main-section--PaddingLeft);
   --pf-c-page__main-section--PaddingRight: var(--pf-v5-c-page__main-section--PaddingRight);
 }
+ */
 
 // Component tweaks, nice to have, overlooked styles
-@import 'card';
-@import 'tabs';
-@import 'select'; // deprecated component tweaks
-@import 'table';
-@import 'toolbar';
-@import 'tooltip';
+// @import 'card';
+// @import 'tabs';
+// @import 'select'; // deprecated component tweaks
+// @import 'table';
+// @import 'toolbar';
+// @import 'tooltip';
 
 // App and enhancements
-@import 'banner-messages';
-@import 'fade';
-@import 'icon';
-@import 'skeleton';
-@import 'page-layout';
-@import 'graph';
-@import 'inventory';
-@import 'optin';
-@import 'errors';
+// @import 'banner-messages';
+// @import 'fade';
+// @import 'icon';
+// @import 'skeleton';
+// @import 'page-layout';
+// @import 'graph';
+// @import 'inventory';
+// @import 'optin';
+// @import 'errors';
