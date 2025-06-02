@@ -1,13 +1,12 @@
 // Framework
 // @import '~@redhat-cloud-services/frontend-components-utilities/index';
 @import '~@redhat-cloud-services/frontend-components-utilities/styles/all';
-// @import '~@patternfly/patternfly/sass-utilities/all';
+@import '~@patternfly/patternfly/sass-utilities/index';
 
 // Remap variables, avoid search and replaces.
-/*
-$pf-global--breakpoint--sm: $pf-v5-global--breakpoint--sm;
-$pf-global--breakpoint--md: $pf-v5-global--breakpoint--md;
-$pf-global--breakpoint--lg: $pf-v5-global--breakpoint--lg;
+$pf-global--breakpoint--sm: $pf-v6-global--breakpoint--sm;
+$pf-global--breakpoint--md: $pf-v6-global--breakpoint--md;
+$pf-global--breakpoint--lg: $pf-v6-global--breakpoint--lg;
 
 .curiosity {
   --pf-global--BackgroundColor--dark-100: var(--pf-t--temp--dev--tbd /* CODEMODS: original v5 color was:--pf-v5-global--BackgroundColor--dark-100 */);
@@ -38,7 +37,6 @@ $pf-global--breakpoint--lg: $pf-v5-global--breakpoint--lg;
   --pf-c-page__main-section--PaddingLeft: var(--pf-v6-c-page__main-section--PaddingInlineStart);
   --pf-c-page__main-section--PaddingRight: var(--pf-v6-c-page__main-section--PaddingInlineEnd);
 }
- */
 
 // Component tweaks, nice to have, overlooked styles
 // @import 'card';
@@ -49,12 +47,12 @@ $pf-global--breakpoint--lg: $pf-v5-global--breakpoint--lg;
 // @import 'tooltip';
 
 // App and enhancements
-// @import 'banner-messages';
-// @import 'fade';
-// @import 'icon';
+@import 'banner-messages';
+@import 'fade';
+@import 'icon';
 // @import 'skeleton';
-// @import 'page-layout';
-// @import 'graph';
+@import 'page-layout';
+@import 'graph';
 // @import 'inventory';
 // @import 'optin';
 // @import 'errors';
