@@ -3,8 +3,12 @@
   background-color: var(--pf-t--temp--dev--tbd /* CODEMODS: original v5 color was:--pf-v5-global--BackgroundColor--dark-100 */);
 }
 
-section.pf-l-page-header {
+section.pf-v6-l-page-header {
   margin: 1.25rem;
+
+  h1 {
+    margin-bottom: 1.25rem;
+  }
 }
 
 .curiosity  {
