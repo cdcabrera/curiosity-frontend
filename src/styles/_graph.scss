@@ -46,9 +46,96 @@
   &__legend-item-wrapper {
     > :first-child {
       padding-left: 0;
+
+      &[class*='disabled'] {
+        background-color: transparent !important;
+      }
     }
   }
 
+  &__standalone, &__totals {
+    margin-top: var(--pf-global--spacer--md);
+  }
+
+  &__standalone {
+    padding-left: var(--pf-global--spacer--lg);
+    padding-right: var(--pf-global--spacer--lg);
+  }
+
+  &__totals {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    @media (min-width: $pf-global--breakpoint--md) {
+      flex-direction: row;
+      justify-content: start;
+    }
+
+    > div {
+      display: flex;
+
+      &:first-child {
+        @media (max-width: $pf-global--breakpoint--md) {
+          align-self: stretch;
+        }
+        @media (min-width: $pf-global--breakpoint--md) {
+          width: 25%;
+          min-width: 260px;
+        }
+      }
+
+      &:last-child {
+        align-items: stretch;
+        @media (min-width: $pf-global--breakpoint--md) {
+          flex: 3;
+        }
+      }
+    }
+
+    &-graph-column {
+      margin-bottom: var(--pf-global--spacer--lg);
+      margin-right: var(--pf-global--spacer--lg);
+      margin-top: var(--pf-global--spacer--lg);
+      padding-left: var(--pf-global--spacer--lg);
+      width: 100%;
+
+      @media (min-width: $pf-global--breakpoint--md) {
+        border-left: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);
+      }
+    }
+
+    /*
+    &-graph-column {
+      margin-bottom: var(--pf-global--spacer--lg);
+      margin-right: var(--pf-global--spacer--sm);
+      margin-top: var(--pf-global--spacer--lg);
+      padding-left: var(--pf-global--spacer--sm);
+      width: 100%;
+
+      @media (min-width: $pf-global--breakpoint--md) {
+        padding-left: var(--pf-global--spacer--lg);
+        border-left: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);
+      }
+
+      .curiosity-card {
+        &__header {
+          align-items: flex-start;
+          border-bottom-width: 0;
+          padding: inherit;
+        }
+
+        &__body {
+          padding: inherit;
+        }
+      }
+    }
+
+     */
+  }
+
+  /*
   &__totals {
     background-color: var(--pf-global--BackgroundColor--100);
     display: flex;
@@ -162,6 +249,8 @@
       }
     }
   }
+
+   */
 }
 
 .curiosity-chartarea {

@@ -129,7 +129,7 @@ const InventoryCard = ({
   });
 
   return (
-    <Card className="curiosity-card curiosity-inventory-card">
+    <Card className="curiosity-card curiosity-inventory-card" isPlain>
       <MinHeight key="headerMinHeight">
         <CardHeader
           className={`curiosity-card__header ${(error && 'hidden') || ''}`}
