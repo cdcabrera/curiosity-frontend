@@ -53,7 +53,7 @@ const ProductView = ({ t = translate, useRouteDetail: useAliasRouteDetail = rout
       <MinHeight isOnLoad>
         <ProductViewContext.Provider value={firstMatch}>
           <ProductViewOnload>
-            <PageMessages>
+            <PageMessages className="curiosity-page-section__messages">
               <BannerMessages />
             </PageMessages>
             <PageToolbar>

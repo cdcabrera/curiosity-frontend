@@ -7,7 +7,7 @@
 }
 
 .curiosity-page-section {
-  &__tabs, &__graphs {
+  &__tabs, &__graphs, &__messages {
     margin-bottom: var(--pf-global--spacer--md);
     margin-left: var(--pf-global--spacer--md);
     margin-right: var(--pf-global--spacer--md);
@@ -28,7 +28,7 @@
     margin-left: var(--pf-global--spacer--md);
     margin-right: var(--pf-global--spacer--md);
     font-size: var(--pf-global--FontSize--xs);
-    color: var(--pf-global--palette--black-400);
+    color: var(--pf-global--palette--gray);
   }
 }
 
