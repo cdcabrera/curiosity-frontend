@@ -1,4 +1,8 @@
 .curiosity-inventory-card {
+  .curiosity-card__body {
+    padding-top: 0;
+  }
+
   /**
    * FixMe: PF6 still hides paging functionality
    * Paging functionality is hidden below 768px, this restores it.
