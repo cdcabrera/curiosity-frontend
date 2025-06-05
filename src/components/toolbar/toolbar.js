@@ -4,12 +4,12 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
+  ToolbarFilter,
   ToolbarToggleGroup
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
 import { useProductToolbarQuery, useProduct } from '../productView/productViewContext';
 import { useToolbarFieldClear, useToolbarFieldClearAll, useToolbarFields } from './toolbarContext';
-import { ToolbarFilter } from './toolbarFilter';
 import { ToolbarFieldGroupVariant } from './toolbarFieldGroupVariant';
 import { ToolbarFieldSelectCategory, useSelectCategoryOptions } from './toolbarFieldSelectCategory';
 import { helpers } from '../../common';
@@ -115,7 +115,7 @@ const Toolbar = ({
   const onClearAll = () => clearAllFields(hardFilterReset);
 
   /**
-   * Set selected options for chip display.
+   * Set selected options for chip/label display.
    *
    * @param {object} params
    * @param {string|Array<string|{name:string, isDisplayValueOnly:boolean}>} params.value
@@ -182,8 +182,8 @@ const Toolbar = ({
                 const updatedValue = dynamicValue || filterName;
 
                 if (isClearable !== false) {
-                  chipProps.chips = setSelectedOptions({ value: updatedValue });
-                  chipProps.deleteChip = () => onClearFilter({ value: updatedValue });
+                  chipProps.labels = setSelectedOptions({ value: updatedValue });
+                  chipProps.deleteLabel = () => onClearFilter({ value: updatedValue });
                 }
 
                 return (
