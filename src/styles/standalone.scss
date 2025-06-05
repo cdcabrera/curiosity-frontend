@@ -1,7 +1,5 @@
 .mock-header {
   min-height: 4.25rem;
-  // background-color: var(--pf-t--temp--dev--tbd /* CODEMODS: original v5 color was:--pf-v5-global--BackgroundColor--dark-100 */);
-  // background-color: var(--pf-t--global--background--color--inverse--default);
   background-color: var(--pf-t--global--background--color--400);
 }
 
@@ -13,10 +11,7 @@ section.pf-v6-l-page-header {
   }
 }
 
-.curiosity  {
-  // background-color: var(--pf-t--temp--dev--tbd /* CODEMODS: original v5 color was:--pf-v5-global--BackgroundColor--light-300 */) !important;
-  background-color: var(--pf-v6-c-page--BackgroundColor);
-}
+.curiosity  {}
 
 .sr-only {
   position: absolute;
