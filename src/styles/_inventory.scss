@@ -2,22 +2,4 @@
   .curiosity-card__body {
     padding-top: 0;
   }
-
-  /**
-   * FixMe: PF6 still hides paging functionality
-   * Paging functionality is hidden below 768px, this restores it.
-   */
-  @media (max-width: $pf-global--breakpoint--md) {
-    .pf-v6-c-pagination {
-      button,
-      .pf-v6-c-pagination__nav {
-        display: inherit;
-        visibility: inherit;
-      }
-
-      button .pf-v6-c-menu-toggle__controls {
-        display: none;
-      }
-    }
-  }
 }
