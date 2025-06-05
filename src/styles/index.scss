@@ -51,20 +51,19 @@ $pf-global--breakpoint--lg: $pf-v6-global--breakpoint--lg;
 }
 
 // Component tweaks, nice to have, overlooked styles
-// @import 'card';
-// @import 'tabs';
-// @import 'select'; // deprecated component tweaks
+@import 'card';
+@import 'tabs';
+@import 'select';
 @import 'table';
 @import 'toolbar';
 @import 'tooltip';
 
 // App and enhancements
-// @import 'banner-messages';
 @import 'fade';
 @import 'icon';
 // @import 'skeleton';
 @import 'page-layout';
 @import 'graph';
-// @import 'inventory';
+@import 'inventory';
 // @import 'optin';
 @import 'errors';
