@@ -96,7 +96,7 @@ const useOnSelect = ({
  * @returns {JSX.Element}
  */
 const ToolbarFieldGroupVariant = ({
-  isInline = false,
+  isInline = true,
   isFilter = false,
   isStandalone = false,
   position = SelectPosition.left,
