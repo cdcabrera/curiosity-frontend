@@ -159,8 +159,8 @@ const Toolbar = ({
     <PfToolbar
       id="curiosity-toolbar"
       key={productId}
-      className="curiosity-toolbar pf-m-toggle-group-container ins-c-primary-toolbar"
-      collapseListedFiltersBreakpoint="sm"
+      className="curiosity-toolbar"
+      collapseListedFiltersBreakpoint="md"
       clearAllFilters={onClearAll}
       clearFiltersButtonText={t('curiosity-toolbar.clearFilters')}
     >
@@ -175,22 +175,22 @@ const Toolbar = ({
                 </ToolbarItem>
               )}
               {options.map(({ title, dynamicValue, value: filterName, component: OptionComponent, isClearable }) => {
-                const chipProps = {
+                const labelProps = {
                   categoryName: title
                 };
 
                 const updatedValue = dynamicValue || filterName;
 
                 if (isClearable !== false) {
-                  chipProps.labels = setSelectedOptions({ value: updatedValue });
-                  chipProps.deleteLabel = () => onClearFilter({ value: updatedValue });
+                  labelProps.labels = setSelectedOptions({ value: updatedValue });
+                  labelProps.deleteLabel = () => onClearFilter({ value: updatedValue });
                 }
 
                 return (
                   <ToolbarFilter
                     key={helpers.generateHash(updatedValue)}
                     showToolbarItem={currentCategory === updatedValue || options.length === 1}
-                    {...chipProps}
+                    {...labelProps}
                   >
                     <OptionComponent isFilter />
                   </ToolbarFilter>
