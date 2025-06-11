@@ -3,44 +3,37 @@
 exports[`ToolbarFilter Component should display basic chips: portal 1`] = `
 [
   <ToolbarItem
-    variant="chip-group"
+    variant="label-group"
   >
-    <ChipGroup
-      aria-label="Chip group category"
+    <LabelGroup
+      aria-label="Label group category"
       categoryName="loremIpsum"
-      closeBtnAriaLabel="Close chip group"
+      closeBtnAriaLabel="Close label group"
       collapsedText="\${remaining} more"
       defaultIsOpen={false}
       expandedText="Show Less"
+      hasEditableTextArea={false}
       isClosable={false}
-      numChips={3}
+      isCompact={false}
+      isEditable={false}
+      isVertical={false}
+      numLabels={3}
       onClick={[Function]}
-      onOverflowChipClick={[Function]}
       tooltipPosition="top"
     >
-      <Chip
-        className=""
-        closeBtnAriaLabel="close"
-        component="div"
-        isOverflowChip={false}
-        isReadOnly={false}
-        onClick={[Function]}
-        tooltipPosition="top"
+      <Label
+        onClose={[Function]}
+        variant="outline"
       >
         lorem
-      </Chip>
-      <Chip
-        className=""
-        closeBtnAriaLabel="close"
-        component="div"
-        isOverflowChip={false}
-        isReadOnly={false}
-        onClick={[Function]}
-        tooltipPosition="top"
+      </Label>
+      <Label
+        onClose={[Function]}
+        variant="outline"
       >
         hello world
-      </Chip>
-    </ChipGroup>
+      </Label>
+    </LabelGroup>
   </ToolbarItem>,
   "dolor sit test",
 ]
@@ -70,7 +63,7 @@ exports[`ToolbarFilter Component should render a basic component: basic 1`] = `
 }"
 >
   <div
-    class="pf-v5-c-toolbar__item"
+    class="pf-v6-c-toolbar__item"
   >
     lorem ipsum
   </div>
