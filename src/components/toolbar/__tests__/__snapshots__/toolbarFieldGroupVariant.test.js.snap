@@ -30,30 +30,6 @@ exports[`ToolbarFieldGroupVariant Component should generate select options: tool
 ]
 `;
 
-exports[`ToolbarFieldGroupVariant Component should handle updating through redux state with component: dispatch, component 1`] = `
-[
-  [
-    [
-      {
-        "type": "SET_PRODUCT_VARIANT_QUERY_RESET_ALL",
-        "variant": "ipsum",
-      },
-      {
-        "type": "SET_CONFIG_RHSM_RESET",
-      },
-      {
-        "type": "SET_GRAPH_LEGEND_RESET",
-      },
-      {
-        "productGroup": undefined,
-        "type": "SET_PRODUCT_VARIANT",
-        "variant": "ipsum",
-      },
-    ],
-  ],
-]
-`;
-
 exports[`ToolbarFieldGroupVariant Component should handle updating through redux state with hook: dispatch, hook 1`] = `
 [
   [

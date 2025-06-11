@@ -20,7 +20,7 @@ exports[`InventoryCard Component should handle multiple display states, error, p
               <ForwardRef
                 align={
                   {
-                    "default": "alignRight",
+                    "default": "alignEnd",
                   }
                 }
                 aria-hidden={true}
@@ -87,7 +87,7 @@ exports[`InventoryCard Component should handle multiple display states, error, p
               <ForwardRef
                 align={
                   {
-                    "default": "alignRight",
+                    "default": "alignEnd",
                   }
                 }
                 aria-hidden={true}
@@ -171,7 +171,7 @@ exports[`InventoryCard Component should handle multiple display states, error, p
               <ForwardRef
                 align={
                   {
-                    "default": "alignRight",
+                    "default": "alignEnd",
                   }
                 }
                 aria-hidden={true}
@@ -254,7 +254,7 @@ exports[`InventoryCard Component should render a basic component: basic render 1
               <ForwardRef
                 align={
                   {
-                    "default": "alignRight",
+                    "default": "alignEnd",
                   }
                 }
                 aria-hidden={true}

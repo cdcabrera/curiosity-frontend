@@ -47,6 +47,11 @@ describe('ToolbarFieldSelectCategory Component', () => {
     const input = component.find('button');
     component.fireEvent.click(input);
 
+
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', input.children[0]);
+    console.log(component.screen.debug());
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+
     const inputMenuItem = component.find('button.curiosity-select-pf__option');
     component.fireEvent.click(inputMenuItem);
 
