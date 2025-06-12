@@ -76,11 +76,13 @@ exports[`PageLayout Component should render header and section children: multipl
     class="pf-v6-c-page__main-section pf-m-no-padding curiosity "
   >
     <section
-      class="curiosity-page-section "
+      class="pf-v6-c-page__main-section curiosity-page-section "
     >
-       
-      ipsum
-       
+      <div
+        class="pf-v6-c-page__main-body"
+      >
+        ipsum
+      </div>
     </section>
   </section>
 </pagelayout>
