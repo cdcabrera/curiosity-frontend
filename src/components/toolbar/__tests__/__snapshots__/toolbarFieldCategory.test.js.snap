@@ -38,6 +38,30 @@ exports[`ToolbarFieldCategory Component should generate select options: toolbarF
 ]
 `;
 
+exports[`ToolbarFieldCategory Component should handle updating through redux state with component: dispatch, component 1`] = `
+[
+  [
+    [
+      {
+        "id": "undefined-inverted",
+        "type": "SET_GRAPH_LEGEND",
+        "value": "sit_hypervisor",
+      },
+      {
+        "type": "SET_QUERY_RESET_INVENTORY_LIST",
+        "viewId": undefined,
+      },
+      {
+        "filter": "category",
+        "type": "SET_QUERY",
+        "value": "hypervisor",
+        "viewId": undefined,
+      },
+    ],
+  ],
+]
+`;
+
 exports[`ToolbarFieldCategory Component should handle updating through redux state with hook: dispatch, hook 1`] = `
 [
   [

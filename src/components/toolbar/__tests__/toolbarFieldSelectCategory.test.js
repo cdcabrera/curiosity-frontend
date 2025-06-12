@@ -47,7 +47,7 @@ describe('ToolbarFieldSelectCategory Component', () => {
     const input = component.find('button');
     component.fireEvent.click(input);
 
-    const inputMenuItem = component.screen.getByRole('option');
+    const inputMenuItem = component.screen.getAllByRole('option').pop();
     component.fireEvent.click(inputMenuItem);
 
     expect(mockDispatch.mock.calls).toMatchSnapshot('dispatch, component');

@@ -25,6 +25,25 @@ exports[`ToolbarFieldSla Component should export select options: toolbarFieldOpt
 ]
 `;
 
+exports[`ToolbarFieldSla Component should handle updating sla through redux state with component: dispatch, component 1`] = `
+[
+  [
+    [
+      {
+        "type": "SET_QUERY_RESET_INVENTORY_LIST",
+        "viewId": undefined,
+      },
+      {
+        "filter": "sla",
+        "type": "SET_QUERY",
+        "value": "",
+        "viewId": undefined,
+      },
+    ],
+  ],
+]
+`;
+
 exports[`ToolbarFieldSla Component should handle updating sla through redux state with hook: dispatch, hook 1`] = `
 [
   [
