@@ -2,8 +2,10 @@ import React from 'react';
 import { fireEvent, queries, render, screen } from '@testing-library/react';
 import { prettyDOM } from '@testing-library/dom';
 import { act } from 'react-dom/test-utils';
-import * as pfReactCoreComponents from '@patternfly/react-core';
-import * as pfReactChartComponents from '@patternfly/react-charts';
+/*
+ * import * as pfReactCoreComponents from '@patternfly/react-core';
+ * import * as pfReactChartComponents from '@patternfly/react-charts/victory';
+ */
 import * as reactRedux from 'react-redux';
 import { TextEncoder } from 'util';
 import { dotenv } from 'weldable';
@@ -71,8 +73,10 @@ const addDisplayName = components => {
   });
 };
 
-addDisplayName(pfReactCoreComponents);
-addDisplayName(pfReactChartComponents);
+/*
+ * addDisplayName(pfReactCoreComponents);
+ * addDisplayName(pfReactChartComponents);
+ */
 
 /**
  * Apply a global insights chroming object.
@@ -403,10 +407,12 @@ global.shallowComponent = async testComponent => {
   return localRenderHook(testComponent);
 };
 
-// ToDo: revisit squashing log and group messaging, redux leaks log messaging
-// ToDo: revisit squashing PF4 "popper" alerts
-// ToDo: revisit squashing PF4 "validateDOMNesting" select alerts
-// ToDo: revisit squashing PF4 "validateDOMNesting" table alerts
+/*
+ * ToDo: revisit squashing log and group messaging, redux leaks log messaging
+ * ToDo: revisit squashing PF4 "popper" alerts
+ * ToDo: revisit squashing PF4 "validateDOMNesting" select alerts
+ * ToDo: revisit squashing PF4 "validateDOMNesting" table alerts
+ */
 /*
  * For applying a global Jest "beforeAll", based on
  * - consoledot/platform console messaging

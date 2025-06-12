@@ -249,6 +249,20 @@ exports[`ToolbarFieldSelectCategory Component should export select options: tool
 ]
 `;
 
+exports[`ToolbarFieldSelectCategory Component should handle updating categories through redux state with component: dispatch, component 1`] = `
+[
+  [
+    [
+      {
+        "currentFilter": "rangedMonthly",
+        "type": "SET_FILTER_TYPE",
+        "viewId": undefined,
+      },
+    ],
+  ],
+]
+`;
+
 exports[`ToolbarFieldSelectCategory Component should handle updating categories through redux state with hook: dispatch, hook 1`] = `
 [
   [
