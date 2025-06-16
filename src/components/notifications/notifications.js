@@ -3,20 +3,20 @@ import { NotificationsProvider } from '@redhat-cloud-services/frontend-component
 import { helpers } from '../../common';
 
 /**
- * Load platform-specific functionality
+ * Notification functionality
  *
  * @memberof Components
- * @module Platform
+ * @module Notifications
  */
 
 /**
- * Platform is a functional component that conditionally wraps its children with consoledot specific functionality.
+ * Expose consoledot toast notifications.
  *
  * @param {object} props - The prop object for the component.
  * @param {React.ReactNode} props.children - The child components or elements to be rendered.
  * @returns {React.ReactNode} The rendered output, either wrapped with NotificationsProvider or plain children.
  */
-const Platform = ({ children }) => {
+const Notifications = ({ children }) => {
   if (!helpers.UI_DISABLED_NOTIFICATIONS) {
     return <NotificationsProvider>{children}</NotificationsProvider>;
   }
@@ -24,4 +24,4 @@ const Platform = ({ children }) => {
   return children;
 };
 
-export { Platform as default, Platform };
+export { Notifications as default, Notifications };
