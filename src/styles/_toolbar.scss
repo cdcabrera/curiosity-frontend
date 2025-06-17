@@ -1,18 +1,10 @@
-.curiosity-toolbar {
-  padding-left: var(--pf-c-page__main-section--PaddingLeft);
-  padding-right: var(--pf-c-page__main-section--PaddingRight);
-
-  &__content, &__content + div {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-}
+.curiosity-toolbar {}
 
 .curiosity-page-columns-column {
   .curiosity-page-toolbar {
     .curiosity-toolbar {
-      padding-left: var(--pf-global--spacer--lg);
-      padding-right: var(--pf-global--spacer--lg);
+      padding-left: var(--pf-global--spacer--md);
+      padding-right: var(--pf-global--spacer--md);
     }
   }
 }
