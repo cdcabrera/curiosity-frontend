@@ -53,6 +53,10 @@
 
   &__standalone, &__totals {
     margin-top: var(--pf-global--spacer--md);
+
+    &:first-child {
+      margin-top: 0;
+    }
   }
 
   &__standalone {

@@ -28,7 +28,9 @@ exports[`ProductView Component should allow custom inventory displays via config
           >
             <BannerMessages />
           </PageMessages>
-          <PageToolbar>
+          <PageToolbar
+            className="curiosity-page-section__toolbar"
+          >
             <Toolbar />
           </PageToolbar>
           <PageSection
@@ -59,10 +61,10 @@ exports[`ProductView Component should allow custom inventory displays via config
     </MinHeight>
   </PageColumns>
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
@@ -103,7 +105,9 @@ exports[`ProductView Component should allow custom inventory displays via config
           >
             <BannerMessages />
           </PageMessages>
-          <PageToolbar>
+          <PageToolbar
+            className="curiosity-page-section__toolbar"
+          >
             <Toolbar />
           </PageToolbar>
           <PageSection
@@ -129,10 +133,10 @@ exports[`ProductView Component should allow custom inventory displays via config
     </MinHeight>
   </PageColumns>
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
@@ -173,7 +177,9 @@ exports[`ProductView Component should allow custom inventory displays via config
           >
             <BannerMessages />
           </PageMessages>
-          <PageToolbar>
+          <PageToolbar
+            className="curiosity-page-section__toolbar"
+          >
             <Toolbar />
           </PageToolbar>
           <PageSection
@@ -199,10 +205,10 @@ exports[`ProductView Component should allow custom inventory displays via config
     </MinHeight>
   </PageColumns>
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
@@ -242,7 +248,9 @@ exports[`ProductView Component should allow custom product views via productDisp
           >
             <BannerMessages />
           </PageMessages>
-          <PageToolbar>
+          <PageToolbar
+            className="curiosity-page-section__toolbar"
+          >
             <Toolbar />
           </PageToolbar>
           <PageSection
@@ -262,10 +270,10 @@ exports[`ProductView Component should allow custom product views via productDisp
     </MinHeight>
   </PageColumns>
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
@@ -305,7 +313,9 @@ exports[`ProductView Component should allow custom product views via productDisp
           >
             <BannerMessages />
           </PageMessages>
-          <PageToolbar>
+          <PageToolbar
+            className="curiosity-page-section__toolbar"
+          >
             <Toolbar />
           </PageToolbar>
           <PageSection
@@ -325,10 +335,10 @@ exports[`ProductView Component should allow custom product views via productDisp
     </MinHeight>
   </PageColumns>
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
@@ -368,7 +378,9 @@ exports[`ProductView Component should allow custom product views via productDisp
           >
             <BannerMessages />
           </PageMessages>
-          <PageToolbar>
+          <PageToolbar
+            className="curiosity-page-section__toolbar"
+          >
             <Toolbar />
           </PageToolbar>
           <PageSection
@@ -388,10 +400,10 @@ exports[`ProductView Component should allow custom product views via productDisp
     </MinHeight>
   </PageColumns>
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
@@ -431,7 +443,9 @@ exports[`ProductView Component should allow custom product views via productDisp
           >
             <BannerMessages />
           </PageMessages>
-          <PageToolbar>
+          <PageToolbar
+            className="curiosity-page-section__toolbar"
+          >
             <Toolbar />
           </PageToolbar>
           <PageSection
@@ -451,10 +465,10 @@ exports[`ProductView Component should allow custom product views via productDisp
     </MinHeight>
   </PageColumns>
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
@@ -494,7 +508,9 @@ exports[`ProductView Component should allow custom product views via productDisp
           >
             <BannerMessages />
           </PageMessages>
-          <PageToolbar>
+          <PageToolbar
+            className="curiosity-page-section__toolbar"
+          >
             <Toolbar />
           </PageToolbar>
           <PageSection
@@ -514,10 +530,10 @@ exports[`ProductView Component should allow custom product views via productDisp
     </MinHeight>
   </PageColumns>
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
@@ -556,7 +572,9 @@ exports[`ProductView Component should render a basic component: basic 1`] = `
           >
             <BannerMessages />
           </PageMessages>
-          <PageToolbar>
+          <PageToolbar
+            className="curiosity-page-section__toolbar"
+          >
             <Toolbar />
           </PageToolbar>
           <PageSection
@@ -576,10 +594,10 @@ exports[`ProductView Component should render a basic component: basic 1`] = `
     </MinHeight>
   </PageColumns>
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
@@ -603,10 +621,10 @@ exports[`ProductView Component should render nothing if productGroup, and produc
   </PageHeader>
   <PageColumns />
   <div
-    className="curiosity-page-section__version fadein"
+    className="curiosity-page-section__version"
   >
     <Button
-      className="curiosity-page-section__version-link"
+      className="curiosity-page-section__version-link fadein__slow"
       component="a"
       href="https://github.com/RedHatInsights/curiosity-frontend/blob/main/CHANGELOG.md"
       isInline={true}
