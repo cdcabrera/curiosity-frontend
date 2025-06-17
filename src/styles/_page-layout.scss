@@ -7,14 +7,10 @@
 }
 
 .curiosity-page-section {
-  &__tabs, &__graphs, &__messages, &__missing, &__optin {
-    margin-bottom: var(--pf-global--spacer--sm);
+  &__tabs, &__graphs, &__toolbar, &__messages, &__missing, &__optin {
+    // margin-bottom: var(--pf-global--spacer--sm);
     margin-left: var(--pf-global--spacer--md);
     margin-right: var(--pf-global--spacer--md);
-  }
-
-  &__toolbar {
-    margin-bottom: var(--pf-global--spacer--sm);
   }
 
   &__tabs {
