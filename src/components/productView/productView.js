@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Button } from '@patternfly/react-core';
 import { routerContext } from '../router';
 import { ProductViewContext } from './productViewContext';
-import { PageLayout, PageHeader, PageSection, PageToolbar, PageMessages, PageColumns } from '../pageLayout/pageLayout';
+import { PageLayout, PageHeader, PageSection, PageToolbar, PageMessages } from '../pageLayout/pageLayout';
 import { GraphCard } from '../graphCard/graphCard';
 import { Toolbar } from '../toolbar/toolbar';
 import { helpers } from '../../common';
@@ -102,7 +102,7 @@ const ProductView = ({ t = translate, useRouteDetail: useAliasRouteDetail = rout
         <PageHeader productLabel={productGroup}>
           {t('curiosity-view.title', { appName: helpers.UI_DISPLAY_NAME, context: productGroup })}
         </PageHeader>
-        <PageColumns>{renderProduct}</PageColumns>
+        {renderProduct}
         <div className="curiosity-page-section__version">
           <Button
             className="curiosity-page-section__version-link fadein__slow"
