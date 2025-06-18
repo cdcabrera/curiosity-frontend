@@ -1,5 +1,4 @@
 import React from 'react';
-// import { createStore } from '@redhat-cloud-services/frontend-components-notifications/state';
 import { NotificationsProvider } from '@redhat-cloud-services/frontend-components-notifications';
 import { helpers } from '../../common';
 
@@ -8,9 +7,8 @@ import { helpers } from '../../common';
  *
  * @memberof Components
  * @module Notifications
+ * @property {module} NotificationsContext
  */
-
-// const store = createStore();
 
 /**
  * Expose consoledot toast notifications.
