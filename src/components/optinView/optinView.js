@@ -15,6 +15,7 @@ import {
   Spinner,
   Title
 } from '@patternfly/react-core';
+import { useNotifications } from '@redhat-cloud-services/frontend-components-notifications';
 import { useSession } from '../authentication/authenticationContext';
 import { reduxActions, storeHooks } from '../../redux';
 import { translate } from '../i18n/i18n';
@@ -39,17 +40,20 @@ import graphPng4x from '../../images/graph4x.png';
  * @param {storeHooks.reactRedux.useDispatch} [props.useDispatch=storeHooks.reactRedux.useDispatch]
  * @param {storeHooks.reactRedux.useSelectorsResponse} [props.useSelectorsResponse=storeHooks.reactRedux.useSelectorsResponse]
  * @param {useSession} [props.useSession=useSession]
+ * @param props.useNotifications
  * @fires onSubmitOptIn
  * @returns {JSX.Element}
  */
 const OptinView = ({
   t = translate,
   updateAccountOptIn = reduxActions.user.updateAccountOptIn,
+  useNotifications: useAliasNotifications = useNotifications,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse,
   useSession: useAliasSession = useSession
 }) => {
   const dispatch = useAliasDispatch();
+  const { addNotification } = useAliasNotifications();
   const { errorStatus } = useAliasSession();
   const { error, fulfilled, pending } = useAliasSelectorsResponse(({ app }) => app?.optin);
 
@@ -59,7 +63,21 @@ const OptinView = ({
    * @event onSubmitOptIn
    * @returns {void}
    */
-  const onSubmitOptIn = () => updateAccountOptIn()(dispatch);
+  const onSubmitOptIn = () =>
+    updateAccountOptIn(undefined, {
+      rejectCallback: () =>
+        addNotification({
+          variant: 'danger',
+          title: t('curiosity-optin.notificationsErrorTitle', { appName: helpers.UI_DISPLAY_NAME }),
+          description: t('curiosity-optin.notificationsErrorDescription')
+        }),
+      resolveCallback: () =>
+        addNotification({
+          variant: 'success',
+          title: t('curiosity-optin.notificationsSuccessTitle', { appName: helpers.UI_DISPLAY_NAME }),
+          description: t('curiosity-optin.notificationsSuccessDescription')
+        })
+    })(dispatch);
 
   /**
    * Render opt-in form states.

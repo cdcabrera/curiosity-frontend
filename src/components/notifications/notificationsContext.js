@@ -1,7 +1,5 @@
 import { useNotifications } from '@redhat-cloud-services/frontend-components-notifications';
 
-// const useNotifications = () => usePlatformNotifications();
-
 const context = {
   useNotifications
 };
