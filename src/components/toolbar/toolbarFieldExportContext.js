@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import { useEffectOnce, useUnmount } from 'react-use';
-import { useNotifications } from '@redhat-cloud-services/frontend-components-notifications';
+// import { NotificationsContext, useNotifications } from '@redhat-cloud-services/frontend-components-notifications';
 import { Button } from '@patternfly/react-core';
 import { reduxActions, reduxTypes, storeHooks } from '../../redux';
 import { useProduct } from '../productView/productViewContext';
+import { useNotifications } from '../notifications/notificationsContext';
 import { PLATFORM_API_EXPORT_POST_TYPES as POST_TYPES } from '../../services/platform/platformConstants';
 import { translate } from '../i18n/i18n';
 import { useAppLoad } from '../../hooks/useApp';
@@ -51,7 +52,7 @@ const useExportConfirmation = ({
       // Display pending notification. No data is returned on the initial status response.
       if (retryCount === -1) {
         addNotification({
-          id: 'swatch-exports-individual-status',
+          swatchId: 'swatch-exports-individual-status',
           variant: 'info',
           title: t('curiosity-toolbar.notifications', {
             context: ['export', 'pending', 'title'],
@@ -64,7 +65,7 @@ const useExportConfirmation = ({
       // Display completed notification
       if (isCompleted) {
         addNotification({
-          id: 'swatch-exports-individual-status',
+          swatchId: 'swatch-exports-individual-status',
           variant: 'success',
           title: t('curiosity-toolbar.notifications', {
             context: ['export', 'completed', 'title'],
@@ -170,7 +171,7 @@ const useExistingExportsConfirmation = ({
 } = {}) => {
   const dispatch = useAliasDispatch();
   const confirmAppLoaded = useAliasAppLoad();
-  const { addNotification, removeNotification, clearNotifications } = useAliasNotifications();
+  const { addNotification, removeNotification } = useAliasNotifications();
 
   return useCallback(
     (confirmation, allResults) => {
@@ -183,7 +184,7 @@ const useExistingExportsConfirmation = ({
       return getAliasExistingExports(allResults, {
         pendingCallback: () =>
           addNotification({
-            id: 'swatch-exports-existing-confirmation',
+            swatchId: 'swatch-exports-existing-confirmation',
             variant: 'info',
             title: t('curiosity-toolbar.notifications', {
               context: ['export', 'pending', 'titleGlobal'],
@@ -193,7 +194,7 @@ const useExistingExportsConfirmation = ({
       })(dispatch).then(() => {
         if (confirmAppLoaded()) {
           addNotification({
-            id: 'swatch-exports-existing-confirmation',
+            swatchId: 'swatch-exports-existing-confirmation',
             variant: 'success',
             title: t('curiosity-toolbar.notifications', {
               context: ['export', 'completed', 'titleGlobal'],
@@ -239,11 +240,20 @@ const useExistingExports = ({
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse,
   useNotifications: useAliasNotifications = useNotifications
 } = {}) => {
+  // const { getNotifications } = React.useContext(NotificationsContext);
   const dispatch = useAliasDispatch();
   const { addNotification, removeNotification } = useAliasNotifications();
   const onConfirmation = useAliasExistingExportsConfirmation();
   const { data, fulfilled } = useAliasSelectorsResponse(({ app }) => app?.exportsExisting);
   const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
+
+  /*
+  useUnmount(() => {
+    console.log('>>>>>> getNotifications', getNotifications());
+    removeNotification('swatch-exports-status');
+    dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
+  });
+   */
 
   useEffectOnce(() => {
     dispatch(getAliasExistingExportsStatus());
@@ -260,7 +270,7 @@ const useExistingExports = ({
 
     if (isAnythingAvailable && totalResults) {
       addNotification({
-        id: 'swatch-exports-status',
+        swatchId: 'swatch-exports-status',
         title: t('curiosity-toolbar.notifications', {
           context: ['export', 'completed', 'title', 'existing'],
           count: totalResults,
@@ -285,7 +295,11 @@ const useExistingExports = ({
               <Button
                 data-test="exportButtonConfirm"
                 variant="primary"
-                onClick={() => onConfirmation('yes', [...completed, ...pending])}
+                onClick={() => {
+                  // console.log('>>>>>>>>> onConfirmation', removeNotification.toString());
+                  // removeNotification('swatch-exports-status');
+                  onConfirmation('yes', [...completed, ...pending]);
+                }}
                 autoFocus
               >
                 {t('curiosity-toolbar.button', { context: 'yes' })}
@@ -314,6 +328,7 @@ const useExistingExports = ({
     isAnythingPending,
     onConfirmation,
     pending,
+    removeNotification,
     t
   ]);
 };

@@ -1,4 +1,29 @@
-import { useNotifications } from '@redhat-cloud-services/frontend-components-notifications';
+import { useContext, useCallback } from 'react';
+import { NotificationsContext } from '@redhat-cloud-services/frontend-components-notifications';
+import { helpers } from '../../common';
+
+const useNotifications = ({ context = NotificationsContext } = {}) => {
+  const { removeNotification, getNotifications, ...contextMethods } = useContext(context);
+
+  return {
+    ...contextMethods,
+    removeNotification: useCallback(
+      swatchId => {
+        const notifications = getNotifications();
+        const notification = notifications.find(({ swatchId: id }) => id === swatchId);
+
+        if (notification) {
+          removeNotification(notification.id);
+        } else if (helpers.DEV_MODE) {
+          console.warn(
+            `Notification with swatchId "${swatchId}" not found. Please ensure that the notification is created with the "swatchId" prop.`
+          );
+        }
+      },
+      [getNotifications, removeNotification]
+    )
+  };
+};
 
 const context = {
   useNotifications
