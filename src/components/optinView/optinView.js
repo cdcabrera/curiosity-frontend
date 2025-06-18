@@ -15,8 +15,8 @@ import {
   Spinner,
   Title
 } from '@patternfly/react-core';
-import { useNotifications } from '@redhat-cloud-services/frontend-components-notifications';
 import { useSession } from '../authentication/authenticationContext';
+import { useNotifications } from '../notifications/notificationsContext';
 import { reduxActions, storeHooks } from '../../redux';
 import { translate } from '../i18n/i18n';
 import { PageLayout, PageSection } from '../pageLayout/pageLayout';
@@ -38,17 +38,17 @@ import graphPng4x from '../../images/graph4x.png';
  * @param {translate} [props.t=translate]
  * @param {reduxActions.user.updateAccountOptIn} [props.updateAccountOptIn=reduxActions.user.updateAccountOptIn]
  * @param {storeHooks.reactRedux.useDispatch} [props.useDispatch=storeHooks.reactRedux.useDispatch]
+ * @param {useNotifications} [props.useNotifications=useNotitications]
  * @param {storeHooks.reactRedux.useSelectorsResponse} [props.useSelectorsResponse=storeHooks.reactRedux.useSelectorsResponse]
  * @param {useSession} [props.useSession=useSession]
- * @param props.useNotifications
  * @fires onSubmitOptIn
  * @returns {JSX.Element}
  */
 const OptinView = ({
   t = translate,
   updateAccountOptIn = reduxActions.user.updateAccountOptIn,
-  useNotifications: useAliasNotifications = useNotifications,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
+  useNotifications: useAliasNotifications = useNotifications,
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse,
   useSession: useAliasSession = useSession
 }) => {

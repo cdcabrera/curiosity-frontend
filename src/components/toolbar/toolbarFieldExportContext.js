@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
 import { useEffectOnce, useUnmount } from 'react-use';
-// import { NotificationsContext, useNotifications } from '@redhat-cloud-services/frontend-components-notifications';
 import { Button } from '@patternfly/react-core';
 import { reduxActions, reduxTypes, storeHooks } from '../../redux';
 import { useProduct } from '../productView/productViewContext';
@@ -240,20 +239,11 @@ const useExistingExports = ({
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse,
   useNotifications: useAliasNotifications = useNotifications
 } = {}) => {
-  // const { getNotifications } = React.useContext(NotificationsContext);
   const dispatch = useAliasDispatch();
   const { addNotification, removeNotification } = useAliasNotifications();
   const onConfirmation = useAliasExistingExportsConfirmation();
   const { data, fulfilled } = useAliasSelectorsResponse(({ app }) => app?.exportsExisting);
   const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
-
-  /*
-  useUnmount(() => {
-    console.log('>>>>>> getNotifications', getNotifications());
-    removeNotification('swatch-exports-status');
-    dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
-  });
-   */
 
   useEffectOnce(() => {
     dispatch(getAliasExistingExportsStatus());
@@ -295,11 +285,7 @@ const useExistingExports = ({
               <Button
                 data-test="exportButtonConfirm"
                 variant="primary"
-                onClick={() => {
-                  // console.log('>>>>>>>>> onConfirmation', removeNotification.toString());
-                  // removeNotification('swatch-exports-status');
-                  onConfirmation('yes', [...completed, ...pending]);
-                }}
+                onClick={() => onConfirmation('yes', [...completed, ...pending])}
                 autoFocus
               >
                 {t('curiosity-toolbar.button', { context: 'yes' })}
