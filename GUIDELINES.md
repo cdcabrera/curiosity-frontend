@@ -233,6 +233,144 @@ const MyComponent = ({
 export default MyComponent;
 ```
 
+### Function Dependency Injection Patterns
+
+**Prefer dependency injection through function parameters over direct imports for better testability and modularity:**
+
+```javascript
+// ✅ Good - Dependency injection with default parameters and aliasing
+const useProductGraphConfig = ({ 
+  useProductContext: useAliasProductContext = useProductContext 
+} = {}) => {
+  const { initialGraphFilters, initialGraphSettings = {} } = useAliasProductContext();
+  return {
+    filters: initialGraphFilters,
+    settings: initialGraphSettings
+  };
+};
+
+// ✅ Good - Service function with configurable dependencies
+const getInstancesInventory = (id, params = {}, options = {}) => {
+  const {
+    cache = true,
+    cancel = true,
+    cancelId,
+    schema = [rhsmSchemas.instances, rhsmSchemas.errors],
+    transform = [rhsmTransformers.instances]
+  } = options;
+  return serviceCall({ url, params, cache, cancel, cancelId, schema, transform });
+};
+
+// ✅ Good - Multiple dependency injection with aliasing
+const translate = (
+  translateKey,
+  values = null,
+  components,
+  {
+    i18next: aliasI18next = i18next,
+    isDebug = helpers.TEST_MODE,
+    noopTranslate: aliasNoopTranslate = noopTranslate,
+    parseContext: aliasParseContext = parseContext,
+    parseTranslateKey: aliasParseTranslateKey = parseTranslateKey
+  } = {}
+) => {
+  // Function implementation using injected dependencies
+  if (aliasI18next.store) {
+    return aliasI18next.t(translateKey, values);
+  }
+  return aliasNoopTranslate(translateKey, values, components);
+};
+
+// ✅ Good - Middleware configuration with dependency injection
+const axiosServiceCall = async (
+  config = {},
+  {
+    cancelledMessage = 'cancelled request',
+    responseCache = globalResponseCache,
+    xhrTimeout = globalXhrTimeout,
+    pollInterval = globalPollInterval
+  } = {}
+) => {
+  // Implementation using injected dependencies
+};
+
+// ❌ Avoid - Direct dependency imports in function body
+const useProductGraphConfig = () => {
+  const { initialGraphFilters, initialGraphSettings } = useProductContext(); // Direct import
+  // ...
+};
+```
+
+**Naming Convention for Injected Dependencies:**
+- Use `alias` prefix for injected parameters: `aliasI18next`, `useAliasProductContext`
+- Keep original parameter names descriptive: `useProductContext: useAliasProductContext`
+- Always provide default values for injected dependencies
+
+**Advanced Dependency Injection Patterns from cabrera.code/ccabrera:**
+
+```javascript
+// ✅ Pattern: Composable hook injection for configuration
+const useProductToolbarQuery = ({
+  useProductQuery: useAliasProductQuery = useProductQuery,
+  useProductGraphTallyQuery: useAliasProductGraphTallyQuery = useProductGraphTallyQuery,
+  useProductInventoryHostsQuery: useAliasProductInventoryHostsQuery = useProductInventoryHostsQuery,
+  options
+} = {}) => ({
+  ...useAliasProductQuery({ options }),
+  ...useAliasProductGraphTallyQuery({ options }),
+  ...useAliasProductInventoryHostsQuery({ options })
+});
+
+// ✅ Pattern: Service layer with configurable transformers and schemas
+const getBillingAccounts = async (id, params = {}, options = {}) => {
+  const {
+    cache = true,
+    cancel = true,
+    cancelId,
+    schema = [platformSchemas.billingAccounts, rhsmSchemas.errors],
+    transform = [platformTransformers.billingAccounts]
+  } = options;
+  // Implementation with injected schema and transform dependencies
+};
+
+// ✅ Pattern: Component HOC with dependency injection
+const translateComponent = (
+  Component,
+  { i18next: aliasI18next = i18next, noopTranslate: aliasNoopTranslate = noopTranslate } = {}
+) => {
+  const withTranslation = ({ ...props }) => (
+    <Component
+      {...props}
+      t={(aliasI18next.store && translate) || aliasNoopTranslate}
+      i18n={(aliasI18next.store && aliasI18next) || helpers.noop}
+    />
+  );
+  withTranslation.displayName = 'withTranslation';
+  return withTranslation;
+};
+```
+
+**Testing with Dependency Injection:**
+
+```javascript
+// ✅ Easy to test with mocked dependencies
+describe('useProductGraphConfig', () => {
+  it('should return graph configuration', () => {
+    const mockUseProductContext = jest.fn(() => ({
+      initialGraphFilters: ['filter1'],
+      initialGraphSettings: { setting: 'value' }
+    }));
+    
+    const result = useProductGraphConfig({ 
+      useProductContext: mockUseProductContext 
+    });
+    
+    expect(result.filters).toEqual(['filter1']);
+    expect(result.settings).toEqual({ setting: 'value' });
+  });
+});
+```
+
 ### Context Usage
 
 1. **Use Context sparingly** - Only for truly global state or component trees
@@ -595,31 +733,59 @@ const calculateTotalPrice = (basePrice, taxRate) => {
 6. **Inconsistent error handling** - Handle errors at appropriate levels
 7. **Missing prop documentation** - Use JSDoc comments or TypeScript for prop documentation
 8. **Not testing edge cases** - Test loading, error, and empty states
+9. **Ignoring dependency injection patterns**:
+   ```javascript
+   // Problematic - No dependency injection
+   const useMyHook = () => {
+     const context = useContext(MyContext); // Directly imported
+     return context.data;
+   };
+   
+   // Better - With dependency injection
+   const useMyHook = ({ useMyContext: useAliasMyContext = useMyContext } = {}) => {
+     const context = useAliasMyContext();
+     return context.data;
+   };
+   ```
+10. **Not aliasing injected dependencies**:
+   ```javascript
+   // Problematic - Confusing parameter names
+   const myFunction = ({ useProductContext } = {}) => {
+     // Unclear which useProductContext is being used
+   };
+   
+   // Better - Clear aliasing
+   const myFunction = ({ useProductContext: useAliasProductContext = useProductContext } = {}) => {
+     // Clear distinction between injected and default
+   };
+   ```
+11. **Missing default values for injected dependencies**:
+   ```javascript
+   // Problematic - No defaults
+   const myFunction = ({ serviceCall, transform }) => {
+     // Will break if not provided
+   };
+   
+   // Better - Proper defaults
+   const myFunction = ({ 
+     serviceCall = defaultServiceCall, 
+     transform = defaultTransform 
+   } = {}) => {
+     // Always has fallbacks
+   };
+   ```
 
 ## Additional Pitfalls from cabrera.code/ccabrera Analysis
 
-9. **Insufficient function validation**:
-   ```javascript
-   // Problematic - No type checking
-   if (callback) {
-     callback();
-   }
-   
-   // Better - Proper type validation
-   if (typeof callback === 'function') {
-     callback();
-   }
-   ```
+12. **Fragmented test files** - Consolidate similar tests instead of creating many small test files
 
-10. **Fragmented test files** - Consolidate similar tests instead of creating many small test files
+13. **Inconsistent component context patterns** - Always create context files for complex state management
 
-11. **Inconsistent component context patterns** - Always create context files for complex state management
+14. **Missing issue tracking in commits** - Always include JIRA issue numbers in commit messages
 
-12. **Missing issue tracking in commits** - Always include JIRA issue numbers in commit messages
+15. **Incomplete migration patterns** - When refactoring, update all related files (tests, snapshots, dependencies) in the same commit
 
-13. **Incomplete migration patterns** - When refactoring, update all related files (tests, snapshots, dependencies) in the same commit
-
-14. **Shallow equality checks in hooks** - Prefer deep equality for complex objects (useReactRedux pattern)
+16. **Shallow equality checks in hooks** - Prefer deep equality for complex objects (useReactRedux pattern)
 
 ## Final Notes
 
