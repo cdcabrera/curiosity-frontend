@@ -1,3 +1,17 @@
+---
+guideline_version: "1.0.0"
+priority: 1
+applies_to: ["*.js", "*.jsx", "*.ts", "*.tsx", "*.scss", "*.css", "*.json", "*.md"]
+contexts: ["development", "testing", "review", "build"]
+conflicts_with: []
+extends: []
+last_updated: "2024-06-26"
+agent_hints:
+  processing_order: "top_down"
+  validation_required: true
+  backward_compatible: true
+---
+
 # Curiosity Frontend Development Guidelines
 
 This document provides comprehensive development guidelines for the Curiosity Frontend application, a React-based dashboard for Red Hat Subscription Management.
@@ -60,6 +74,97 @@ Project
             └── Guideline Heading - Override
                 └── "Override" keyword indicates guideline removes the conflicting guideline. It may provide opposing, or counter, guidenance
 ```
+
+## Merge Resolution and Conflict Detection
+
+### Merge Resolution Markers
+
+The following markers can be used in higher-priority guideline files to explicitly control how conflicting guidelines are resolved:
+
+#### Override Example (Replaces conflicting guideline)
+```override:react-component-structure
+/**
+ * Component Structure - Override
+ * This completely replaces any base guidelines for React component structure
+ */
+const MyComponent = ({ prop1, prop2 = defaultValue }) => {
+  // TypeScript-style component with explicit interfaces
+  // This overrides the JSDoc approach in base guidelines
+  return <div>{/* Component JSX */}</div>;
+};
+```
+
+#### Extend Example (Adds to existing guideline)
+```extend:import-patterns
+/**
+ * Import Organization - Extension
+ * This adds to existing import organization rules from base guidelines
+ */
+// Additional rule: Always separate React imports from other libraries
+import React, { useState, useEffect } from 'react';
+
+import { Button } from '@patternfly/react-core';
+import { ExportIcon } from '@patternfly/react-icons';
+import _cloneDeep from 'lodash/cloneDeep';
+```
+
+#### Merge Example (Combines with existing guideline)
+```merge:testing-practices
+/**
+ * Testing Practices - Merge
+ * This merges with existing testing practices from base guidelines
+ */
+// Additional testing requirements beyond base guidelines:
+// - Add performance testing for components with >100 props
+// - Include accessibility testing for all interactive components
+// - Test React Suspense boundaries where applicable
+describe('MyComponent Performance', () => {
+  it('should render within 16ms for 60fps', () => {
+    // Performance test implementation
+  });
+});
+```
+
+### Conflict Detection Annotations
+
+#### Common Conflicts and Resolutions
+
+**CONFLICT: Component Prop Documentation**
+- Base Guidelines: Use JSDoc comments for prop documentation
+- Local Guidelines: Use TypeScript interfaces for props
+- Resolution: Higher priority guideline takes precedence
+- Annotation: `<!-- CONFLICT_RESOLVED: prop-documentation -->` 
+
+**CONFLICT: Import Organization**
+- Base Guidelines: Three-tier import organization (external, internal, relative)
+- Local Guidelines: Four-tier with React separated
+- Resolution: Merge both approaches - use four-tier when React is present
+- Annotation: `<!-- CONFLICT_MERGED: import-organization -->`
+
+**CONFLICT: Testing Strategy**
+- Base Guidelines: Standard Jest + Testing Library
+- Agent Guidelines: Add performance and accessibility tests
+- Resolution: Extend base strategy with additional requirements
+- Annotation: `<!-- CONFLICT_EXTENDED: testing-strategy -->`
+
+### Backward Compatibility Notes
+
+For agents that don't understand merge resolution markers:
+1. All existing guidelines remain valid and functional
+2. New markers appear as code blocks and can be ignored
+3. Conflict annotations appear as HTML comments and don't affect functionality
+4. Traditional inheritance still works: higher priority files override lower priority
+
+### Agent Processing Instructions
+
+1. **Parse YAML frontmatter** to determine file priority and context
+2. **Look for merge markers** (`override:`, `extend:`, `merge:`) in higher-priority files
+3. **Check conflict annotations** to understand resolution strategies
+4. **Apply merge strategy**:
+   - `override`: Replace lower-priority guideline completely
+   - `extend`: Add to existing guideline while preserving original
+   - `merge`: Combine guidelines using logical union
+5. **Fallback behavior**: If no markers present, use traditional "higher priority wins" approach
 
 # AI Agent Guidelines for Frontend Development
 
