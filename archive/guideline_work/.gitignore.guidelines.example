@@ -1,0 +1,49 @@
+# Example .gitignore additions for guidelines inheritance system
+
+# Local guidelines files (personal/team overrides)
+GUIDELINES.local.md
+GUIDELINES.personal.md
+*.guidelines.local.*
+.guidelines/personal/
+.guidelines/local/
+
+# Generated guidelines files
+GUIDELINES.generated.md
+GUIDELINES.merged.md
+.eslintrc.generated.js
+.prettierrc.generated.js
+
+# Guidelines cache (from external repos)
+.guidelines-cache/
+cache/guidelines-*
+
+# Personal IDE settings (VS Code example)
+.vscode/settings.json
+.vscode/launch.json
+
+# Personal environment configuration
+.env.local
+.env.personal
+docker-compose.override.yml
+
+# Guidelines validation reports
+guidelines-compliance-report.json
+guidelines-validation.log
+
+# NPM guidelines packages cache
+node_modules/@company/coding-guidelines/cache/
+node_modules/@*/guidelines-*/cache/
+
+# Personal testing configuration
+jest.config.personal.js
+cypress.config.personal.js
+
+# Personal development scripts
+scripts/personal/
+scripts/dev-*.js
+scripts/*-personal.js
+
+# Editor-specific guidelines
+.idea/guidelines.xml
+.vscode/guidelines.json
+*.sublime-guidelines 

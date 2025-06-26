@@ -1,0 +1,56 @@
+# External Guidelines Configuration
+# This file demonstrates how to extend guidelines from external GitHub repositories
+
+extends:
+  # Red Hat organization standards
+  - github:redhat/frontend-guidelines@v2.1.0
+  - github:redhat/accessibility-standards@main
+  
+  # PatternFly component guidelines
+  - github:patternfly/react-guidelines@v4.x
+  
+  # Company-specific standards (example)
+  - github:organization/coding-standards@v2.1.0
+
+# Override or extend specific sections from external guidelines
+overrides:
+  testing:
+    minCoverage: 90          # Override org standard of 80%
+    requireSnapshots: true   # Add requirement not in external guidelines
+    
+  imports:
+    preferredOrder: 
+      - "react"              # React imports first
+      - "external"           # Third-party libraries
+      - "internal"           # Internal services/redux
+      - "relative"           # Relative component imports
+    
+  accessibility:
+    wcagLevel: "AA"          # Ensure AA compliance minimum
+    testingRequired: true    # Require a11y testing for all components
+    
+  security:
+    auditFrequency: "weekly" # More frequent than external standard
+    dependencyChecks: true   # Enable dependency vulnerability checks
+
+# Cache settings for external guidelines
+cache:
+  duration: "24h"            # Cache external guidelines for 24 hours
+  location: ".guidelines-cache/"
+  
+# Validation settings
+validation:
+  enforceOnCommit: true      # Validate guidelines compliance on git commit
+  enforceOnCI: true          # Validate in CI/CD pipeline
+  failOnWarnings: false      # Only fail on errors, not warnings
+  
+# Sections to merge from external guidelines
+sections:
+  include:
+    - "accessibility"
+    - "testing"
+    - "security"
+    - "performance"
+  exclude:
+    - "deployment"           # Don't include deployment guidelines
+    - "database"             # Frontend project doesn't need DB guidelines 

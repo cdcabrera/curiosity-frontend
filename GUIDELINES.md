@@ -1,3 +1,262 @@
+# Curiosity Frontend Development Guidelines
+
+This document provides comprehensive development guidelines for the Curiosity Frontend application, a React-based dashboard for Red Hat Subscription Management.
+
+## Guideline Inheritance and External References
+
+This project supports multiple layers of guideline inheritance to accommodate different development environments and organizational standards.
+
+### 1. External GitHub Repository Guidelines
+
+Reference and extend guidelines from external repositories with versioning support:
+
+```yaml
+# .guidelines-config.yml
+extends:
+  - github:organization/coding-standards@v2.1.0
+  - github:redhat/frontend-guidelines@main
+  - github:patternfly/react-guidelines@v4.x
+
+# Override or extend specific sections
+overrides:
+  testing:
+    minCoverage: 90  # Override org standard of 80%
+  imports:
+    preferredOrder: ["react", "external", "internal", "relative"]
+```
+
+**Implementation Example:**
+```javascript
+// scripts/guidelines-sync.js
+const { Octokit } = require('@octokit/rest');
+
+async function syncExternalGuidelines() {
+  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+  
+  // Fetch external guidelines
+  const { data } = await octokit.repos.getContent({
+    owner: 'organization',
+    repo: 'coding-standards',
+    path: 'GUIDELINES.md',
+    ref: 'v2.1.0'
+  });
+  
+  const externalGuidelines = Buffer.from(data.content, 'base64').toString();
+  // Merge with local guidelines...
+}
+```
+
+### 2. NPM-Based Guidelines (Package.json)
+
+Install and configure guidelines as NPM packages:
+
+```json
+{
+  "devDependencies": {
+    "@company/eslint-config": "^3.2.1",
+    "@company/coding-guidelines": "^1.4.0",
+    "@redhat/frontend-standards": "^2.0.5"
+  },
+  "guidelines": {
+    "extends": [
+      "@company/coding-guidelines/react",
+      "@redhat/frontend-standards/accessibility"
+    ],
+    "plugins": [
+      "@company/coding-guidelines/git-hooks"
+    ]
+  }
+}
+```
+
+**Package Structure Example:**
+```
+@company/coding-guidelines/
+├── package.json
+├── react/
+│   ├── index.js
+│   ├── component-patterns.md
+│   └── testing-standards.md
+├── accessibility/
+│   ├── index.js
+│   └── a11y-checklist.md
+└── git-hooks/
+    ├── commit-msg.js
+    └── pre-commit.js
+```
+
+**Usage in Guidelines:**
+```javascript
+// scripts/load-guidelines.js
+const { loadGuidelines } = require('@company/coding-guidelines');
+
+const guidelines = loadGuidelines({
+  extends: ['@company/coding-guidelines/react'],
+  localOverrides: './GUIDELINES.md'
+});
+
+// Auto-generate sections
+guidelines.generateSection('testing');
+guidelines.generateSection('accessibility');
+```
+
+### 3. Local Inherited Guidelines (Gitignored)
+
+Support personal/team-specific guidelines that extend the committed ones:
+
+```bash
+# Add to .gitignore
+GUIDELINES.local.md
+.guidelines/
+*.guidelines.local.*
+```
+
+**Local Override Structure:**
+```markdown
+<!-- GUIDELINES.local.md -->
+# Local Development Guidelines
+
+## Extends: ./GUIDELINES.md
+
+### Personal IDE Configuration
+- Use Cursor with specific extensions
+- Enable Copilot with custom prompts
+- Set tab size to 2 spaces (override default 4)
+
+### Team-Specific Patterns
+- Use feature flags for experimental components
+- Require pair programming for Redux changes
+- Enable verbose logging in development
+
+### Environment-Specific Rules
+- MacOS: Use brew for dependency management
+- Windows: Use chocolatey for dependency management
+- Docker: Mount specific volumes for hot reload
+```
+
+**Implementation Script:**
+```javascript
+// scripts/merge-guidelines.js
+const fs = require('fs');
+const path = require('path');
+
+function mergeGuidelines() {
+  const baseGuidelines = fs.readFileSync('GUIDELINES.md', 'utf8');
+  const localGuidelines = fs.existsSync('GUIDELINES.local.md') 
+    ? fs.readFileSync('GUIDELINES.local.md', 'utf8')
+    : '';
+  
+  const teamGuidelines = fs.existsSync('.guidelines/team.md')
+    ? fs.readFileSync('.guidelines/team.md', 'utf8') 
+    : '';
+
+  // Merge guidelines with precedence: local > team > base
+  return mergeMarkdownSections(baseGuidelines, teamGuidelines, localGuidelines);
+}
+
+// Usage in package.json scripts
+// "guidelines:check": "node scripts/merge-guidelines.js && node scripts/validate-code.js"
+```
+
+### 4. Comprehensive Configuration System
+
+**Complete implementation with all three approaches:**
+
+```javascript
+// guidelines.config.js
+module.exports = {
+  // External repository guidelines
+  external: {
+    repositories: [
+      {
+        url: 'github:redhat/frontend-guidelines',
+        version: 'v2.1.0',
+        sections: ['accessibility', 'testing'],
+        cache: '1d' // Cache for 1 day
+      }
+    ]
+  },
+  
+  // NPM package guidelines
+  packages: [
+    '@company/eslint-config',
+    '@company/coding-guidelines/react'
+  ],
+  
+  // Local inheritance
+  local: {
+    files: [
+      'GUIDELINES.local.md',        // Personal overrides
+      '.guidelines/team.md',        // Team-specific rules
+      '.guidelines/project.md'      // Project-specific additions
+    ],
+    precedence: 'local > team > project > packages > external > base'
+  },
+  
+  // Validation rules
+  validation: {
+    required: ['testing', 'accessibility', 'security'],
+    enforceOnCommit: true,
+    enforceOnCI: true
+  }
+};
+```
+
+**Package.json Integration:**
+```json
+{
+  "scripts": {
+    "guidelines:sync": "node scripts/sync-external-guidelines.js",
+    "guidelines:install": "node scripts/install-guideline-packages.js", 
+    "guidelines:check": "node scripts/validate-guidelines-compliance.js",
+    "guidelines:generate": "node scripts/generate-merged-guidelines.js",
+    "prepare": "npm run guidelines:sync && npm run guidelines:generate"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run guidelines:check"
+    }
+  }
+}
+```
+
+### 5. Usage Examples
+
+**Developer Workflow:**
+```bash
+# Initial setup
+npm run guidelines:sync        # Fetch external guidelines
+npm run guidelines:generate    # Create merged guidelines
+
+# Create personal overrides
+cp GUIDELINES.md GUIDELINES.local.md
+# Edit GUIDELINES.local.md with personal preferences
+
+# Validate compliance
+npm run guidelines:check       # Check current code against guidelines
+```
+
+**CI/CD Integration:**
+```yaml
+# .github/workflows/guidelines.yml
+name: Guidelines Compliance
+on: [push, pull_request]
+
+jobs:
+  guidelines:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Sync guidelines
+        run: npm run guidelines:sync
+      - name: Check compliance
+        run: npm run guidelines:check
+```
+
 # AI Agent Guidelines for Frontend Development
 
 This document provides comprehensive guidelines for AI agents working on frontend codebases, particularly React applications with Redux state management, testing frameworks, and component-based architecture.

@@ -1,0 +1,80 @@
+{
+  "name": "curiosity-frontend",
+  "version": "1.0.0",
+  "description": "Example package.json modifications for NPM-based guidelines",
+  
+  "devDependencies": {
+    "@company/coding-guidelines": "^3.2.1",
+    "@company/eslint-config-react": "^2.1.0",
+    "@redhat/frontend-standards": "^2.0.5",
+    "@patternfly/guidelines-react": "^4.2.0",
+    "js-yaml": "^4.1.0",
+    "@octokit/rest": "^19.0.0"
+  },
+  
+  "guidelines": {
+    "extends": [
+      "@company/coding-guidelines/react",
+      "@redhat/frontend-standards/accessibility",
+      "@patternfly/guidelines-react/components"
+    ],
+    "overrides": {
+      "testing": {
+        "minCoverage": 90,
+        "requireSnapshots": true,
+        "testPattern": "**/*.test.{js,jsx,ts,tsx}"
+      },
+      "accessibility": {
+        "wcagLevel": "AA",
+        "testingRequired": true,
+        "auditFrequency": "weekly"
+      },
+      "imports": {
+        "preferredOrder": ["react", "external", "internal", "relative"],
+        "aliasPattern": "descriptive"
+      }
+    },
+    "plugins": [
+      "@company/guidelines-plugin-git-hooks",
+      "@company/guidelines-plugin-ci-validation"
+    ]
+  },
+  
+  "scripts": {
+    "guidelines:install": "node scripts/install-guidelines.js",
+    "guidelines:sync": "node scripts/guidelines-sync.js",
+    "guidelines:merge": "node scripts/merge-local-guidelines.js",
+    "guidelines:check": "node scripts/validate-guidelines-compliance.js",
+    "guidelines:generate": "npm run guidelines:sync && npm run guidelines:merge",
+    "guidelines:docs": "node scripts/generate-guidelines-docs.js",
+    "guidelines:personal": "cp GUIDELINES.md GUIDELINES.personal.md && echo 'Edit GUIDELINES.personal.md with your preferences'",
+    
+    "dev": "npm run guidelines:generate && npm start",
+    "build": "npm run guidelines:check && npm run build:production",
+    "test": "npm run guidelines:check && npm run test:run",
+    "prepare": "npm run guidelines:install"
+  },
+  
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run guidelines:check",
+      "post-checkout": "npm run guidelines:merge",
+      "commit-msg": "node scripts/validate-commit-guidelines.js"
+    }
+  },
+  
+  "eslintConfig": {
+    "extends": [
+      "@company/eslint-config-react",
+      "./.eslintrc.generated.js"
+    ]
+  },
+  
+  "prettier": "@company/coding-guidelines/prettier-config",
+  
+  "jest": {
+    "setupFilesAfterEnv": [
+      "@company/coding-guidelines/jest-setup"
+    ]
+  }
+} 
