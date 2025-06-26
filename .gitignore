@@ -33,3 +33,6 @@ public/locales/*.json
 .docs
 .openapi
 .cache
+GUIDELINES.local.md
+.guidelines
+build-tools
