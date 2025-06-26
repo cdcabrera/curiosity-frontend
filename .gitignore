@@ -33,3 +33,8 @@ public/locales/*.json
 .docs
 .openapi
 .cache
+
+# guidelines
+GUIDELINES.local.md
+.guidelines/
+*.guidelines.local.*

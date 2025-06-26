@@ -74,7 +74,11 @@
     "test:spell": "cspell './public/locales/**/en*json' './src/**/*.js' --config ./config/cspell.config.json",
     "test:local": "jest --roots=./src --watch",
     "verify": "run-s test:ephemeral build:pr_checks",
-    "postinstall": "ts-patch install"
+    "postinstall": "ts-patch install",
+    "guidelines:merge": "node scripts/guidelines-manager.js merge",
+    "guidelines:check": "node scripts/guidelines-manager.js check",
+    "guidelines:init": "node scripts/guidelines-manager.js init-local",
+    "guidelines:help": "node scripts/guidelines-manager.js help"
   },
   "dependencies": {
     "@joi/date": "^2.1.1",
