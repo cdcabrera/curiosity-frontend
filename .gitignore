@@ -35,4 +35,5 @@ public/locales/*.json
 .cache
 GUIDELINES.local.md
 .guidelines
+guidelines/local/
 build-tools

@@ -166,26 +166,230 @@ For agents that don't understand merge resolution markers:
    - `merge`: Combine guidelines using logical union
 5. **Fallback behavior**: If no markers present, use traditional "higher priority wins" approach
 
+## Advanced Agent Processing Specification
+
+### Context-Aware Guideline Activation
+
+Agents should activate context-specific guidelines based on multiple factors:
+
+#### File Pattern Activation
+```yaml
+# Example: Activate testing guidelines for test files
+file_patterns:
+  "*.test.js": ["guidelines/testing.md"]
+  "*.test.jsx": ["guidelines/testing.md"] 
+  "*.test.ts": ["guidelines/testing.md"]
+  "deploy/*": ["guidelines/build.md", "guidelines/deployment.md"]
+  "package.json": ["guidelines/build.md"]
+```
+
+#### Development Phase Activation
+```yaml
+# Example: Activate phase-specific guidelines
+development_phases:
+  development: ["guidelines/development.md"]
+  testing: ["guidelines/testing.md", "guidelines/development.md"]
+  build: ["guidelines/build.md"]
+  deployment: ["guidelines/deployment.md", "guidelines/build.md"]
+```
+
+#### Context Priority Processing
+When multiple contexts apply, use this priority order:
+1. **Agent Specific Guidelines** (Priority 10)
+2. **Local Guidelines** (`GUIDELINES.local.md`) (Priority 5)
+3. **Context Guidelines** (`guidelines/*.md`) (Priority 3)
+4. **Base Guidelines** (`GUIDELINES.md`) (Priority 1)
+
+### Guideline Loading Algorithm
+
+```javascript
+/**
+ * Example agent processing algorithm
+ */
+async function loadGuidelines(filePath, currentPhase) {
+  const guidelines = [];
+  
+  // Step 1: Always load base guidelines
+  guidelines.push(await loadFile('GUIDELINES.md'));
+  
+  // Step 2: Load context-specific guidelines
+  if (filePath.includes('.test.')) {
+    guidelines.push(await loadFile('guidelines/testing.md'));
+  }
+  if (currentPhase === 'development') {
+    guidelines.push(await loadFile('guidelines/development.md'));
+  }
+  if (currentPhase === 'build') {
+    guidelines.push(await loadFile('guidelines/build.md'));
+  }
+  
+  // Step 3: Load local guidelines if exists
+  if (fileExists('GUIDELINES.local.md')) {
+    guidelines.push(await loadFile('GUIDELINES.local.md'));
+  }
+  
+  // Step 4: Load agent-specific guidelines (runtime)
+  if (agentSpecificGuidelines) {
+    guidelines.push(agentSpecificGuidelines);
+  }
+  
+  // Step 5: Sort by priority and merge
+  return mergeGuidelines(guidelines.sort(byPriority));
+}
+```
+
+### Validation Examples
+
+#### Valid Guideline Structure
+```yaml
+---
+guideline_version: "1.0.0"    # ✅ Required: Version for compatibility
+priority: 3                   # ✅ Required: Integer 1-10
+applies_to: ["*.js"]          # ✅ Required: Array of file patterns
+contexts: ["development"]     # ✅ Required: Array of contexts
+extends: ["../GUIDELINES.md"] # ✅ Optional: Parent guidelines
+agent_hints:                  # ✅ Optional: Agent processing hints
+  validation_required: true
+---
+```
+
+#### Invalid Guideline Structure
+```yaml
+---
+priority: "high"              # ❌ Invalid: Must be integer 1-10
+applies_to: "*.js"            # ❌ Invalid: Must be array
+contexts: development         # ❌ Invalid: Must be array
+extends: "../GUIDELINES.md"   # ❌ Invalid: Must be array
+agent_hints: "strict"         # ❌ Invalid: Must be object
+---
+```
+
+#### Valid Merge Markers
+```javascript
+// ✅ Valid: Specific marker with context
+```override:react-component-structure
+// Component implementation
+```
+
+// ✅ Valid: Extension marker with clear purpose  
+```extend:import-patterns
+// Additional import rules
+```
+
+// ❌ Invalid: Generic marker without context
+```override:component
+// Unclear what is being overridden
+```
+```
+
+#### Valid Conflict Annotations
+```html
+<!-- ✅ Valid: Specific conflict with resolution -->
+<!-- CONFLICT_RESOLVED: prop-documentation -->
+
+<!-- ✅ Valid: Multiple contexts -->
+<!-- CONTEXT_ACTIVE: testing,development -->
+
+<!-- ❌ Invalid: Generic annotation -->
+<!-- CONFLICT: something -->
+```
+
+### Error Handling Strategies
+
+#### Missing Guidelines
+```javascript
+// Graceful degradation when context files are missing
+if (!fileExists('guidelines/testing.md') && isTestFile(filePath)) {
+  console.warn('Testing guidelines not found, using base guidelines only');
+  // Continue processing with available guidelines
+}
+```
+
+#### Invalid YAML Frontmatter
+```javascript
+// Validation with fallback
+try {
+  const frontmatter = parseYAML(guidelineContent);
+  validateSchema(frontmatter);
+} catch (error) {
+  console.warn('Invalid guideline frontmatter, treating as priority 1');
+  // Use default priority and continue processing
+}
+```
+
+#### Circular Dependencies
+```javascript
+// Detect and prevent circular extends
+const visited = new Set();
+function loadGuideline(path) {
+  if (visited.has(path)) {
+    throw new Error(`Circular dependency detected: ${path}`);
+  }
+  visited.add(path);
+  // Process guideline
+}
+```
+
+### Performance Optimization
+
+#### Caching Strategy
+```javascript
+// Cache parsed guidelines for better performance
+const guidelineCache = new Map();
+const CACHE_DURATION = 3600000; // 1 hour
+
+function getCachedGuideline(path) {
+  const cached = guidelineCache.get(path);
+  if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+    return cached.guidelines;
+  }
+  return null;
+}
+```
+
+#### Lazy Loading
+```javascript
+// Load context guidelines only when needed
+const contextLoaders = {
+  testing: () => import('./guidelines/testing.md'),
+  development: () => import('./guidelines/development.md'),
+  build: () => import('./guidelines/build.md'),
+  deployment: () => import('./guidelines/deployment.md')
+};
+```
+
 # AI Agent Guidelines for Frontend Development
 
 This document provides comprehensive guidelines for AI agents working on frontend codebases, particularly React applications with Redux state management, testing frameworks, and component-based architecture.
 
 ## Table of Contents
 
-1. [Project Understanding](#project-understanding)
-2. [Code Style and Conventions](#code-style-and-conventions)
-3. [Patterns from cabrera.code/ccabrera Analysis](#patterns-from-cabreracodeccabrera-analysis)
-4. [Component Architecture](#component-architecture)
-5. [State Management](#state-management)
-6. [Testing Practices](#testing-practices)
-7. [File Organization](#file-organization)
-8. [Git Workflow](#git-workflow)
-9. [Accessibility Guidelines](#accessibility-guidelines)
-10. [Performance Considerations](#performance-considerations)
-11. [Internationalization (i18n)](#internationalization-i18n)
-12. [Error Handling](#error-handling)
-13. [Documentation Standards](#documentation-standards)
-14. [Build and Development Practices](#build-and-development-practices)
+1. [Guideline Inheritance and External References](#guideline-inheritance-and-external-references)
+2. [Merge Resolution and Conflict Detection](#merge-resolution-and-conflict-detection)
+3. [Advanced Agent Processing Specification](#advanced-agent-processing-specification)
+4. [Project Understanding](#project-understanding)
+5. [Code Style and Conventions](#code-style-and-conventions)
+6. [Patterns from cabrera.code/ccabrera Analysis](#patterns-from-cabreracodeccabrera-analysis)
+7. [Component Architecture](#component-architecture)
+8. [State Management](#state-management)
+9. [Testing Practices](#testing-practices)
+10. [File Organization](#file-organization)
+11. [Git Workflow](#git-workflow)
+12. [Accessibility Guidelines](#accessibility-guidelines)
+13. [Performance Considerations](#performance-considerations)
+14. [Internationalization (i18n)](#internationalization-i18n)
+15. [Error Handling](#error-handling)
+16. [Documentation Standards](#documentation-standards)
+17. [Build and Development Practices](#build-and-development-practices)
+
+## Context-Specific Guidelines
+
+The following context-specific guidelines are available in the `guidelines/` directory:
+
+- **[Development Guidelines](guidelines/development.md)** - Local development, debugging, and code quality practices
+- **[Testing Guidelines](guidelines/testing.md)** - Testing strategies, snapshot management, and test organization  
+- **[Build Guidelines](guidelines/build.md)** - Build processes, CI/CD integration, and optimization
+- **[Deployment Guidelines](guidelines/deployment.md)** - Production deployment, security, and monitoring
 
 ## Project Understanding
 
