@@ -6,11 +6,27 @@ contexts: ["development"]
 conflicts_with: []
 extends: ["../GUIDELINES.md"]
 last_updated: "2024-06-26"
+compatibility:
+  base_guidelines: ">=1.0.0 <2.0.0"
+  react_version: ">=18.0.0"
+  node_version: ">=16.0.0"
+effectiveness_tracking:
+  log_dev_server_usage: true
+  log_debug_configurations: true
+  track_hot_reload_effectiveness: true
+  measure_development_velocity: true
+  development_weights:
+    hot_reload_usage: 1.4
+    debug_tool_adoption: 1.1
+    eslint_adherence: 1.2
+    dev_server_optimization: 1.0
 agent_hints:
   processing_order: "top_down"
   validation_required: true
   backward_compatible: true
   context_activation: "development"
+  cache_duration: "45m"
+  lazy_loading: true
 ---
 
 # Development Context Guidelines

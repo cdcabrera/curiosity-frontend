@@ -6,10 +6,27 @@ contexts: ["development", "testing", "review", "build"]
 conflicts_with: []
 extends: []
 last_updated: "2024-06-26"
+compatibility:
+  min_version: "1.0.0"
+  max_version: "2.0.0"
+  breaking_changes: []
+  deprecated_features: []
+effectiveness_tracking:
+  log_usage: true
+  log_conflicts: true
+  log_merge_resolutions: true
+  track_compliance: true
+  performance_metrics: true
+  weight_adjustments:
+    rule_importance: 1.0
+    conflict_frequency: 0.8
+    developer_preference: 0.6
 agent_hints:
   processing_order: "top_down"
   validation_required: true
   backward_compatible: true
+  cache_duration: "1h"
+  lazy_loading: true
 ---
 
 # Curiosity Frontend Development Guidelines
@@ -356,6 +373,563 @@ const contextLoaders = {
   build: () => import('./guidelines/build.md'),
   deployment: () => import('./guidelines/deployment.md')
 };
+```
+
+## Dynamic Guideline Loading API
+
+### Embedded Loading Functions
+
+Agents can use these embedded functions to programmatically load and merge guidelines:
+
+```javascript
+/**
+ * Dynamic Guideline Loader
+ * Provides programmatic access to merged guidelines with source tracking
+ */
+class GuidelineLoader {
+  constructor(options = {}) {
+    this.cache = new Map();
+    this.cacheTimeout = options.cacheTimeout || 3600000; // 1 hour
+    this.trackingEnabled = options.tracking || true;
+    this.performanceMode = options.performance || 'balanced';
+  }
+
+  /**
+   * Load and merge guidelines for specific context
+   */
+  async loadGuidelines(context = {}) {
+    const { filePath, phase, userPreferences = {} } = context;
+    const cacheKey = this.generateCacheKey(context);
+    
+    // Check cache first for performance
+    if (this.performanceMode === 'fast') {
+      const cached = this.getFromCache(cacheKey);
+      if (cached) return cached;
+    }
+
+    const guidelines = [];
+    const sourceMap = {};
+    const conflictsResolved = [];
+
+    // Step 1: Load base guidelines
+    const baseGuidelines = await this.loadGuidelineFile('GUIDELINES.md');
+    guidelines.push(baseGuidelines);
+    sourceMap['base'] = 'GUIDELINES.md';
+
+    // Step 2: Load context-specific guidelines
+    const contextFiles = this.getContextFiles(filePath, phase);
+    for (const contextFile of contextFiles) {
+      const contextGuidelines = await this.loadGuidelineFile(contextFile);
+      guidelines.push(contextGuidelines);
+      sourceMap[contextGuidelines.frontmatter.contexts[0]] = contextFile;
+    }
+
+    // Step 3: Load local guidelines
+    if (await this.fileExists('GUIDELINES.local.md')) {
+      const localGuidelines = await this.loadGuidelineFile('GUIDELINES.local.md');
+      guidelines.push(localGuidelines);
+      sourceMap['local'] = 'GUIDELINES.local.md';
+    }
+
+    // Step 4: Apply user preference weights
+    const weightedGuidelines = this.applyUserWeights(guidelines, userPreferences);
+
+    // Step 5: Merge with conflict resolution
+    const merged = await this.mergeGuidelines(weightedGuidelines);
+    
+    // Step 6: Track effectiveness
+    if (this.trackingEnabled) {
+      this.trackGuidelineUsage(merged, context);
+    }
+
+    const result = {
+      guidelines: merged,
+      sourceMap,
+      conflictsResolved: merged.conflictsResolved,
+      effectivenessMetrics: merged.metrics,
+      cacheKey,
+      loadTime: Date.now()
+    };
+
+    this.setCache(cacheKey, result);
+    return result;
+  }
+
+  /**
+   * Fast merge resolution with processing speed optimization
+   */
+  async mergeGuidelines(guidelinesList) {
+    const startTime = performance.now();
+    const merged = { rules: [], conflictsResolved: [], metrics: {} };
+    const ruleMap = new Map(); // Fast lookup for duplicate detection
+    
+    // Sort by priority for efficient processing
+    const sorted = guidelinesList
+      .sort((a, b) => (b.frontmatter?.priority || 1) - (a.frontmatter?.priority || 1));
+
+    for (const guidelines of sorted) {
+      const sections = this.parseSections(guidelines.content);
+      
+      for (const section of sections) {
+        const ruleId = this.generateRuleId(section);
+        const existingRule = ruleMap.get(ruleId);
+        
+        if (existingRule) {
+          // Fast conflict resolution
+          const resolution = this.resolveConflict(existingRule, section, guidelines);
+          merged.conflictsResolved.push(resolution);
+          ruleMap.set(ruleId, resolution.resolvedRule);
+        } else {
+          ruleMap.set(ruleId, section);
+        }
+      }
+    }
+
+    // Convert map back to array with performance tracking
+    merged.rules = Array.from(ruleMap.values());
+    merged.metrics.processingTime = performance.now() - startTime;
+    merged.metrics.rulesProcessed = ruleMap.size;
+    merged.metrics.conflictsResolved = merged.conflictsResolved.length;
+
+    return merged;
+  }
+
+  /**
+   * Effectiveness tracking with weight generation
+   */
+  trackGuidelineUsage(guidelines, context) {
+    const tracking = {
+      timestamp: Date.now(),
+      context: context,
+      rulesApplied: guidelines.rules.length,
+      conflictsResolved: guidelines.conflictsResolved.length,
+      userWeights: this.calculateUserWeights(guidelines, context)
+    };
+
+    // Log to console or external service
+    if (typeof window !== 'undefined' && window.console) {
+      console.group('📋 Guideline Usage Tracking');
+      console.log('Context:', context);
+      console.log('Rules Applied:', tracking.rulesApplied);
+      console.log('Conflicts Resolved:', tracking.conflictsResolved);
+      console.log('Processing Time:', guidelines.metrics.processingTime + 'ms');
+      console.log('User Weight Adjustments:', tracking.userWeights);
+      console.groupEnd();
+    }
+
+    // Store for analytics (local storage or API)
+    this.persistTrackingData(tracking);
+  }
+
+  /**
+   * Generate personalized weight adjustments
+   */
+  calculateUserWeights(guidelines, context) {
+    const weights = {};
+    const baseWeights = guidelines.sourceMap;
+    
+    // Analyze usage patterns
+    for (const [source, file] of Object.entries(baseWeights)) {
+      const usage = this.getUsageHistory(file);
+      const effectiveness = this.calculateEffectiveness(usage);
+      
+      weights[source] = {
+        base_weight: 1.0,
+        usage_factor: effectiveness.usageFrequency,
+        success_rate: effectiveness.successRate,
+        developer_preference: effectiveness.userPreference,
+        adjusted_weight: this.calculateAdjustedWeight(effectiveness)
+      };
+    }
+
+    return weights;
+  }
+
+  /**
+   * Context file detection with performance optimization
+   */
+  getContextFiles(filePath, phase) {
+    const files = [];
+    const filePatterns = {
+      'test': /\.(test|spec)\.(js|jsx|ts|tsx)$/,
+      'component': /src\/components\/.*\.(js|jsx|ts|tsx)$/,
+      'config': /\.(config|yml|yaml)$/,
+      'build': /^(package\.json|.*\.config\.js)$/
+    };
+
+    // Fast pattern matching
+    if (filePath) {
+      if (filePatterns.test.test(filePath)) {
+        files.push('guidelines/testing.md');
+      }
+      if (filePatterns.config.test(filePath) || filePatterns.build.test(filePath)) {
+        files.push('guidelines/build.md');
+      }
+    }
+
+    // Phase-based activation
+    const phaseFiles = {
+      'development': ['guidelines/development.md'],
+      'build': ['guidelines/build.md'],
+      'deployment': ['guidelines/deployment.md', 'guidelines/build.md'],
+      'testing': ['guidelines/testing.md']
+    };
+
+    if (phase && phaseFiles[phase]) {
+      files.push(...phaseFiles[phase]);
+    }
+
+    // Remove duplicates efficiently
+    return [...new Set(files)];
+  }
+}
+
+/**
+ * Usage Example
+ */
+async function exampleUsage() {
+  const loader = new GuidelineLoader({
+    tracking: true,
+    performance: 'fast',
+    cacheTimeout: 1800000 // 30 minutes
+  });
+
+  // Load guidelines for a React test file during development
+  const guidelines = await loader.loadGuidelines({
+    filePath: 'src/components/MyComponent/MyComponent.test.js',
+    phase: 'development',
+    userPreferences: {
+      snapshot_testing: 1.2,
+      accessibility_testing: 1.5,
+      performance_testing: 0.8
+    }
+  });
+
+  console.log('Loaded guidelines:', guidelines.guidelines.rules.length);
+  console.log('Source mapping:', guidelines.sourceMap);
+  console.log('Conflicts resolved:', guidelines.conflictsResolved.length);
+  console.log('Processing time:', guidelines.effectivenessMetrics.processingTime + 'ms');
+}
+```
+
+## Performance Optimization Strategies
+
+### Processing Speed Optimization
+
+```javascript
+/**
+ * High-Performance Guideline Parser
+ * Optimized for fast parsing and merge resolution
+ */
+class FastGuidelineParser {
+  constructor() {
+    this.sectionCache = new Map();
+    this.rulePatternCache = new Map();
+    this.mergeStrategies = {
+      override: this.fastOverride.bind(this),
+      extend: this.fastExtend.bind(this),
+      merge: this.fastMerge.bind(this)
+    };
+  }
+
+  /**
+   * Optimized section parsing with memoization
+   */
+  fastParseSections(content) {
+    const contentHash = this.hashContent(content);
+    
+    if (this.sectionCache.has(contentHash)) {
+      return this.sectionCache.get(contentHash);
+    }
+
+    // Fast regex-based parsing
+    const sections = [];
+    const sectionPattern = /^#+\s+(.+)$/gm;
+    const codeBlockPattern = /```(\w+):([^`]+)```/g;
+    
+    let match;
+    while ((match = sectionPattern.exec(content)) !== null) {
+      const sectionStart = match.index;
+      const nextMatch = sectionPattern.exec(content);
+      const sectionEnd = nextMatch ? nextMatch.index : content.length;
+      
+      const sectionContent = content.slice(sectionStart, sectionEnd);
+      const codeBlocks = this.extractCodeBlocks(sectionContent);
+      
+      sections.push({
+        title: match[1],
+        content: sectionContent,
+        codeBlocks,
+        startIndex: sectionStart,
+        endIndex: sectionEnd
+      });
+    }
+
+    this.sectionCache.set(contentHash, sections);
+    return sections;
+  }
+
+  /**
+   * Lightning-fast conflict detection
+   */
+  fastConflictDetection(rules) {
+    const conflicts = [];
+    const ruleIndex = new Map();
+    
+    for (let i = 0; i < rules.length; i++) {
+      const rule = rules[i];
+      const ruleKey = this.generateRuleKey(rule);
+      
+      if (ruleIndex.has(ruleKey)) {
+        const existingRule = ruleIndex.get(ruleKey);
+        conflicts.push({
+          type: 'duplicate_rule',
+          rule1: existingRule,
+          rule2: rule,
+          index1: existingRule.index,
+          index2: i,
+          resolution: 'higher_priority_wins'
+        });
+      } else {
+        ruleIndex.set(ruleKey, { ...rule, index: i });
+      }
+    }
+
+    return conflicts;
+  }
+
+  /**
+   * Optimized merge strategies
+   */
+  fastOverride(baseRule, overrideRule) {
+    return {
+      type: 'override',
+      result: overrideRule,
+      replaced: baseRule,
+      processingTime: 0.1
+    };
+  }
+
+  fastExtend(baseRule, extensionRule) {
+    return {
+      type: 'extend',
+      result: {
+        ...baseRule,
+        content: baseRule.content + '\n' + extensionRule.content,
+        extended: true
+      },
+      processingTime: 0.2
+    };
+  }
+
+  fastMerge(rule1, rule2) {
+    const merged = {
+      title: rule1.title,
+      content: this.intelligentMerge(rule1.content, rule2.content),
+      sources: [rule1.source, rule2.source],
+      merged: true
+    };
+
+    return {
+      type: 'merge',
+      result: merged,
+      processingTime: 0.3
+    };
+  }
+
+  /**
+   * Intelligent content merging
+   */
+  intelligentMerge(content1, content2) {
+    // Fast line-by-line merge with deduplication
+    const lines1 = content1.split('\n');
+    const lines2 = content2.split('\n');
+    const merged = new Set(lines1);
+    
+    // Add unique lines from second content
+    lines2.forEach(line => merged.add(line));
+    
+    return Array.from(merged).join('\n');
+  }
+
+  /**
+   * Content hashing for cache keys
+   */
+  hashContent(content) {
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      const char = content.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return hash.toString(36);
+  }
+}
+
+/**
+ * Performance Monitoring
+ */
+class GuidelinePerformanceMonitor {
+  constructor() {
+    this.metrics = {
+      parseTime: [],
+      mergeTime: [],
+      conflictResolutionTime: [],
+      cacheHitRate: 0,
+      totalOperations: 0
+    };
+  }
+
+  startTimer(operation) {
+    return {
+      operation,
+      startTime: performance.now()
+    };
+  }
+
+  endTimer(timer) {
+    const duration = performance.now() - timer.startTime;
+    this.metrics[timer.operation + 'Time'].push(duration);
+    
+    if (this.metrics[timer.operation + 'Time'].length > 100) {
+      this.metrics[timer.operation + 'Time'].shift(); // Keep last 100 measurements
+    }
+
+    return duration;
+  }
+
+  getPerformanceReport() {
+    const report = {};
+    
+    for (const [metric, values] of Object.entries(this.metrics)) {
+      if (Array.isArray(values) && values.length > 0) {
+        report[metric] = {
+          average: values.reduce((a, b) => a + b, 0) / values.length,
+          min: Math.min(...values),
+          max: Math.max(...values),
+          samples: values.length
+        };
+      }
+    }
+
+    return report;
+  }
+}
+```
+
+## Version Compatibility Management
+
+### Compatibility Checking Examples
+
+```javascript
+/**
+ * Version Compatibility Validator
+ * Ensures guideline versions work together properly
+ */
+class CompatibilityValidator {
+  constructor() {
+    this.semver = this.createSemverParser();
+  }
+
+  /**
+   * Validate compatibility between guidelines
+   */
+  validateCompatibility(guidelines) {
+    const issues = [];
+    
+    for (let i = 0; i < guidelines.length; i++) {
+      const guideline = guidelines[i];
+      const compatibility = guideline.frontmatter?.compatibility;
+      
+      if (!compatibility) continue;
+
+      // Check base guideline compatibility
+      if (compatibility.base_guidelines) {
+        const baseIssues = this.checkBaseCompatibility(guideline, guidelines);
+        issues.push(...baseIssues);
+      }
+
+      // Check framework compatibility
+      if (compatibility.testing_frameworks) {
+        const frameworkIssues = this.checkFrameworkCompatibility(guideline);
+        issues.push(...frameworkIssues);
+      }
+
+      // Check breaking changes
+      if (compatibility.breaking_changes && compatibility.breaking_changes.length > 0) {
+        const breakingIssues = this.checkBreakingChanges(guideline, guidelines);
+        issues.push(...breakingIssues);
+      }
+    }
+
+    return {
+      compatible: issues.length === 0,
+      issues,
+      summary: this.generateCompatibilitySummary(issues)
+    };
+  }
+
+  /**
+   * Generate compatibility report
+   */
+  generateCompatibilityReport(guidelines) {
+    const report = {
+      timestamp: new Date().toISOString(),
+      guidelines: guidelines.map(g => ({
+        file: g.file,
+        version: g.frontmatter?.guideline_version,
+        priority: g.frontmatter?.priority,
+        compatibility: g.frontmatter?.compatibility
+      })),
+      validation: this.validateCompatibility(guidelines),
+      recommendations: this.generateRecommendations(guidelines)
+    };
+
+    return report;
+  }
+
+  /**
+   * Semantic version parsing
+   */
+  createSemverParser() {
+    return {
+      parse: (version) => {
+        const match = version.match(/^(\d+)\.(\d+)\.(\d+)(?:-([^+]+))?(?:\+(.+))?$/);
+        if (!match) throw new Error(`Invalid semver: ${version}`);
+        
+        return {
+          major: parseInt(match[1]),
+          minor: parseInt(match[2]),
+          patch: parseInt(match[3]),
+          prerelease: match[4] || null,
+          build: match[5] || null
+        };
+      },
+      
+      satisfies: (version, range) => {
+        // Simple range checking (implement full semver logic as needed)
+        if (range.startsWith('>=')) {
+          const minVersion = range.slice(2);
+          return this.compare(version, minVersion) >= 0;
+        }
+        if (range.startsWith('^')) {
+          const baseVersion = range.slice(1);
+          return this.compatibleWithin(version, baseVersion, 'minor');
+        }
+        return version === range;
+      },
+      
+      compare: (v1, v2) => {
+        const ver1 = this.parse(v1);
+        const ver2 = this.parse(v2);
+        
+        if (ver1.major !== ver2.major) return ver1.major - ver2.major;
+        if (ver1.minor !== ver2.minor) return ver1.minor - ver2.minor;
+        return ver1.patch - ver2.patch;
+      }
+    };
+  }
+}
 ```
 
 # AI Agent Guidelines for Frontend Development

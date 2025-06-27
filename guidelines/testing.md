@@ -6,11 +6,27 @@ contexts: ["testing", "development"]
 conflicts_with: []
 extends: ["../GUIDELINES.md"]
 last_updated: "2024-06-26"
+compatibility:
+  base_guidelines: ">=1.0.0 <2.0.0"
+  testing_frameworks: ["jest@>=28.0.0", "@testing-library/react@>=13.0.0"]
+  node_version: ">=16.0.0"
+effectiveness_tracking:
+  log_test_patterns: true
+  log_snapshot_updates: true
+  track_test_performance: true
+  measure_coverage_impact: true
+  test_specific_weights:
+    snapshot_test_usage: 1.3
+    accessibility_test_coverage: 1.5
+    performance_test_frequency: 1.2
+    mock_pattern_effectiveness: 0.9
 agent_hints:
   processing_order: "top_down"
   validation_required: true
   backward_compatible: true
   context_activation: "file_pattern"
+  cache_duration: "15m"
+  lazy_loading: true
 ---
 
 # Testing Context Guidelines
