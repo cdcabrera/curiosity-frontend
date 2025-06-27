@@ -12,7 +12,7 @@ agent_hints:
   processing_order: "top_down"
   validation_required: true
   key_concepts: ["openshift", "product-config", "hourly", "on-demand", "payg", "pay as you go"]
-  related_guidelines: ["guidelines/project-workflows/adding-rhel-variant.md"]
+  related_guidelines: ["guidelines/project-workflows/adding-rhel-annual-variant.md"]
   importance: "high"
   code_examples: true
 ---

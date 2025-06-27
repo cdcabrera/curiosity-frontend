@@ -56,7 +56,7 @@ For more details on guideline inheritance and conflict resolution, see [Guidelin
 ## Project Workflows
 
 - [**Adding OpenShift Hourly/On-Demand Products**](project-workflows/adding-openshift-product.md) - Step-by-step instructions for adding new OpenShift hourly or on-demand product configurations.
-- [**Adding RHEL Variants**](project-workflows/adding-rhel-variant.md) - Step-by-step instructions for adding new RHEL product variants.
+- [**Adding RHEL Annual Variants**](project-workflows/adding-rhel-annual-variant.md) - Step-by-step instructions for adding new RHEL annual product variants.
 
 ## State Management
 

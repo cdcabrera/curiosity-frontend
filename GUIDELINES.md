@@ -93,6 +93,10 @@ When processing guidelines, agents should:
 5. Use the conflict resolution markers (override, extend, merge) as described in the inheritance guidelines
 6. Remember that only main guidelines (*.md) should be committed to git, never local guidelines (*.local.md)
 
+**IMPORTANT:**
+- DO NOT make recommendations on ANY enhancement, or general improvement, opportunities to the guidelines UNLESS SPECIFICALLY ASKED!
+- DO NOT make unnecessary compliments!
+
 ## Project Understanding
 
 This React-based dashboard application requires a solid understanding of the project structure, development workflows, and coding patterns. Before making any changes, review the relevant documentation and existing code patterns.
@@ -101,14 +105,15 @@ This React-based dashboard application requires a solid understanding of the pro
 
 1. **Initial Request Analysis**
    - Determine request type:
-     a) Direct configuration request (e.g., "add rhel variant", "create rhel variant")
-     b) Product-specific request (e.g., "create an annual rhel variant")
+     a) Direct configuration request (e.g., "add rhel variant", "create rhel variant", "add openshift variant")
+     b) Product-specific request (e.g., "create an annual rhel variant", "add openshift variant")
      c) General question (e.g., "how do I...")
      d) Implementation question (e.g., "what's the correct way to...")
 
 2. **Workflow Matching**
    - For configuration/product requests:
      a) Check `guidelines/project-workflows/` for matching workflow
+        - MUST only use guidelines 
      b) If workflow exists:
         - MUST follow workflow's question sequence EXACTLY
         - MUST ask ONE question at a time
@@ -125,7 +130,7 @@ This React-based dashboard application requires a solid understanding of the pro
    
 4. **Implementation Approach**
    - For workflow-guided requests:
-     a) Follow workflow implementation steps
+     a) MUST follow workflow implementation steps
      b) Use provided example implementations
      c) Update required files in order
    - For non-workflow requests:
