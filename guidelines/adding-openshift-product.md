@@ -1,6 +1,6 @@
 ---
 priority: 3
-context: ["openshift", "product-config", "hourly", "on-demand", "create openshift on-demand", "create openshift hourly"]
+context: ["openshift", "product-config", "hourly", "on-demand", "payg", "pay as you go", "create openshift on-demand", "create openshift hourly", "create openshift payg"]
 ---
 
 # Adding OpenShift Hourly/On-Demand Products
