@@ -1,68 +1,13 @@
----
-priority: 3
-context: ["openshift", "product-config", "hourly", "on-demand", "payg", "pay as you go", "create openshift on-demand", "create openshift hourly", "create openshift payg"]
----
-
-# Adding OpenShift Hourly/On-Demand Products
-
-This guide provides step-by-step instructions for adding new OpenShift hourly or on-demand product configurations to the curiosity-frontend application.
-
-## Overview
-
-OpenShift products in this application are configured as hourly billing products that track usage metrics like cores, vCPUs, and instance hours. They typically belong to the "openshift" product group and use `DISPLAY_TYPES.HOURLY` for billing display.
-
-## Interactive Configuration Process
-
-When asked to **"create openshift on-demand OR hourly"** configuration, respond by asking these questions sequentially (ask one question, wait for answer, then proceed to the next):
-
-1. **"What is the product id?"** - The API identifier for the product (e.g., "rhacs", "rhods")
-2. **"What is the product long, or full, name?"** - The complete display name (e.g., "Red Hat Advanced Cluster Security")  
-3. **"What is the product short name?"** - The abbreviated display name (e.g., "RHACS")
-4. **"Is there an existing product variant config that matches what you want?"** - If the answer is no, ask: **"What metric needs to be displayed?"** (e.g., "Cores", "vCPUs", "Instance-hours")
-
-## Step-by-Step Implementation
-
-### Step 1: Add Product Constant
-
-Add the new product ID to `src/services/rhsm/rhsmConstants.js`:
-
-```javascript
-const RHSM_API_PATH_PRODUCT_TYPES = {
-  // ... existing products ...
-  YOUR_PRODUCT: 'your-product-id',
-  // ... rest of products in alphabetical order ...
-};
-```
-
-**Requirements:**
-- Use UPPER_SNAKE_CASE for the constant name
-- Use kebab-case or the exact API identifier for the value
-- Maintain alphabetical ordering within the object
-
-### Step 2: Update JSDoc Type Annotations
-
-Update all JSDoc type annotations in `rhsmConstants.js` to include the new product:
-
-```javascript
-/**
- * @type {{RHEL_ARM: string, YOUR_PRODUCT: string, OPENSHIFT: string, ...}}
- */
-```
-
-**Locations to update:**
-- `RHSM_API_PATH_PRODUCT_TYPES` JSDoc annotation
-- All combined type annotations that include product types (typically 4 locations)
-
-### Step 3: Create Product Configuration File
-
-Create `src/config/product.yourProduct.js` using this template:
-
-```javascript
 import React from 'react';
 import { Button } from '@patternfly/react-core';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import moment from 'moment';
-import { chartColorBlueLight, chartColorBlueDark } from '../common/tokenHelpers';
+import {
+  chartColorBlueLight,
+  chartColorBlueDark,
+  chartColorGoldLight,
+  chartColorGoldDark
+} from '../common/tokenHelpers';
 import {
   RHSM_API_PATH_METRIC_TYPES,
   RHSM_API_PATH_PRODUCT_TYPES,
@@ -72,20 +17,18 @@ import {
   RHSM_API_QUERY_INVENTORY_SUBSCRIPTIONS_SORT_TYPES as SUBSCRIPTIONS_SORT_TYPES,
   RHSM_API_QUERY_SET_TYPES,
   RHSM_API_RESPONSE_INSTANCES_DATA_TYPES as INVENTORY_TYPES,
-  RHSM_API_RESPONSE_SUBSCRIPTIONS_DATA_TYPES as SUBSCRIPTIONS_INVENTORY_TYPES,
   RHSM_INTERNAL_PRODUCT_DISPLAY_TYPES as DISPLAY_TYPES
 } from '../services/rhsm/rhsmConstants';
 import { ChartTypeVariant } from '../components/chart/chartHelpers';
 import { dateHelpers, helpers } from '../common';
-import { SelectPosition } from '../components/form/select';
 import { Tooltip } from '../components/tooltip/tooltip';
 import { translate } from '../components/i18n/i18n';
 
 /**
- * Your Product Name
+ * RHDS
  *
  * @memberof Products
- * @module YourProduct
+ * @module RHDS
  */
 
 /**
@@ -100,14 +43,14 @@ const productGroup = 'openshift';
  *
  * @type {string}
  */
-const productId = RHSM_API_PATH_PRODUCT_TYPES.YOUR_PRODUCT;
+const productId = RHSM_API_PATH_PRODUCT_TYPES.RHDS;
 
 /**
  * Product label. An identifier used for display strings.
  *
  * @type {string}
  */
-const productLabel = RHSM_API_PATH_PRODUCT_TYPES.YOUR_PRODUCT;
+const productLabel = RHSM_API_PATH_PRODUCT_TYPES.RHDS;
 
 /**
  * Product configuration
@@ -119,7 +62,7 @@ const productLabel = RHSM_API_PATH_PRODUCT_TYPES.YOUR_PRODUCT;
  *     initialGraphSettings: object, initialInventoryFilters: Array}}
  */
 const config = {
-  aliases: ['alias1', 'alias2'], // Optional: add relevant aliases
+  aliases: ['dolor', 'sit', 'payg', 'openshift-dolor'],
   productGroup,
   productId,
   productLabel,
@@ -148,10 +91,19 @@ const config = {
   },
   initialGraphFilters: [
     {
-      metric: RHSM_API_PATH_METRIC_TYPES.CORES, // Use appropriate metric
+      metric: RHSM_API_PATH_METRIC_TYPES.VCPUS,
       fill: chartColorBlueLight.value,
       stroke: chartColorBlueDark.value,
       color: chartColorBlueDark.value,
+      chartType: ChartTypeVariant.line,
+      isStacked: false,
+      yAxisChartLabel: ({ id } = {}) => translate('curiosity-graph.label_axisY', { context: id })
+    },
+    {
+      metric: RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS,
+      fill: chartColorGoldLight.value,
+      stroke: chartColorGoldDark.value,
+      color: chartColorGoldDark.value,
       chartType: ChartTypeVariant.line,
       isStacked: false,
       yAxisChartLabel: ({ id } = {}) => translate('curiosity-graph.label_axisY', { context: id })
@@ -260,7 +212,7 @@ const config = {
               isInline
               component="a"
               variant="link"
-              href={`${helpers.UI_DEPLOY_PATH_LINK_PREFIX}/your-product-url/${instanceId}`}
+              href={`${helpers.UI_DEPLOY_PATH_LINK_PREFIX}/openshift/dolor-sit/${instanceId}`}
             >
               {updatedDisplayName}
             </Button>
@@ -299,12 +251,26 @@ const config = {
       width: 15
     },
     {
-      metric: RHSM_API_PATH_METRIC_TYPES.CORES, // Use appropriate metric
-      cell: ({ [RHSM_API_PATH_METRIC_TYPES.CORES]: total }) =>
+      metric: RHSM_API_PATH_METRIC_TYPES.VCPUS,
+      cell: ({ [RHSM_API_PATH_METRIC_TYPES.VCPUS]: total }) =>
         translate('curiosity-inventory.measurement', {
-          context: (total && RHSM_API_PATH_METRIC_TYPES.CORES) || undefined,
+          context: (total && RHSM_API_PATH_METRIC_TYPES.VCPUS) || undefined,
           total: helpers.numberDisplay(total)?.format({ mantissa: 5, trimMantissa: true }),
-          testId: <span data-test={`instances-cell-${RHSM_API_PATH_METRIC_TYPES.CORES}`} data-value={`${total}`} />
+          testId: <span data-test={`instances-cell-${RHSM_API_PATH_METRIC_TYPES.VCPUS}`} data-value={`${total}`} />
+        }),
+      isSort: true,
+      isWrap: true,
+      width: 15
+    },
+    {
+      metric: RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS,
+      cell: ({ [RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS]: total }) =>
+        translate('curiosity-inventory.measurement', {
+          context: (total && RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS) || undefined,
+          total: helpers.numberDisplay(total)?.format({ mantissa: 5, trimMantissa: true }),
+          testId: (
+            <span data-test={`instances-cell-${RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS}`} data-value={`${total}`} />
+          )
         }),
       isSort: true,
       isWrap: true,
@@ -320,134 +286,3 @@ const config = {
 };
 
 export { config as default, config };
-```
-
-### Step 4: Add Localization Entries
-
-Add entries to `public/locales/en-US.json`:
-
-```json
-{
-  "curiosity-view": {
-    "title_your-product-id": "Your Product Full Name",
-    "subtitle_your-product-id": "Your Product Short Name",
-    "description_your-product-id": "Brief description of the product"
-  }
-}
-```
-
-### Step 5: Update Jest Snapshots
-
-Run the test suite to update snapshots:
-
-```bash
-npm run test:ci -- --updateSnapshot
-```
-
-### Step 6: Run ESLint Fix
-
-Apply code formatting and linting fixes using the project's npm script:
-
-```bash
-npm run test:lintfix
-```
-
-**⚠️ Important:** ESLint may make formatting changes to JSDoc comments (line wrapping) which are acceptable. However, **revert any unrelated changes** that ESLint makes, such as:
-- Converting line comments (`//`) to block comments (`/* */`) 
-- **Lines 287-290 in `rhsmConstants.js`**: Billing provider comment formatting changes
-- Modifying unrelated code sections
-- Changes to parts of the file not related to your product addition
-
-**Focus only on changes directly related to the new product.**
-
-**Example of unrelated change to revert:**
-```javascript
-// BEFORE (correct):
-  // ORACLE: 'oracle',
-  // NONE: ''
-
-// AFTER ESLint (incorrect - revert this):
-  /*
-   * ORACLE: 'oracle',
-   * NONE: ''
-   */
-```
-
-### Step 7: Run Tests
-
-Verify all tests pass:
-
-```bash
-npm run test:ci
-```
-
-## Configuration Options
-
-### Display Types
-- `DISPLAY_TYPES.HOURLY` - For hourly billing products (most OpenShift products)
-- `DISPLAY_TYPES.CAPACITY` - For capacity-based products (RHACM, ROSA)
-
-### Common Metrics
-- `RHSM_API_PATH_METRIC_TYPES.CORES` - CPU cores
-- `RHSM_API_PATH_METRIC_TYPES.VCPUS` - Virtual CPUs  
-- `RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS` - Instance hours
-- `RHSM_API_PATH_METRIC_TYPES.MANAGED_NODES` - Managed nodes
-
-### Chart Types
-- `ChartTypeVariant.line` - Line chart (most common for hourly)
-- `ChartTypeVariant.threshold` - Threshold line
-- Use `filters` array for capacity products with prepaid/on-demand categories
-
-## File Checklist
-
-- [ ] Add product constant to `src/services/rhsm/rhsmConstants.js`
-- [ ] Update JSDoc type annotations (4 locations in rhsmConstants.js)
-- [ ] Create product configuration file `src/config/product.yourProduct.js`
-- [ ] Add localization entries to `public/locales/en-US.json`
-- [ ] Run `npm run test:ci -- --updateSnapshot` - Update Jest snapshots
-- [ ] Run `npm run test:lintfix` - Format code
-- [ ] Run `npm run test:ci` - Verify all tests pass
-
-## Common Pitfalls
-
-❌ **Don't:**
-- Forget to update JSDoc type annotations
-- Use inconsistent naming conventions
-- Skip the alphabetical ordering in constants
-- Copy capacity-based configurations for hourly products
-- Forget to update localization entries
-
-✅ **Do:**
-- Use appropriate display type (`HOURLY` vs `CAPACITY`)
-- Follow existing naming patterns for consistency
-- Include proper inventory URL links for your product
-- Test thoroughly before committing
-- Use the correct metric types for your product
-
-## Integration Points
-
-The product configuration integrates with:
-- **Router**: Uses `productPath` for URL routing
-- **API Services**: Uses `productId` for API calls
-- **Localization**: Uses product ID for translation keys
-- **Charts**: Uses metric types and display settings
-- **Inventory**: Uses inventory filters and sorting
-
-## Testing Strategy
-
-1. **Unit Tests**: Snapshots will capture structural changes
-2. **Integration Testing**: Verify product appears in navigation
-3. **Manual Testing**: Check charts, inventory, and localization
-4. **API Testing**: Verify correct API calls are made
-
-## Example Implementation
-
-Based on RHACS (Red Hat Advanced Cluster Security):
-- Product ID: `rhacs`
-- Full Name: "Red Hat Advanced Cluster Security" 
-- Short Name: "RHACS"
-- Metric: Cores
-- Display Type: Hourly
-- Aliases: `['advanced', 'cluster', 'security', 'kubernetes', 'acs']`
-
-The configuration automatically becomes available through the product discovery system without additional registration steps. 
