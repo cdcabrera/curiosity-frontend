@@ -7,12 +7,13 @@
  * RHSM path IDs for product RHEL variants.
  *
  * @type {{RHEL_ARM: string, RHEL_X86_RS: string, RHEL_X86_ELS_UNCONVERTED: string, RHEL_X86_EUS: string,
- *     RHEL_X86_HA: string, RHEL_X86_SAP: string, RHEL_AUS_ADDON: string, RHEL_IBM_Z: string, RHEL_IBM_POWER: string,
- *     RHEL_X86: string}}
+ *     RHEL_X86_HA: string, RHEL_X86_SAP: string, RHEL_AUS_ADDON: string, RHEL_BALLS: string, RHEL_IBM_Z: string,
+ *     RHEL_IBM_POWER: string, RHEL_X86: string}}
  */
 const RHSM_API_PATH_PRODUCT_VARIANT_RHEL_TYPES = {
   RHEL_ARM: 'RHEL for ARM',
   RHEL_AUS_ADDON: 'rhel-aus-addon',
+  RHEL_BALLS: 'rhelballs',
   RHEL_IBM_POWER: 'RHEL for IBM Power',
   RHEL_IBM_Z: 'RHEL for IBM z',
   RHEL_X86: 'RHEL for x86',
@@ -57,8 +58,8 @@ const RHSM_API_PATH_PRODUCT_VARIANT_SATELLITE_TYPES = {
  *     RHEL_WORKSTATION: string, RHEL_X86_SAP: string, RHODS: string, ROSA: string, RHEL_X86: string,
  *     RHEL_COMPUTE_NODE: string, RHEL_X86_ELS_PAYG: string, OPENSHIFT: string, RHACM: string, RHEL_X86_RS: string,
  *     SATELLITE_SERVER: string, RHEL_X86_ELS_PAYG_ADDON: string, OPENSHIFT_DEDICATED_METRICS: string, RHEL_X86_HA:
- *     string, ANSIBLE: string, RHEL_AUS_ADDON: string, SATELLITE_CAPSULE: string, RHEL_IBM_Z: string, RHEL_IBM_POWER:
- *     string, RHACS: string}}
+ *     string, ANSIBLE: string, RHEL_AUS_ADDON: string, RHEL_BALLS: string, SATELLITE_CAPSULE: string, RHEL_IBM_Z:
+ *     string, RHEL_IBM_POWER: string, RHACS: string}}
  */
 const RHSM_API_PATH_PRODUCT_TYPES = {
   ...RHSM_API_PATH_PRODUCT_VARIANT_RHEL_TYPES,
@@ -484,7 +485,7 @@ const RHSM_INTERNAL_PRODUCT_DISPLAY_TYPES = {
  *     {GENERIC: string, OPTIN: string}, RHSM_API_QUERY_GRANULARITY_TYPES: {WEEKLY: string, QUARTERLY: string, DAILY:
  *     string, MONTHLY: string}, RHSM_API_PATH_PRODUCT_VARIANT_RHEL_TYPES: {RHEL_ARM: string, RHEL_X86_RS: string,
  *     RHEL_X86_ELS_UNCONVERTED: string, RHEL_X86_EUS: string, RHEL_X86_HA: string, RHEL_X86_SAP: string,
- *     RHEL_AUS_ADDON: string, RHEL_IBM_Z: string, RHEL_IBM_POWER: string, RHEL_X86: string},
+ *     RHEL_AUS_ADDON: string, RHEL_BALLS: string, RHEL_IBM_Z: string, RHEL_IBM_POWER: string, RHEL_X86: string},
  *     RHSM_API_RESPONSE_SUBSCRIPTIONS_DATA_TYPES: {BILLING_ACCOUNT_ID: string, QUANTITY: string,
  *     SUBSCRIPTION_MANAGER_ID: string, INVENTORY_ID: string, NUMBER_OF_GUESTS: string, HAS_INFINITE_QUANTITY: string,
  *     PRODUCT_NAME: string, SERVICE_LEVEL: string, DISPLAY_NAME: string, INSTANCE_ID: string, MEASUREMENTS: string,
@@ -498,20 +499,21 @@ const RHSM_INTERNAL_PRODUCT_DISPLAY_TYPES = {
  *     RHEL_WORKSTATION: string, RHEL_X86_SAP: string, RHODS: string, ROSA: string, RHEL_X86: string,
  *     RHEL_COMPUTE_NODE: string, RHEL_X86_ELS_PAYG: string, OPENSHIFT: string, RHACM: string, RHEL_X86_RS: string,
  *     SATELLITE_SERVER: string, RHEL_X86_ELS_PAYG_ADDON: string, OPENSHIFT_DEDICATED_METRICS: string, RHEL_X86_HA:
- *     string, ANSIBLE: string, RHEL_AUS_ADDON: string, SATELLITE_CAPSULE: string, RHEL_IBM_Z: string, RHEL_IBM_POWER:
- *     string, RHACS: string}, RHSM_API_RESPONSE_BILLING_PROVIDER_TYPES: {AZURE: string, GCP: string, RED_HAT: string,
- *     NONE: string, AWS: string, ORACLE: string}, RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES: {ORG_ID: string,
- *     PRODUCT_TAG: string}, RHSM_API_RESPONSE_ERRORS_TYPES: {CODE: string},
- *     RHSM_API_RESPONSE_TALLY_CAPACITY_DATA_TYPES: {DATE: string, HAS_DATA: string, VALUE: string,
- *     HAS_INFINITE_QUANTITY: string}, RHSM_API_RESPONSE_TALLY_CAPACITY_META_TYPES: {TOTAL_MONTHLY: string, DATE:
- *     string, PRODUCT: string, HAS_CLOUDIGRADE_DATA: string, HAS_CLOUDIGRADE_MISMATCH: string, HAS_DATA: string,
- *     METRIC_ID: string, COUNT: string, VALUE: string}, RHSM_API_QUERY_BILLING_PROVIDER_TYPES: {AZURE: string, GCP:
- *     string, RED_HAT: string, NONE: string, AWS: string, ORACLE: string}, RHSM_API_RESPONSE_ID: string,
- *     RHSM_API_QUERY_CATEGORY_TYPES: {CLOUD: string, PHYSICAL: string, ON_DEMAND: string, HYPERVISOR: string, PREPAID:
- *     string, VIRTUAL: string}, RHSM_API_QUERY_USAGE_TYPES: {UNSPECIFIED: string, DISASTER: string, DEVELOPMENT:
- *     string, PRODUCTION: string}, RHSM_API_QUERY_SLA_TYPES: {PREMIUM: string, SELF: string, NONE: string, STANDARD:
- *     string}, RHSM_API_QUERY_SET_INVENTORY_TYPES: {BILLING_ACCOUNT_ID: string, DIRECTION: string, END_DATE: string,
- *     METRIC_ID: string, SLA: string, LIMIT: string, START_DATE: string, DISPLAY_NAME: string, USAGE: string,
+ *     string, ANSIBLE: string, RHEL_AUS_ADDON: string, RHEL_BALLS: string, SATELLITE_CAPSULE: string, RHEL_IBM_Z:
+ *     string, RHEL_IBM_POWER: string, RHACS: string}, RHSM_API_RESPONSE_BILLING_PROVIDER_TYPES: {AZURE: string, GCP:
+ *     string, RED_HAT: string, NONE: string, AWS: string, ORACLE: string},
+ *     RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES: {ORG_ID: string, PRODUCT_TAG: string},
+ *     RHSM_API_RESPONSE_ERRORS_TYPES: {CODE: string}, RHSM_API_RESPONSE_TALLY_CAPACITY_DATA_TYPES: {DATE: string,
+ *     HAS_DATA: string, VALUE: string, HAS_INFINITE_QUANTITY: string}, RHSM_API_RESPONSE_TALLY_CAPACITY_META_TYPES:
+ *     {TOTAL_MONTHLY: string, DATE: string, PRODUCT: string, HAS_CLOUDIGRADE_DATA: string, HAS_CLOUDIGRADE_MISMATCH:
+ *     string, HAS_DATA: string, METRIC_ID: string, COUNT: string, VALUE: string},
+ *     RHSM_API_QUERY_BILLING_PROVIDER_TYPES: {AZURE: string, GCP: string, RED_HAT: string, NONE: string, AWS: string,
+ *     ORACLE: string}, RHSM_API_RESPONSE_ID: string, RHSM_API_QUERY_CATEGORY_TYPES: {CLOUD: string, PHYSICAL: string,
+ *     ON_DEMAND: string, HYPERVISOR: string, PREPAID: string, VIRTUAL: string}, RHSM_API_QUERY_USAGE_TYPES:
+ *     {UNSPECIFIED: string, DISASTER: string, DEVELOPMENT: string, PRODUCTION: string}, RHSM_API_QUERY_SLA_TYPES:
+ *     {PREMIUM: string, SELF: string, NONE: string, STANDARD: string}, RHSM_API_QUERY_SET_INVENTORY_TYPES:
+ *     {BILLING_ACCOUNT_ID: string, DIRECTION: string, END_DATE: string, METRIC_ID: string, SLA: string, LIMIT: string,
+ *     START_DATE: string, DISPLAY_NAME: string, USAGE: string,
  *     CATEGORY: string, SORT: string, OFFSET: string, BILLING_PROVIDER: string}, RHSM_API_RESPONSE_ERRORS: string,
  *     RHSM_API_RESPONSE_META: string, RHSM_API_RESPONSE_GRANULARITY_TYPES: {WEEKLY: string, QUARTERLY: string, DAILY:
  *     string, MONTHLY: string}, RHSM_API_QUERY_SET_TYPES: {ORG_ID: string, GRANULARITY: string, BILLING_ACCOUNT_ID:
