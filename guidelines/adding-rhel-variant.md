@@ -43,14 +43,17 @@ Add the new variant to the `RHSM_API_PATH_PRODUCT_VARIANT_RHEL_TYPES` object:
 const RHSM_API_PATH_PRODUCT_VARIANT_RHEL_TYPES = {
   RHEL_ARM: 'RHEL for ARM',
   RHEL_AUS_ADDON: 'rhel-aus-addon',
-  RHEL_BALLS: 'rhelballs',  // ← New variant
+  RHEL_BALLS: 'rhelballs',
   RHEL_IBM_POWER: 'RHEL for IBM Power',
+  RHEL_IBM_Z: 'RHEL for IBM z',
+  RHEL_LOREM_IPSUM: 'rhelLoremIpsum',  // ← New variant
+  RHEL_X86: 'RHEL for x86',
   // ... other variants
 };
 ```
 
 **Key Points:**
-- Use a descriptive constant name (e.g., `RHEL_BALLS`)
+- Use a descriptive constant name (e.g., `RHEL_LOREM_IPSUM`)
 - The value should be the product ID used by the API
 - Insert alphabetically to maintain order
 - Follow existing naming conventions
@@ -70,7 +73,7 @@ Add `RHEL_[VARIANT]: string` to each type definition, maintaining alphabetical o
 **Example:**
 ```javascript
 /**
- * @type {{RHEL_ARM: string, RHEL_AUS_ADDON: string, RHEL_BALLS: string, RHEL_IBM_Z: string, ...}}
+ * @type {{RHEL_ARM: string, RHEL_AUS_ADDON: string, RHEL_BALLS: string, RHEL_IBM_Z: string, RHEL_LOREM_IPSUM: string, RHEL_X86: string, ...}}
  */
 ```
 
@@ -96,19 +99,19 @@ Add entries in the `curiosity-toolbar` and `curiosity-view` sections:
 }
 ```
 
-**Example for rhelballs:**
+**Example for rhelLoremIpsum:**
 ```json
 {
   "curiosity-toolbar": {
-    "label_groupVariant_rhelballs": "RH Balls"
+    "label_groupVariant_rhelLoremIpsum": "RHEL Lorem Ipsum Dolor Sit"
   },
   "curiosity-view": {
-    "title_rhelballs": "Red Hat Enterprise Linux Balls",
-    "subtitle_rhelballs": "$t(curiosity-view.subtitle_RHEL)",
-    "description_rhelballs": "$t(curiosity-view.description_RHEL)"
+    "title_rhelLoremIpsum": "Red Hat Enterprise Linux Lorem Ipsum Dolor Sit",
+    "subtitle_rhelLoremIpsum": "$t(curiosity-view.subtitle_RHEL)",
+    "description_rhelLoremIpsum": "$t(curiosity-view.description_RHEL)"
   },
   "curiosity-graph": {
-    "legendTooltip_Sockets_hypervisor_rhelballs": "$t(curiosity-graph.legendTooltip_Sockets_hypervisor_RHEL)"
+    "legendTooltip_Sockets_hypervisor_rhelLoremIpsum": "$t(curiosity-graph.legendTooltip_Sockets_hypervisor_RHEL)"
   }
 }
 ```
@@ -132,6 +135,13 @@ Apply code formatting and linting fixes:
 npx eslint --fix src/services/rhsm/rhsmConstants.js
 ```
 
+**Important:** ESLint may make formatting changes to JSDoc comments (line wrapping) which are acceptable. However, **revert any unrelated changes** that ESLint makes, such as:
+- Converting line comments (`//`) to block comments (`/* */`) 
+- Modifying unrelated code sections
+- Changes to parts of the file not related to your variant addition
+
+**Focus only on changes directly related to the new variant.**
+
 ### 6. Validate Changes
 
 Run the specific test to ensure everything works:
@@ -146,12 +156,12 @@ npm run test:ci -- --testPathPattern=rhsmConstants.test.js
 - Format: `RHEL_[DESCRIPTIVE_NAME]`
 - Use uppercase with underscores
 - Be descriptive but concise
-- Examples: `RHEL_ARM`, `RHEL_IBM_POWER`, `RHEL_BALLS`
+- Examples: `RHEL_ARM`, `RHEL_IBM_POWER`, `RHEL_LOREM_IPSUM`
 
 ### Product IDs (API Values)
 - Use lowercase with hyphens or descriptive names
 - Match what the backend API expects
-- Examples: `'RHEL for ARM'`, `'rhel-aus-addon'`, `'rhelballs'`
+- Examples: `'RHEL for ARM'`, `'rhel-aus-addon'`, `'rhelLoremIpsum'`
 
 ### Localization Keys
 - **Toolbar labels:** `label_groupVariant_[product-id]`
@@ -161,8 +171,8 @@ npm run test:ci -- --testPathPattern=rhsmConstants.test.js
 - **Graph legends:** `legendTooltip_Sockets_hypervisor_[product-id]`
 
 ### Display Names
-- **Short Title:** Used in toolbars and compact displays (e.g., "RH Balls")
-- **Full Title:** Used in page headers and detailed views (e.g., "Red Hat Enterprise Linux Balls")
+- **Short Title:** Used in toolbars and compact displays (e.g., "RHEL Lorem Ipsum Dolor Sit")
+- **Full Title:** Used in page headers and detailed views (e.g., "Red Hat Enterprise Linux Lorem Ipsum Dolor Sit")
 
 ## File Checklist
 
@@ -212,18 +222,18 @@ The new variant will automatically be available in:
 
 ## Example Implementation
 
-Reference the `rhelballs` variant implementation as a complete example:
+Reference the `rhelLoremIpsum` variant implementation as a complete example:
 
 ```javascript
 // Constants
-RHEL_BALLS: 'rhelballs',
+RHEL_LOREM_IPSUM: 'rhelLoremIpsum',
 
 // Localization
-"label_groupVariant_rhelballs": "RH Balls",
-"title_rhelballs": "Red Hat Enterprise Linux Balls",
-"subtitle_rhelballs": "$t(curiosity-view.subtitle_RHEL)",
-"description_rhelballs": "$t(curiosity-view.description_RHEL)",
-"legendTooltip_Sockets_hypervisor_rhelballs": "$t(curiosity-graph.legendTooltip_Sockets_hypervisor_RHEL)"
+"label_groupVariant_rhelLoremIpsum": "RHEL Lorem Ipsum Dolor Sit",
+"title_rhelLoremIpsum": "Red Hat Enterprise Linux Lorem Ipsum Dolor Sit",
+"subtitle_rhelLoremIpsum": "$t(curiosity-view.subtitle_RHEL)",
+"description_rhelLoremIpsum": "$t(curiosity-view.description_RHEL)",
+"legendTooltip_Sockets_hypervisor_rhelLoremIpsum": "$t(curiosity-graph.legendTooltip_Sockets_hypervisor_RHEL)"
 ```
 
 ## Related Documentation
