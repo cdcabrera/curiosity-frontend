@@ -2178,6 +2178,11 @@ exports[`Product specific configurations should apply graph filters and settings
     },
   },
   {
+    "rhotv": {
+      "yAxisChartLabel": "t(curiosity-graph.label_axisY, {})",
+    },
+  },
+  {
     "rosa": {
       "xAxisChartLabel": "t(curiosity-graph.label_axisX, {"context":"Daily"})",
       "yAxisTickFormat": {
@@ -2522,6 +2527,20 @@ exports[`Product specific configurations should apply graph filters and settings
   },
   {
     "rhods": [
+      {
+        "body": "t(curiosity-graph.cardBodyMetric, {"context":"total","testId":"graphDailyTotalCard-body"}, [object Object])",
+        "footer": "t(curiosity-graph.cardFooterMetric, {"date":"09 Mar 2023 00:00 UTC","testId":"graphDailyTotalCard-footer"})",
+        "header": "t(curiosity-graph.cardHeadingMetric, {"context":"dailyTotal","testId":"graphDailyTotalCard-header"})",
+      },
+      {
+        "body": "t(curiosity-graph.cardBodyMetric, {"context":"total","testId":"graphMonthlyTotalCard-body"}, [object Object])",
+        "footer": "t(curiosity-graph.cardFooterMetric, {"date":"09 Mar 2023 00:00 UTC","testId":"graphMonthlyTotalCard-footer"})",
+        "header": "t(curiosity-graph.cardHeadingMetric, {"context":"monthlyTotal","testId":"graphMonthlyTotalCard-header"})",
+      },
+    ],
+  },
+  {
+    "rhotv": [
       {
         "body": "t(curiosity-graph.cardBodyMetric, {"context":"total","testId":"graphDailyTotalCard-body"}, [object Object])",
         "footer": "t(curiosity-graph.cardFooterMetric, {"date":"09 Mar 2023 00:00 UTC","testId":"graphDailyTotalCard-footer"})",
@@ -3563,6 +3582,65 @@ exports[`Product specific configurations should apply graph filters and settings
     },
   },
   {
+    "rhotv": {
+      "filtersSettings": [
+        {
+          "settings": {
+            "cards": [
+              {
+                "body": [Function],
+                "footer": [Function],
+                "header": [Function],
+              },
+              {
+                "body": [Function],
+                "footer": [Function],
+                "header": [Function],
+              },
+            ],
+            "chartType": "line",
+            "color": "#0066cc",
+            "fill": "#92c5f9",
+            "groupMetric": [
+              "Managed-nodes",
+            ],
+            "isMetricDisplay": true,
+            "isMultiMetric": false,
+            "isStacked": false,
+            "isStandalone": undefined,
+            "metric": undefined,
+            "metrics": [
+              {
+                "chartType": "line",
+                "color": "#0066cc",
+                "fill": "#92c5f9",
+                "id": "Managed-nodes_rhotv",
+                "isCapacity": false,
+                "isStacked": false,
+                "isThreshold": false,
+                "isToolbarFilter": false,
+                "metric": "Managed-nodes",
+                "stroke": "#0066cc",
+                "strokeWidth": 2,
+                "yAxisChartLabel": [Function],
+              },
+            ],
+            "padding": {
+              "bottom": 75,
+              "left": 75,
+              "right": 45,
+              "top": 45,
+            },
+            "productId": "rhotv",
+            "stringId": "Managed-nodes_rhotv",
+            "stroke": "#0066cc",
+            "yAxisChartLabel": [Function],
+          },
+        },
+      ],
+    },
+  },
+  {
     "rosa": {
       "filtersSettings": [
         {
@@ -4032,6 +4110,26 @@ exports[`Product specific configurations should apply query parameters: product 
   },
   {
     "rhods": {
+      "graphTallyQuery": {
+        "granularity": "Daily",
+      },
+      "inventoryGuestsQuery": undefined,
+      "inventoryHostsQuery": {
+        "dir": "desc",
+        "limit": 100,
+        "offset": 0,
+        "sort": "last_seen",
+      },
+      "inventorySubscriptionsQuery": {
+        "dir": "desc",
+        "limit": 100,
+        "offset": 0,
+        "sort": "next_event_date",
+      },
+    },
+  },
+  {
+    "rhotv": {
       "graphTallyQuery": {
         "granularity": "Daily",
       },
@@ -6620,6 +6718,91 @@ exports[`Product specific configurations should apply variations in inventory fi
     },
   },
   {
+    "rhotv": {
+      "dataSetColumnHeaders": [
+        {
+          "cell": [Function],
+          "content": "t([curiosity-inventory.header_display_name,curiosity-inventory.guestsHeader_display_name], {"context":"rhotv"})",
+          "info": undefined,
+          "isSort": true,
+          "label": [Function],
+          "metric": "display_name",
+          "width": undefined,
+        },
+        {
+          "cell": [Function],
+          "content": "t([curiosity-inventory.header_last_seen,curiosity-inventory.guestsHeader_last_seen], {"context":"rhotv"})",
+          "info": undefined,
+          "isSort": true,
+          "label": [Function],
+          "metric": "last_seen",
+          "width": undefined,
+        },
+        {
+          "cell": [Function],
+          "content": "t([curiosity-inventory.header_Managed-nodes,curiosity-inventory.guestsHeader_Managed-nodes], {"context":"rhotv"})",
+          "info": undefined,
+          "isSort": true,
+          "label": [Function],
+          "metric": "Managed-nodes",
+          "width": undefined,
+        },
+      ],
+      "dataSetRows": [
+        {
+          "cells": [
+            {
+              "content": <Button
+                component="a"
+                href="/openshift/rhotv/i-XXXXXXXXXX"
+                isInline={true}
+                variant="link"
+              >
+                lorem
+              </Button>,
+              "dataLabel": "t([curiosity-inventory.header_display_name,curiosity-inventory.guestsHeader_display_name], {"context":"rhotv"})",
+              "header": [Function],
+              "isSort": true,
+              "metric": "display_name",
+              "width": undefined,
+            },
+            {
+              "content": <DateFormat
+                date="2022-01-01T00:00:00.000Z"
+                type="relative"
+              />,
+              "dataLabel": "t([curiosity-inventory.header_last_seen,curiosity-inventory.guestsHeader_last_seen], {"context":"rhotv"})",
+              "header": [Function],
+              "isSort": true,
+              "metric": "last_seen",
+              "width": undefined,
+            },
+            {
+              "content": undefined,
+              "dataLabel": "t([curiosity-inventory.header_Managed-nodes,curiosity-inventory.guestsHeader_Managed-nodes], {"context":"rhotv"})",
+              "header": [Function],
+              "isSort": true,
+              "metric": "Managed-nodes",
+              "width": undefined,
+            },
+          ],
+          "expandedContent": undefined,
+          "row": {
+            "cloud_provider": "dolor sit",
+            "display_name": "lorem",
+            "instance_id": "i-XXXXXXXXXX",
+            "inventory_id": "XXXX-XXXX-XXXXX-XXXXX",
+            "last_seen": "2022-01-01T00:00:00.000Z",
+            "loremIpsum": "hello world",
+          },
+        },
+      ],
+      "resultsCount": undefined,
+      "resultsOffset": undefined,
+      "resultsPerPage": undefined,
+    },
+  },
+  {
     "rosa": {
       "dataSetColumnHeaders": [
         {
@@ -6901,6 +7084,7 @@ exports[`Product specific configurations should apply variations in inventory fi
   "rhel-for-x86-els-payg",
   "rhli",
   "rhods",
+  "rhotv",
   "rosa",
   "Satellite Server",
 ]
@@ -8187,6 +8371,84 @@ exports[`Product specific configurations should apply variations in inventory fi
               "isWrap": true,
               "metric": "last_seen",
               "width": 15,
+            },
+          ],
+          "expandedContent": undefined,
+          "row": {
+            "cloud_provider": "dolor sit",
+            "display_name": "lorem",
+            "instance_id": "i-XXXXXXXXXX",
+            "inventory_id": "XXXX-XXXX-XXXXX-XXXXX",
+            "last_seen": "2022-01-01T00:00:00.000Z",
+            "loremIpsum": "hello world",
+          },
+        },
+      ],
+      "resultsCount": undefined,
+      "resultsOffset": undefined,
+      "resultsPerPage": undefined,
+    },
+  },
+  {
+    "rhotv": {
+      "dataSetColumnHeaders": [
+        {
+          "cell": [Function],
+          "content": "t([curiosity-inventory.header_display_name,curiosity-inventory.guestsHeader_display_name], {"context":"rhotv"})",
+          "info": undefined,
+          "isSort": true,
+          "label": [Function],
+          "metric": "display_name",
+          "width": undefined,
+        },
+        {
+          "cell": [Function],
+          "content": "t([curiosity-inventory.header_last_seen,curiosity-inventory.guestsHeader_last_seen], {"context":"rhotv"})",
+          "info": undefined,
+          "isSort": true,
+          "label": [Function],
+          "metric": "last_seen",
+          "width": undefined,
+        },
+        {
+          "cell": [Function],
+          "content": "t([curiosity-inventory.header_Managed-nodes,curiosity-inventory.guestsHeader_Managed-nodes], {"context":"rhotv"})",
+          "info": undefined,
+          "isSort": true,
+          "label": [Function],
+          "metric": "Managed-nodes",
+          "width": undefined,
+        },
+      ],
+      "dataSetRows": [
+        {
+          "cells": [
+            {
+              "content": "lorem",
+              "dataLabel": "t([curiosity-inventory.header_display_name,curiosity-inventory.guestsHeader_display_name], {"context":"rhotv"})",
+              "header": [Function],
+              "isSort": true,
+              "metric": "display_name",
+              "width": undefined,
+            },
+            {
+              "content": <DateFormat
+                date="2022-01-01T00:00:00.000Z"
+                type="relative"
+              />,
+              "dataLabel": "t([curiosity-inventory.header_last_seen,curiosity-inventory.guestsHeader_last_seen], {"context":"rhotv"})",
+              "header": [Function],
+              "isSort": true,
+              "metric": "last_seen",
+              "width": undefined,
+            },
+            {
+              "content": undefined,
+              "dataLabel": "t([curiosity-inventory.header_Managed-nodes,curiosity-inventory.guestsHeader_Managed-nodes], {"context":"rhotv"})",
+              "header": [Function],
+              "isSort": true,
+              "metric": "Managed-nodes",
+              "width": undefined,
             },
           ],
           "expandedContent": undefined,

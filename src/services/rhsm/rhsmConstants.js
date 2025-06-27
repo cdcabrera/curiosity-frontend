@@ -63,7 +63,7 @@ const RHSM_API_PATH_PRODUCT_VARIANT_SATELLITE_TYPES = {
  *     SATELLITE_SERVER: string, RHEL_X86_ELS_PAYG_ADDON: string, OPENSHIFT_DEDICATED_METRICS: string, RHEL_X86_HA:
  *     string, ANSIBLE: string, RHEL_AUS_ADDON: string, RHEL_BALLS: string, RHEL_HELLO_WORLD: string,
  *     SATELLITE_CAPSULE: string, RHEL_IBM_Z: string, RHEL_IBM_POWER: string, RHEL_LOREM_IPSUM: string, RHACS: string,
- *     RHDS: string, RHLI: string}}
+ *     RHDS: string, RHLI: string, RHOTV: string}}
  */
 const RHSM_API_PATH_PRODUCT_TYPES = {
   ...RHSM_API_PATH_PRODUCT_VARIANT_RHEL_TYPES,
@@ -77,6 +77,7 @@ const RHSM_API_PATH_PRODUCT_TYPES = {
   RHEL_WORKSTATION: 'RHEL Workstation',
   RHLI: 'rhli',
   RHODS: 'rhods',
+  RHOTV: 'rhotv',
   ROSA: 'rosa',
   OPENSHIFT: 'OpenShift Container Platform',
   OPENSHIFT_METRICS: 'OpenShift-metrics',
@@ -285,8 +286,10 @@ const RHSM_API_RESPONSE_BILLING_PROVIDER_TYPES = {
   AWS: 'aws',
   // GCP: 'gcp',
   AZURE: 'azure'
-  // ORACLE: 'oracle',
-  // NONE: ''
+  /*
+   * ORACLE: 'oracle',
+   * NONE: ''
+   */
 };
 
 /**
@@ -508,8 +511,8 @@ const RHSM_INTERNAL_PRODUCT_DISPLAY_TYPES = {
  *     SATELLITE_SERVER: string, RHEL_X86_ELS_PAYG_ADDON: string, OPENSHIFT_DEDICATED_METRICS: string, RHEL_X86_HA:
  *     string, ANSIBLE: string, RHEL_AUS_ADDON: string, RHEL_BALLS: string, RHEL_HELLO_WORLD: string,
  *     SATELLITE_CAPSULE: string, RHEL_IBM_Z: string, RHEL_IBM_POWER: string, RHEL_LOREM_IPSUM: string, RHACS: string,
- *     RHDS: string, RHLI: string}, RHSM_API_RESPONSE_BILLING_PROVIDER_TYPES: {AZURE: string, GCP: string, RED_HAT:
- *     string, NONE: string, AWS: string, ORACLE: string},
+ *     RHDS: string, RHLI: string, RHOTV: string}, RHSM_API_RESPONSE_BILLING_PROVIDER_TYPES: {AZURE: string, GCP:
+ *     string, RED_HAT: string, NONE: string, AWS: string, ORACLE: string},
  *     RHSM_API_QUERY_SET_BILLING_ACCOUNT_ID_TYPES: {ORG_ID: string, PRODUCT_TAG: string},
  *     RHSM_API_RESPONSE_ERRORS_TYPES: {CODE: string}, RHSM_API_RESPONSE_TALLY_CAPACITY_DATA_TYPES: {DATE: string,
  *     HAS_DATA: string, VALUE: string, HAS_INFINITE_QUANTITY: string}, RHSM_API_RESPONSE_TALLY_CAPACITY_META_TYPES:

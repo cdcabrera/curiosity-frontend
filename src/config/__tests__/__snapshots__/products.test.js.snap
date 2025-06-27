@@ -397,6 +397,7 @@ exports[`Product configurations should return specific methods and properties: p
     "rhel-for-x86-els-payg",
     "rhli",
     "rhods",
+    "rhotv",
     "rosa",
     "Satellite Server",
   ],
