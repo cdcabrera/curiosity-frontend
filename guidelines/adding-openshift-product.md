@@ -18,7 +18,18 @@ When asked to **"create openshift on-demand OR hourly"** configuration, respond 
 1. **"What is the product id?"** - The API identifier for the product (e.g., "rhacs", "rhods")
 2. **"What is the product long, or full, name?"** - The complete display name (e.g., "Red Hat Advanced Cluster Security")  
 3. **"What is the product short name?"** - The abbreviated display name (e.g., "RHACS")
-4. **"Is there an existing product variant config that matches what you want?"** - If the answer is no, ask: **"What metric needs to be displayed?"** (e.g., "Cores", "vCPUs", "Instance-hours")
+4. **"Is there an existing product variant config that matches what you want?"**
+   - If **no**: Continue to question 6
+   - If **yes**: Continue to question 5
+5. **"What existing product config matches what you want?"** - Specify which existing config to use as template (e.g., "rhacs", "rhods", "rosa")
+6. **"What metric needs to be displayed?"** - The primary metric for charts and inventory (e.g., "Cores", "vCPUs", "Instance-hours")
+7. **"Is the metric display name unique?"** - Does the technical metric need to display differently to users?
+   - If **yes**: "What should the metric display as?" (e.g., technical: "Cores" → display: "vCPUs")
+   - If **no**: Use the standard metric display name
+
+**Note:** Even when using an existing config as template, you should still ask about metrics since customization may be needed.
+
+**Important:** Questions 6 and 7 are closely related - the metric question determines the technical API metric, while the display name question determines how it appears to users.
 
 ## Step-by-Step Implementation
 
@@ -343,6 +354,36 @@ Add entries to `public/locales/en-US.json`:
   }
 }
 ```
+
+#### Special Case: Custom Metric Display Names
+
+**Important Business Requirement:** Some products need to display a different metric name to users while keeping the technical metric unchanged.
+
+**This requirement is captured in Question 7** of the interactive flow: *"Is the metric display name, or names, unique? If yes, what is the new display name, or names?"*
+
+**Example Scenario:** A hypothetical product uses the `Cores` metric technically, but needs to display "vCPU" to users for business/marketing reasons.
+
+When this is needed:
+1. Keep the metric as `RHSM_API_PATH_METRIC_TYPES.CORES` in your product config
+2. Update ALL locale strings to use the customer-facing term:
+
+```json
+{
+  "cardHeading_Cores_yourProduct": "vCPU hour usage",
+  "cardHeadingDescription_Cores_yourProduct": "vCPU hours usage in hours", 
+  "cardBodyMetric_total_Cores_prepaid_yourProduct": "<0>{{total}}</0> vCPU hours",
+  "label_threshold_Cores_yourProduct": "Pre-paid vCPU subscription threshold",
+  "legendTooltip_threshold_Cores_yourProduct": "Maximum capacity, as vCPU hours, based on total [Product Name] pre-paid subscriptions in this account.",
+  "header_Cores_yourProduct": "vCPU hours"
+}
+```
+
+**Common Use Cases:**
+- Technical metric: `Cores` → User display: "vCPU"
+- Technical metric: `Sockets` → User display: "CPU"
+- Technical metric: `Instance-hours` → User display: "Control plane hours"
+
+This ensures the API uses the correct technical metric while presenting user-friendly terminology.
 
 ### Step 5: Update Jest Snapshots
 
@@ -766,7 +807,7 @@ The configuration automatically becomes available through the product discovery 
 feat(openshift): add RHDS product configuration
 
 - Add RHDS product constant and JSDoc annotations
-- Create product.rhds.js with vCPUs and Instance Hours metrics
+- Create product.yourProduct.js with vCPUs and Instance Hours metrics
 - Add localization entries for Red Hat OpenShift Dolor Sit
 - Update Jest snapshots for new product configuration
 
