@@ -1,7 +1,7 @@
 ---
 title: "Adding RHEL Variants"
 priority: 3
-context: ["rhel", "product-config", "variants", "localization"]
+context: ["rhel", "product-config", "variants", "localization", "add a rhel annual variant"]
 tags: ["rhel", "product", "variant", "constants", "i18n", "testing"]
 last_updated: "2025-01-26"
 effectiveness_tracking:
@@ -129,10 +129,10 @@ This will update snapshots in:
 
 ### 5. Run ESLint Fix
 
-Apply code formatting and linting fixes:
+Apply code formatting and linting fixes using the project's npm script:
 
 ```bash
-npx eslint --fix src/services/rhsm/rhsmConstants.js
+npm run test:lintfix
 ```
 
 **Important:** ESLint may make formatting changes to JSDoc comments (line wrapping) which are acceptable. However, **revert any unrelated changes** that ESLint makes, such as:
@@ -179,7 +179,7 @@ npm run test:ci -- --testPathPattern=rhsmConstants.test.js
 - [ ] `src/services/rhsm/rhsmConstants.js` - Add constant and update JSDoc
 - [ ] `public/locales/en-US.json` - Add localization entries
 - [ ] Run `npm run test:ci -- --updateSnapshot` - Update snapshots
-- [ ] Run `npx eslint --fix src/services/rhsm/rhsmConstants.js` - Format code
+- [ ] Run `npm run test:lintfix` - Format code
 - [ ] Run tests to validate changes
 
 ## Common Pitfalls
