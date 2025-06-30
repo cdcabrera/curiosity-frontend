@@ -1,5 +1,7 @@
 import React from 'react';
+import { AlertVariant } from '@patternfly/react-core';
 import { NotificationsProvider } from '@redhat-cloud-services/frontend-components-notifications';
+import { context as NotificationsContext } from './notificationsContext';
 import { helpers } from '../../common';
 
 /**
@@ -9,6 +11,14 @@ import { helpers } from '../../common';
  * @module Notifications
  * @property {module} NotificationsContext
  */
+
+/**
+ * Toast notification, or Alert, variants.
+ *
+ * @type {{success: AlertVariant.success, danger: AlertVariant.danger, warning: AlertVariant.warning,
+ *     info: AlertVariant.info, custom: AlertVariant.custom}}
+ */
+const NotificationVariant = { ...AlertVariant };
 
 /**
  * Expose consoledot toast notifications.
@@ -25,4 +35,4 @@ const Notifications = ({ children }) => {
   return children;
 };
 
-export { Notifications as default, Notifications };
+export { Notifications as default, Notifications, NotificationsContext, NotificationVariant };
