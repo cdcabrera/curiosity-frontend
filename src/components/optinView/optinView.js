@@ -38,7 +38,7 @@ import graphPng4x from '../../images/graph4x.png';
  * @param {translate} [props.t=translate]
  * @param {reduxActions.user.updateAccountOptIn} [props.updateAccountOptIn=reduxActions.user.updateAccountOptIn]
  * @param {storeHooks.reactRedux.useDispatch} [props.useDispatch=storeHooks.reactRedux.useDispatch]
- * @param {useNotifications} [props.useNotifications=useNotitications]
+ * @param {useNotifications} [props.useNotifications=useNotifications]
  * @param {storeHooks.reactRedux.useSelectorsResponse} [props.useSelectorsResponse=storeHooks.reactRedux.useSelectorsResponse]
  * @param {useSession} [props.useSession=useSession]
  * @fires onSubmitOptIn

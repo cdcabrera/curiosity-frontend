@@ -576,22 +576,9 @@ exports[`OptinView Component should submit an opt-in form: dispatch 1`] = `
   [
     {
       "meta": {
-        "notifications": {
-          "fulfilled": {
-            "autoDismiss": true,
-            "description": "t(curiosity-optin.notificationsSuccessDescription)",
-            "dismissable": false,
-            "title": "t(curiosity-optin.notificationsSuccessTitle, {"appName":"Subscriptions"})",
-            "variant": "success",
-          },
-          "rejected": {
-            "description": "t(curiosity-optin.notificationsErrorDescription)",
-            "dismissable": false,
-            "title": "t(curiosity-optin.notificationsErrorTitle, {"appName":"Subscriptions"})",
-            "variant": "danger",
-          },
-        },
         "query": {},
+        "rejectCallback": [Function],
+        "resolveCallback": [Function],
       },
       "payload": Promise {},
       "type": "UPDATE_USER_OPTIN",
