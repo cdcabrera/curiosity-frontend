@@ -3864,6 +3864,17 @@ Notification functionality
     </tr>  </tbody>
 </table>
 
+
+* [Notifications](#Components.module_Notifications)
+    * [~NotificationVariant](#Components.module_Notifications..NotificationVariant) : <code>Object</code>
+    * [~Notifications(props)](#Components.module_Notifications..Notifications) ⇒ <code>React.ReactNode</code>
+
+<a name="Components.module_Notifications..NotificationVariant"></a>
+
+### Notifications~NotificationVariant : <code>Object</code>
+Toast notification, or Alert, variants.
+
+**Kind**: inner constant of [<code>Notifications</code>](#Components.module_Notifications)  
 <a name="Components.module_Notifications..Notifications"></a>
 
 ### Notifications~Notifications(props) ⇒ <code>React.ReactNode</code>
@@ -3890,16 +3901,82 @@ Expose consoledot toast notifications.
 <a name="Notifications.module_NotificationsContext"></a>
 
 ## NotificationsContext
+
+* [NotificationsContext](#Notifications.module_NotificationsContext)
+    * [~addNotification](#Notifications.module_NotificationsContext..addNotification) ⇒ <code>void</code>
+    * [~removeNotification](#Notifications.module_NotificationsContext..removeNotification)
+    * [~useNotifications([context])](#Notifications.module_NotificationsContext..useNotifications) ⇒ <code>Object</code>
+
+<a name="Notifications.module_NotificationsContext..addNotification"></a>
+
+### NotificationsContext~addNotification ⇒ <code>void</code>
+Add a toast notification.
+
+A `swatchId` property is exposed to allow for easy removal.
+
+**Kind**: inner property of [<code>NotificationsContext</code>](#Notifications.module_NotificationsContext)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>notification</td><td><code>object</code></td><td><p>Notification object to be added.</p>
+</td>
+    </tr><tr>
+    <td>[notification.swatchId]</td><td><code>string</code></td><td><p>Optional plain language &quot;unique&quot; identifier that allows for
+    easy removal.</p>
+</td>
+    </tr><tr>
+    <td>[variant]</td><td><code>string</code></td><td><p>Optional variant to display, defaults to &quot;info&quot;</p>
+</td>
+    </tr><tr>
+    <td>title</td><td><code>React.ReactNode</code></td><td><p>Notification title</p>
+</td>
+    </tr><tr>
+    <td>description</td><td><code>React.ReactNode</code></td><td><p>Notification description</p>
+</td>
+    </tr>  </tbody>
+</table>
+
+<a name="Notifications.module_NotificationsContext..removeNotification"></a>
+
+### NotificationsContext~removeNotification
+Remove a toast notification.
+
+For convenience IF a `swatchId` property is provided of the notification.
+
+**Kind**: inner property of [<code>NotificationsContext</code>](#Notifications.module_NotificationsContext)  
+<table>
+  <thead>
+    <tr>
+      <th>Param</th><th>Type</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+    <td>notification</td><td><code>id</code></td><td><p>Unique identifier to remove. This can be the plain language swatchId, or
+    the generatedId provided by the notification package.</p>
+</td>
+    </tr>  </tbody>
+</table>
+
 <a name="Notifications.module_NotificationsContext..useNotifications"></a>
 
 ### NotificationsContext~useNotifications([context]) ⇒ <code>Object</code>
 Use platform notifications. Apply a convenience wrapper for easily removing notifications based on an internal
 "swatchId"
 
-If `DEV_MODE` is enabled, a warning is logged to the console when an attempt is made to remove a notification using
-an invalid or non-existent `swatchId`.
-
 **Kind**: inner method of [<code>NotificationsContext</code>](#Notifications.module_NotificationsContext)  
+**Returns**: <code>Object</code> - Add, clear all, or remove a notification.
+
+    - `addNotification` - Add a toast notification. A `swatchId` property is exposed to allow for easy removal.
+    - `clearNotifications` - Clear all notifications
+    - `removeNotifications` - Remove a toast notification based on ID. If you used a plain text `swatchId` to add
+        the notification, this can be used to remove it. If `DEV_MODE` is enabled, a warning is logged to the
+        console when an attempt is made to remove a notification using an invalid or non-existent `swatchId` or `id`.  
 <table>
   <thead>
     <tr>
@@ -3947,7 +4024,7 @@ An account opt-in view.
     </tr><tr>
     <td>[props.useDispatch]</td><td><code>storeHooks.reactRedux.useDispatch</code></td><td><code>storeHooks.reactRedux.useDispatch</code></td>
     </tr><tr>
-    <td>[props.useNotifications]</td><td><code>useNotifications</code></td><td><code>useNotifications</code></td>
+    <td>[props.useNotifications]</td><td><code>NotificationsContext.useNotifications</code></td><td><code>NotificationsContext.useNotifications</code></td>
     </tr><tr>
     <td>[props.useSelectorsResponse]</td><td><code>storeHooks.reactRedux.useSelectorsResponse</code></td><td><code>storeHooks.reactRedux.useSelectorsResponse</code></td>
     </tr><tr>
@@ -6369,7 +6446,7 @@ Return a polling status callback. Used when creating an export.
     </tr><tr>
     <td>options.useDispatch</td><td><code>storeHooks.reactRedux.useDispatch</code></td>
     </tr><tr>
-    <td>options.useNotifications</td><td><code>useNotifications</code></td>
+    <td>options.useNotifications</td><td><code>NotificationsContext.useNotifications</code></td>
     </tr><tr>
     <td>options.useProduct</td><td><code>useProduct</code></td>
     </tr>  </tbody>
@@ -6399,7 +6476,7 @@ Apply an export hook for an export post. The service automatically sets up polli
     </tr><tr>
     <td>options.useExportConfirmation</td><td><code>useExportConfirmation</code></td>
     </tr><tr>
-    <td>options.useNotifications</td><td><code>useNotifications</code></td>
+    <td>options.useNotifications</td><td><code>NotificationsContext.useNotifications</code></td>
     </tr>  </tbody>
 </table>
 
@@ -6429,7 +6506,7 @@ User confirmation results when existing exports are detected.
     </tr><tr>
     <td>options.useDispatch</td><td><code>storeHooks.reactRedux.useDispatch</code></td>
     </tr><tr>
-    <td>options.useNotifications</td><td><code>useNotifications</code></td>
+    <td>options.useNotifications</td><td><code>NotificationsContext.useNotifications</code></td>
     </tr>  </tbody>
 </table>
 
@@ -6459,7 +6536,7 @@ Apply an existing exports hook for user abandoned reports. Allow bulk polling st
     </tr><tr>
     <td>options.useSelectorsResponse</td><td><code>storeHooks.reactRedux.useSelectorsResponse</code></td>
     </tr><tr>
-    <td>options.useNotifications</td><td><code>useNotifications</code></td>
+    <td>options.useNotifications</td><td><code>NotificationsContext.useNotifications</code></td>
     </tr>  </tbody>
 </table>
 
