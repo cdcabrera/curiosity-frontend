@@ -92,6 +92,7 @@ When processing guidelines, agents should:
 4. Treat local guidelines as higher priority than main guidelines
 5. Use the conflict resolution markers (override, extend, merge) as described in the inheritance guidelines
 6. Remember that only main guidelines (*.md) should be committed to git, never local guidelines (*.local.md)
+7. Store any temporary files created during processing in the `.agent` directory following the [Workspace Configuration Guidelines](guidelines/bot-config/workspace.md)
 
 **IMPORTANT:**
 - DO NOT make recommendations on ANY enhancement, or general improvement, opportunities to the guidelines UNLESS SPECIFICALLY ASKED!
@@ -227,13 +228,13 @@ Key points:
 - Group related files together
 - Use index files for cleaner imports and exports
 - Co-locate tests with the code they test
-- Use the .archive directory for historical code (never commit to git)
+- Use the .agent directory for agent-created temporary files as specified in the [Workspace Configuration Guidelines](guidelines/bot-config/workspace.md)
 
 When working with local file organization guidelines:
 1. Remember that local guidelines are specific to your development environment
 2. Local file organization guidelines may contain information about archive files, experimental code, and historical implementations
 3. Apply the inheritance principles when local guidelines conflict with main guidelines
-4. Never commit local file organization guidelines or files described in them (like .archive files) to git
+4. Never commit agent-created temporary files from the .agent directory to git
 
 ## Git Workflow
 

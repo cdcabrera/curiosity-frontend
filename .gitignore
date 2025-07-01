@@ -37,3 +37,6 @@ public/locales/*.json
 # bot
 **/*.local.md
 .output.txt
+.cursor
+.junie
+.agent

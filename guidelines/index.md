@@ -40,6 +40,7 @@ For more details on guideline inheritance and conflict resolution, see [Guidelin
 ## Bot Configuration
 
 - [**Guideline File Inheritance and External References**](bot-config/inheritence.md) - Explains how different guideline files interact with each other and establishes the precedence chain for resolving conflicts.
+- [**Workspace Configuration**](bot-config/workspace.md) - Guidelines for managing agent workspace and temporary files within the project.
 
 ## Code Style
 

@@ -27,20 +27,23 @@ This document provides detailed guidelines for file organization in the Curiosit
 
 ```
 src/
-├── components/           # Reusable UI components
+├── components/          # Reusable UI components
 │   ├── MyComponent/
-│   │   ├── __tests__/   # Component tests
-│   │   ├── index.js     # Main component file
+│   │   ├── __tests__/       # Component tests
+│   │   ├── myComponent.js  # Main component file
 │   │   └── myComponent.scss
-├── hooks/               # Custom React hooks
-├── services/           # API calls and external services
-├── redux/              # Redux store, actions, reducers
-│   ├── actions/
-│   ├── reducers/
-│   └── selectors/
-├── utils/              # Pure utility functions
-├── config/             # Configuration files
-└── types/              # TypeScript type definitions
+├── common/              # Utility, helper functions
+├── hooks/               # Global React hooks
+├── services/            # API calls and external services
+├── redux/               # Redux store, actions, reducers
+│   ├── actions/         # Redux to service layer
+│   ├── common/          # Utility functions
+│   ├── hooks/           # Redux to React hooks
+│   ├── middleware/
+│   ├── reducers/ 
+│   └── types/           # Action types
+├── config/              # Product and related variant configuration files
+└── styles/              # Sass styling files
 ```
 
 ## File Naming Conventions
