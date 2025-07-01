@@ -1,36 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Notifications Component should handle multiple children: multiple children 1`] = `
-<NotificationsProvider>
-  <div>
-    First child
-  </div>
-  <div>
-    Second child
-  </div>
-</NotificationsProvider>
-`;
-
 exports[`Notifications Component should render a basic component: basic 1`] = `
 <NotificationsProvider>
-  <div>
-    Test children
-  </div>
+  Lorem ipsum
 </NotificationsProvider>
 `;
 
-exports[`Notifications Component should render children directly when notifications are disabled: direct children 1`] = `
-<NotificationsProvider>
-  <div>
-    Test children
-  </div>
-</NotificationsProvider>
-`;
-
-exports[`Notifications Component should render with NotificationsProvider when notifications are enabled: with NotificationsProvider 1`] = `
-<NotificationsProvider>
-  <div>
-    Test children
-  </div>
-</NotificationsProvider>
-`;
+exports[`Notifications Component should render children directly when notifications are disabled: direct children 1`] = `"Lorem ipsum"`;

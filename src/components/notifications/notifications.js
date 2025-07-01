@@ -23,16 +23,17 @@ const NotificationVariant = { ...AlertVariant };
 /**
  * Expose consoledot toast notifications.
  *
- * @param {object} props - The prop object for the component.
- * @param {React.ReactNode} props.children - The child components or elements to be rendered.
- * @returns {React.ReactNode} The rendered output, either wrapped with NotificationsProvider or plain children.
+ * @param {object} props - Prop object
+ * @param {React.ReactNode} props.children - Child components to be rendered.
+ * @param {boolean} props.isDisabled - Disable the notification provider.
+ * @returns {React.ReactNode} Rendered output, either wrapped with NotificationsProvider or plain children.
  */
-const Notifications = ({ children }) => {
-  if (!helpers.UI_DISABLED_NOTIFICATIONS) {
-    return <NotificationsProvider>{children}</NotificationsProvider>;
+const Notifications = ({ children, isDisabled = helpers.UI_DISABLED_NOTIFICATIONS }) => {
+  if (isDisabled) {
+    return children;
   }
 
-  return children;
+  return <NotificationsProvider>{children}</NotificationsProvider>;
 };
 
 export { Notifications as default, Notifications, NotificationsContext, NotificationVariant };
