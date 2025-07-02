@@ -1,19 +1,22 @@
 ---
 guideline_version: "1.0.0"
-priority: 3
+priority: 1
 applies_to: ["*.js", "*.jsx", "*.ts", "*.tsx", "*.md"]
 contexts: ["development", "bot-configuration", "automation", "workflow"]
-extends: ["../../GUIDELINES.md"]
+extends: ["../../GUIDELINES.md", "core-workflow.md"]
 last_updated: "2025-07-02"
 compatibility:
   min_version: "1.0.0"
   max_version: "2.0.0"
 agent_hints:
-  processing_order: "top_down"
+  processing_order: "after_core"
   validation_required: true
+  workflow_enforcement: "mandatory"
+  workflow_response_validation: true
+  workflow_trigger_matching: "fuzzy"
   key_concepts: ["workflows", "agent responses", "interactive patterns", "guidance review"]
-  related_guidelines: ["guidelines/bot-config/workspace.md"]
-  importance: "high"
+  related_guidelines: ["guidelines/bot-config/workspace.md", "guidelines/bot-config/core-workflow.md"]
+  importance: "critical"
   code_examples: true
 ---
 
