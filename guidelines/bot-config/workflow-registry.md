@@ -1,8 +1,8 @@
 ---
 guideline_version: "1.0.0"
-priority: 2
+priority: 11
 applies_to: ["*"]
-contexts: ["development", "bot-configuration", "automation", "workflow"]
+contexts: ["all", "development", "bot-configuration", "automation", "workflow"]
 extends: ["../../GUIDELINES.md", "core-workflow.md"]
 last_updated: "2025-07-02"
 compatibility:
@@ -11,9 +11,11 @@ compatibility:
 agent_hints:
   processing_order: "after_core"
   validation_required: true
+  mandatory: true
+  always_load: true
   key_concepts: ["workflow registry", "centralized management"]
   related_guidelines: ["guidelines/bot-config/workflows.md", "guidelines/bot-config/core-workflow.md"]
-  importance: "high"
+  importance: "critical"
 ---
 
 # Workflow Registry

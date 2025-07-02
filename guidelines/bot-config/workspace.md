@@ -1,19 +1,21 @@
 ---
 guideline_version: "1.0.0"
-priority: 3
-applies_to: ["*.js", "*.jsx", "*.ts", "*.tsx", "*.md"]
-contexts: ["development", "bot-configuration", "automation", "workflow"]
+priority: 11
+applies_to: ["*"]
+contexts: ["all", "development", "bot-configuration", "automation", "workflow"]
 extends: ["../../GUIDELINES.md"]
 last_updated: "2025-07-02"
 compatibility:
   min_version: "1.0.0"
   max_version: "2.0.0"
 agent_hints:
-  processing_order: "top_down"
+  processing_order: "first"
   validation_required: true
+  mandatory: true
+  always_load: true
   key_concepts: ["workspace", "agent directory", "temporary files", "state persistence"]
   related_guidelines: ["guidelines/bot-config/inheritence.md"]
-  importance: "high"
+  importance: "critical"
   code_examples: true
 ---
 

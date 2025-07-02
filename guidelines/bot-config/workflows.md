@@ -1,8 +1,8 @@
 ---
 guideline_version: "1.0.0"
-priority: 1
-applies_to: ["*.js", "*.jsx", "*.ts", "*.tsx", "*.md"]
-contexts: ["development", "bot-configuration", "automation", "workflow"]
+priority: 11
+applies_to: ["*"]
+contexts: ["all", "development", "bot-configuration", "automation", "workflow"]
 extends: ["../../GUIDELINES.md", "core-workflow.md"]
 last_updated: "2025-07-02"
 compatibility:
@@ -14,6 +14,8 @@ agent_hints:
   workflow_enforcement: "mandatory"
   workflow_response_validation: true
   workflow_trigger_matching: "fuzzy"
+  mandatory: true
+  always_load: true
   key_concepts: ["workflows", "agent responses", "interactive patterns", "guidance review"]
   related_guidelines: ["guidelines/bot-config/workspace.md", "guidelines/bot-config/core-workflow.md"]
   importance: "critical"

@@ -1,16 +1,18 @@
 ---
 guideline_version: "1.0.0"
-priority: 3
-applies_to: ["*.md"]
-contexts: ["development", "review", "documentation", "bot-config", "guidelines"]
+priority: 11
+applies_to: ["*"]
+contexts: ["all", "development", "review", "documentation", "bot-config", "guidelines"]
 extends: ["../../GUIDELINES.md"]
-last_updated: "2025-06-27"
+last_updated: "2025-07-02"
 compatibility:
   min_version: "1.0.0"
   max_version: "2.0.0"
 agent_hints:
-  processing_order: "top_down"
+  processing_order: "first"
   validation_required: true
+  mandatory: true
+  always_load: true
   key_concepts: ["inheritance", "precedence chain", "merge resolution", "conflict detection", "guideline structure"]
   related_guidelines: ["guidelines/index.md"]
   importance: "critical"
@@ -28,11 +30,12 @@ This project supports multiple layers of guideline inheritance to accommodate di
 ## Precedence Chain
 Guidelines are merged with the following precedence (highest to lowest):
 
-1. **Agent Specific Guidelines** - Priority 10
-2. **Local Guidelines** (`GUIDELINES.local.md`) - Priority 5
-3. **Local Directory Guidelines** (`./guidelines/*.local.md`) - Priority 4
-4. **Directory Guidelines** (`./guidelines/*.md`) - Priority 3
-5. **Base Guidelines** (`GUIDELINES.md`) - Priority 1
+1. **Bot Configuration Guidelines** (`guidelines/bot-config/*.md`) - Priority 11 (Always Active)
+2. **Agent Specific Guidelines** - Priority 10
+3. **Local Guidelines** (`GUIDELINES.local.md`) - Priority 5
+4. **Local Directory Guidelines** (`./guidelines/*.local.md`) - Priority 4
+5. **Directory Guidelines** (`./guidelines/*.md`) - Priority 3
+6. **Base Guidelines** (`GUIDELINES.md`) - Priority 1
 
 ### Examples
 **Guideline file structure example:**
@@ -163,15 +166,35 @@ For agents that don't understand merge resolution markers:
 
 ### Agent Processing Instructions
 
-1. **Parse YAML frontmatter** to determine file priority and context
-2. **Look for merge markers** (`override:`, `extend:`, `merge:`) in higher-priority files
-3. **Check conflict annotations** to understand resolution strategies
-4. **Apply merge strategy**:
+1. **Load bot-config guidelines** - Always load these guidelines first regardless of context
+2. **Parse YAML frontmatter** to determine file priority and context
+3. **Look for merge markers** (`override:`, `extend:`, `merge:`) in higher-priority files
+4. **Check conflict annotations** to understand resolution strategies
+5. **Apply merge strategy**:
 - `override`: Replace lower-priority guideline completely
 - `extend`: Add to existing guideline while preserving original
 - `merge`: Combine guidelines using logical union
-5. **Fallback behavior**: If no markers present, use traditional "higher priority wins" approach
-6. **Update last_updated field**: When modifying a guideline file, always update the `last_updated` field in the YAML frontmatter to the current local system date in the format "YYYY-MM-DD". Use the terminal command `$ date` to get the current date. If the terminal command for date is unavailable, fall back to agent defaults.
+6. **Fallback behavior**: If no markers present, use traditional "higher priority wins" approach
+7. **Update last_updated field**: When modifying a guideline file, always update the `last_updated` field in the YAML frontmatter to the current local system date in the format "YYYY-MM-DD". Use the terminal command `$ date` to get the current date. If the terminal command for date is unavailable, fall back to agent defaults.
+
+### Mandatory Bot Configuration Loading
+
+Bot configuration guidelines must **always be processed first** regardless of the specific context or file patterns being reviewed. This ensures core initialization patterns are available in all scenarios.
+
+#### Context-Independent Loading
+
+```yaml
+# Bot configuration should always be loaded
+mandatory_guidelines:
+  - "guidelines/bot-config/*.md"
+
+# These are loaded regardless of file patterns or contexts
+always_active:
+  - "guidelines/bot-config/core-workflow.md"
+  - "guidelines/bot-config/workspace.md"
+  - "guidelines/bot-config/workflows.md"
+  - "guidelines/bot-config/inheritence.md"
+```
 
 ## Advanced Agent Processing Specification
 
@@ -202,10 +225,78 @@ development_phases:
 
 #### Context Priority Processing
 When multiple contexts apply, use this priority order:
-1. **Agent Specific Guidelines** (Priority 10)
-2. **Local Guidelines** (`GUIDELINES.local.md`) (Priority 5)
-3. **Context Guidelines** (`guidelines/*.md`) (Priority 3)
-4. **Base Guidelines** (`GUIDELINES.md`) (Priority 1)
+1. **Bot Configuration Guidelines** (Priority 11)
+2. **Agent Specific Guidelines** (Priority 10)
+3. **Local Guidelines** (`GUIDELINES.local.md`) (Priority 5)
+4. **Context Guidelines** (`guidelines/*.md`) (Priority 3)
+5. **Base Guidelines** (`GUIDELINES.md`) (Priority 1)
+
+#### Activation Guarantees
+
+To ensure proper initialization, agents MUST implement these activation guarantees:
+
+1. **Always Load Bot Configuration**
+   - Bot configuration guidelines (`guidelines/bot-config/*.md`) must be loaded for EVERY request
+   - These guidelines are active regardless of file context or patterns
+   - No user setting should be able to disable core bot-config loading
+
+2. **Core Workflow Bootstrapping**
+   - Core workflow guidelines initialize the agent's processing capabilities
+   - They must be loaded before any other guideline processing begins
+   - The agent should verify core guidelines are loaded before proceeding
+
+3. **Fallback Mechanisms**
+   - If a specific bot-config guideline cannot be loaded, log a warning
+   - Attempt to load an alternative version from the same directory
+   - If all bot-config guidelines fail, use base GUIDELINES.md as fallback
+
+#### Embedded Fallback System
+
+To prevent initialization failures, agents must implement an embedded fallback system:
+
+```javascript
+// Embedded fallback system
+const embeddedBotConfigGuidelines = {
+  'activation': {
+    priority: 11,
+    applies_to: ['*'],
+    contexts: ['all'],
+    agent_hints: {
+      mandatory: true,
+      always_load: true
+    }
+  },
+  'inheritence': {
+    priority: 11,
+    applies_to: ['*'],
+    contexts: ['all'],
+    agent_hints: {
+      mandatory: true,
+      always_load: true
+    }
+  },
+  'core-workflow': {
+    priority: 11,
+    applies_to: ['*'],
+    contexts: ['all'],
+    agent_hints: {
+      mandatory: true,
+      always_load: true
+    }
+  }
+};
+
+function activateFallbackGuidelines() {
+  // When external guidelines fail, use embedded fallbacks
+  Object.entries(embeddedBotConfigGuidelines).forEach(([name, config]) => {
+    registerGuideline(`bot-config/${name}`, config);
+  });
+
+  logWarning('Using embedded fallback guidelines for bot-config');
+}
+```
+
+This fallback system ensures that even if the external guideline files are missing or inaccessible, the agent will still have the critical configuration needed to function properly.
 
 
 ### Validation Examples

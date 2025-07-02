@@ -1,8 +1,8 @@
 ---
 guideline_version: "1.0.0"
-priority: 1
+priority: 11
 applies_to: ["*"]
-contexts: ["development", "bot-configuration", "automation", "workflow"]
+contexts: ["all", "development", "bot-configuration", "automation", "workflow"]
 extends: ["../../GUIDELINES.md"]
 last_updated: "2025-07-02"
 compatibility:
@@ -11,6 +11,8 @@ compatibility:
 agent_hints:
   processing_order: "first"
   validation_required: true
+  mandatory: true
+  always_load: true
   key_concepts: ["workflows", "mandatory processing", "system integration"]
   related_guidelines: ["guidelines/bot-config/workflows.md"]
   importance: "critical"
