@@ -26,27 +26,28 @@ This guide provides step-by-step instructions for adding new OpenShift hourly or
 
 ## Overview
 
-OpenShift products in this application are configured as hourly billing products that track usage metrics like cores, vCPUs, and instance hours. They typically belong to the "openshift" product group and use `DISPLAY_TYPES.HOURLY` for billing display.
+OpenShift products in this application are configured as hourly billing products that track usage metrics like cores, vCPUs, and instance hours. They typically belong to the "openshift" product group and use either `DISPLAY_TYPES.HOURLY` for hourly billing products or `DISPLAY_TYPES.CAPACITY` for capacity-based products with prepaid/on-demand usage.
 
 ## Interactive Configuration Process
 
 When asked to **"create openshift on-demand OR hourly"**, **"add an openshift product"**, or **"create an openshift product"**, you MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
 
-1. **"What is the product id?"** - The API identifier for the product (e.g., "rhacs", "rhods")
+1. **"What is the product id?"** - The API identifier for the product (e.g., "rhacs", "rhods", "rosa")
 2. **"What is the product long, or full, name?"** - The complete display name (e.g., "Red Hat Advanced Cluster Security")
 3. **"What is the product short name?"** - The abbreviated display name (e.g., "RHACS")
-4. **"Is there an existing product variant config that matches what you want?"**
-  - If **no**: Continue to question 6
-  - If **yes**: Continue to question 5
-5. **"What existing product config matches what you want?"** - Specify which existing config to use as template (e.g., "rhacs", "rhods", "rosa")
-6. **"What metric needs to be displayed?"** - The primary metric for charts and inventory (e.g., "Cores", "vCPUs", "Instance-hours")
-7. **"Is the metric display name unique?"** - Does the technical metric need to display differently to users?
-  - If **yes**: "What should the metric display as?" (e.g., technical: "Cores" → display: "vCPUs")
-  - If **no**: Use the standard metric display name
+4. **"What is the product display type?"** - Either "hourly" for HOURLY products or "capacity" for CAPACITY products with prepaid/on-demand metrics
+5. **"Is there an existing product variant config that matches what you want?"**
+  - If **no**: Continue to question 7
+  - If **yes**: Continue to question 6
+6. **"What existing product config matches what you want?"** - Specify which existing config to use as template (e.g., "rhacs", "rhods" for HOURLY or "rosa", "rhacm" for CAPACITY)
+7. **"What metric or metrics need to be displayed?"** - The primary metric(s) for charts and inventory (e.g., "Cores", "vCPUs", "Instance-hours")
+8. **"Are the metric display names unique?"** - Do any technical metrics need to display differently to users?
+  - If **yes**: "What should each metric display as?" (e.g., technical: "Cores" → display: "vCPUs")
+  - If **no**: Use the standard metric display names
 
 **Note:** Even when using an existing config as template, you should still ask about metrics since customization may be needed.
 
-**Important:** Questions 6 and 7 are closely related - the metric question determines the technical API metric, while the display name question determines how it appears to users.
+**Important:** Questions 7 and 8 are closely related - the metric question determines the technical API metrics, while the display name question determines how they appear to users.
 
 ## Step-by-Step Implementation
 
@@ -64,6 +65,8 @@ const RHSM_API_PATH_PRODUCT_TYPES = {
   RHACM: 'rhacm',
   RHACS: 'rhacs',
   RHEL_COMPUTE_NODE: 'RHEL Compute Node',
+  RHODS: 'rhods',
+  ROSA: 'rosa',
   // ... rest of products in alphabetical order ...
 };
 ```
@@ -91,7 +94,7 @@ Search for large JSDoc blocks that list all product types and add your product i
 
 ### Step 3: Create Product Configuration File
 
-Create `src/config/product.yourProduct.js` using this template:
+Create `src/config/product.yourProduct.js` using this template. This example is for a standard hourly product with a single metric (based on RHACS-like configuration):
 
 ```javascript
 import React from 'react';
@@ -155,12 +158,12 @@ const productLabel = RHSM_API_PATH_PRODUCT_TYPES.YOUR_PRODUCT;
  *     initialGraphSettings: object, initialInventoryFilters: Array}}
  */
 const config = {
-  aliases: ['alias1', 'alias2'], // Optional: add relevant aliases
+  aliases: ['alias1', 'alias2'], // Add relevant aliases for product discovery
   productGroup,
   productId,
   productLabel,
   productPath: productGroup.toLowerCase(),
-  productDisplay: DISPLAY_TYPES.HOURLY,
+  productDisplay: DISPLAY_TYPES.HOURLY, // Use HOURLY for standard hourly billing products
   viewId: `view${productGroup}-${productId}`,
   onloadProduct: [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID],
   query: {
@@ -184,7 +187,7 @@ const config = {
   },
   initialGraphFilters: [
     {
-      metric: RHSM_API_PATH_METRIC_TYPES.CORES, // Use appropriate metric
+      metric: RHSM_API_PATH_METRIC_TYPES.CORES, // Use appropriate metric (CORES, VCPUS, INSTANCE_HOURS)
       fill: chartColorBlueLight.value,
       stroke: chartColorBlueDark.value,
       color: chartColorBlueDark.value,
@@ -296,7 +299,7 @@ const config = {
               isInline
               component="a"
               variant="link"
-              href={`${helpers.UI_DEPLOY_PATH_LINK_PREFIX}/your-product-url/${instanceId}`}
+              href={`${helpers.UI_DEPLOY_PATH_LINK_PREFIX}/openshift/details/${instanceId}`} // Standard OpenShift path
             >
               {updatedDisplayName}
             </Button>
@@ -335,7 +338,7 @@ const config = {
       width: 15
     },
     {
-      metric: RHSM_API_PATH_METRIC_TYPES.CORES, // Use appropriate metric
+      metric: RHSM_API_PATH_METRIC_TYPES.CORES, // Use appropriate metric (CORES, VCPUS, INSTANCE_HOURS)
       cell: ({ [RHSM_API_PATH_METRIC_TYPES.CORES]: total }) =>
         translate('curiosity-inventory.measurement', {
           context: (total && RHSM_API_PATH_METRIC_TYPES.CORES) || undefined,
@@ -350,12 +353,133 @@ const config = {
       metric: INVENTORY_TYPES.LAST_SEEN,
       cell: ({ [INVENTORY_TYPES.LAST_SEEN]: lastSeen }) => (lastSeen && <DateFormat date={lastSeen} />) || '',
       isSort: true,
+      isWrap: true,
       width: 15
+    }
+  ],
+  initialInventorySettings: {
+    actions: [
+      {
+        id: RHSM_API_QUERY_SET_TYPES.DISPLAY_NAME
+      }
+    ]
+  },
+  initialToolbarFilters: [
+    {
+      id: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER
+    },
+    {
+      id: 'rangedMonthly',
+      isSecondary: true,
+      position: SelectPosition.right
+    },
+    {
+      id: 'export',
+      isItem: true
     }
   ]
 };
 
-export { config as default, config };
+export { config as default, config, productGroup, productId };
+```
+
+### Alternate Template for Capacity-Based Products
+
+If your product uses `DISPLAY_TYPES.CAPACITY` with prepaid/on-demand metrics (like RHACM or ROSA), use this template instead:
+
+```javascript
+// Top imports and header documentation remain the same
+
+const config = {
+  aliases: ['alias1', 'alias2'],
+  productGroup,
+  productId,
+  productLabel,
+  productPath: productGroup.toLowerCase(),
+  productDisplay: DISPLAY_TYPES.CAPACITY, // Use CAPACITY for prepaid/on-demand products
+  viewId: `view${productGroup}-${productId}`,
+  onloadProduct: [RHSM_API_QUERY_SET_TYPES.BILLING_ACCOUNT_ID],
+  query: {
+    [RHSM_API_QUERY_SET_TYPES.START_DATE]: dateHelpers.getRangedMonthDateTime('current').value.startDate.toISOString(),
+    [RHSM_API_QUERY_SET_TYPES.END_DATE]: dateHelpers.getRangedMonthDateTime('current').value.endDate.toISOString()
+  },
+  graphTallyQuery: {
+    [RHSM_API_QUERY_SET_TYPES.GRANULARITY]: GRANULARITY_TYPES.DAILY,
+    [RHSM_API_QUERY_SET_TYPES.USE_RUNNING_TOTALS_FORMAT]: true // Important for capacity products
+  },
+  // Other standard query settings remain the same
+  initialGraphFilters: [
+    {
+      filters: [
+        {
+          metric: RHSM_API_PATH_METRIC_TYPES.CORES, // Use appropriate metric
+          fill: chartColorBlueLight.value,
+          stroke: chartColorBlueDark.value,
+          color: chartColorBlueDark.value,
+          query: {
+            [RHSM_API_QUERY_SET_TYPES.BILLING_CATEGORY]: CATEGORY_TYPES.PREPAID
+          }
+        },
+        {
+          metric: RHSM_API_PATH_METRIC_TYPES.CORES, // Same metric for on-demand
+          fill: chartColorGoldLight.value,
+          stroke: chartColorGoldDark.value,
+          color: chartColorGoldDark.value,
+          query: {
+            [RHSM_API_QUERY_SET_TYPES.BILLING_CATEGORY]: CATEGORY_TYPES.ON_DEMAND
+          }
+        },
+        {
+          metric: RHSM_API_PATH_METRIC_TYPES.CORES, // Same metric for threshold
+          chartType: ChartTypeVariant.threshold
+        }
+      ]
+    }
+  ],
+  initialGraphSettings: {
+    cards: [
+      {
+        header: ({ dataSets = [] } = {}) =>
+          translate('curiosity-graph.cardHeadingMetric', {
+            context: ['remainingCapacity', dataSets?.[0]?.display?.chartId],
+            testId: 'graphRemainingCapacityCard-header'
+          }),
+        body: ({ dataSets = [] } = {}) =>
+          translate(
+            'curiosity-graph.cardBodyMetric',
+            {
+              context: ['total', dataSets?.[0]?.display?.remainingCapacityHasData && dataSets?.[0]?.display?.chartId],
+              testId: 'graphRemainingCapacityCard-body',
+              total: helpers
+                .numberDisplay(dataSets?.[0]?.display?.remainingCapacity)
+                ?.format({
+                  average: true,
+                  mantissa: 2,
+                  trimMantissa: true,
+                  lowPrecision: false
+                })
+                ?.toUpperCase()
+            },
+            [
+              <strong
+                title={dataSets?.[0]?.display?.remainingCapacity}
+                aria-label={dataSets?.[0]?.display?.remainingCapacity}
+              />
+            ]
+          ),
+        footer: ({ dataSets = [] } = {}) =>
+          translate('curiosity-graph.cardFooterMetric', {
+            date: moment
+              .utc(dataSets?.[0]?.display?.dailyDate)
+              .format(dateHelpers.timestampUTCTimeFormats.yearTimeShort),
+            testId: 'graphRemainingCapacityCard-footer'
+          })
+      }
+    ],
+    // Rest of settings remain the same
+  },
+  // Inventory filters remain the same
+};
 ```
 
 ### Step 4: Add Localization Entries
@@ -376,9 +500,9 @@ Add entries to `public/locales/en-US.json`:
 
 **Important Business Requirement:** Some products need to display a different metric name to users while keeping the technical metric unchanged.
 
-**This requirement is captured in Question 7** of the interactive flow: *"Is the metric display name, or names, unique? If yes, what is the new display name, or names?"*
+**This requirement is captured in Question 8** of the interactive flow: *"Are the metric display names unique? If yes, what should each metric display as?"*
 
-**Example Scenario:** A hypothetical product uses the `Cores` metric technically, but needs to display "vCPU" to users for business/marketing reasons.
+**Example Scenario:** The ROSA product uses the `Cores` metric technically, but displays "vCPU" to users for business/marketing reasons.
 
 When this is needed:
 1. Keep the metric as `RHSM_API_PATH_METRIC_TYPES.CORES` in your product config
@@ -386,21 +510,26 @@ When this is needed:
 
 ```json
 {
-  "cardHeading_Cores_yourProduct": "vCPU hour usage",
-  "cardHeadingDescription_Cores_yourProduct": "vCPU hours usage in hours", 
-  "cardBodyMetric_total_Cores_prepaid_yourProduct": "<0>{{total}}</0> vCPU hours",
-  "label_threshold_Cores_yourProduct": "Pre-paid vCPU subscription threshold",
-  "legendTooltip_threshold_Cores_yourProduct": "Maximum capacity, as vCPU hours, based on total [Product Name] pre-paid subscriptions in this account.",
-  "header_Cores_yourProduct": "vCPU hours"
+  "curiosity-graph": {
+    "cardHeading_Cores_your-product-id": "vCPU hour usage",
+    "cardHeadingDescription_Cores_your-product-id": "vCPU hours usage in hours", 
+    "cardBodyMetric_total_Cores_prepaid_your-product-id": "<0>{{total}}</0> vCPU hours",
+    "label_threshold_Cores_your-product-id": "Pre-paid vCPU subscription threshold",
+    "legendTooltip_threshold_Cores_your-product-id": "Maximum capacity, as vCPU hours, based on total [Product Name] pre-paid subscriptions in this account.",
+    "header_Cores_your-product-id": "vCPU hours"
+  },
+  "curiosity-inventory": {
+    "label_Cores_your-product-id": "vCPU hours"
+  }
 }
 ```
 
-**Common Use Cases:**
-- Technical metric: `Cores` → User display: "vCPU"
-- Technical metric: `Sockets` → User display: "CPU"
-- Technical metric: `Instance-hours` → User display: "Control plane hours"
+**Common Use Cases from Existing Products:**
+- ROSA/RHACM: Technical metric: `Cores` → User display: "vCPU"
+- OpenShift Dedicated: Technical metric: `Cores` but displays without modification
+- OpenShift Dedicated: Also uses `Instance-hours` for control plane usage
 
-This ensures the API uses the correct technical metric while presenting user-friendly terminology.
+This ensures the API uses the correct technical metric while presenting user-friendly terminology to the end user.
 
 ### Step 5: Update Jest Snapshots
 
@@ -450,19 +579,46 @@ npm run test:ci
 ## Configuration Options
 
 ### Display Types
-- `DISPLAY_TYPES.HOURLY` - For hourly billing products (most OpenShift products)
-- `DISPLAY_TYPES.CAPACITY` - For capacity-based products (RHACM, ROSA)
+- `DISPLAY_TYPES.HOURLY` - For hourly billing products (RHACS, RHODS, OpenShift Metrics)
+- `DISPLAY_TYPES.CAPACITY` - For capacity-based products with prepaid/on-demand usage (RHACM, ROSA)
 
 ### Common Metrics
-- `RHSM_API_PATH_METRIC_TYPES.CORES` - CPU cores
-- `RHSM_API_PATH_METRIC_TYPES.VCPUS` - Virtual CPUs
-- `RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS` - Instance hours
-- `RHSM_API_PATH_METRIC_TYPES.MANAGED_NODES` - Managed nodes
+- `RHSM_API_PATH_METRIC_TYPES.CORES` - CPU cores (used by most OpenShift products)
+- `RHSM_API_PATH_METRIC_TYPES.VCPUS` - Virtual CPUs (used by RHACM)
+- `RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS` - Instance hours (used by OpenShift Dedicated, ROSA)
+- `RHSM_API_PATH_METRIC_TYPES.MANAGED_NODES` - Managed nodes (special use cases)
 
-### Chart Types
-- `ChartTypeVariant.line` - Line chart (most common for hourly)
-- `ChartTypeVariant.threshold` - Threshold line
-- Use `filters` array for capacity products with prepaid/on-demand categories
+### Chart Types and Configurations
+- `ChartTypeVariant.line` - Line chart (used by all hourly products)
+- `ChartTypeVariant.threshold` - Threshold line (used by capacity products)
+- Standard hourly products use simple metric arrays in `initialGraphFilters`
+- Capacity products use nested `filters` arrays with `CATEGORY_TYPES.PREPAID` and `CATEGORY_TYPES.ON_DEMAND`
+
+### Inventory Configuration
+- Display name with link to product console
+- Billing provider with tooltip
+- Metric columns (CORES, VCPUS, INSTANCE_HOURS) 
+- Last seen date
+
+## Real-World Product Configurations
+
+### OpenShift Metrics (Hourly Product with Single Metric)
+- Display Type: `HOURLY`
+- Metric: `CORES`
+- Chart: Simple line chart
+- Inventory: Display name, billing provider, cores, last seen
+
+### OpenShift Dedicated (Hourly Product with Multiple Metrics)
+- Display Type: `HOURLY`
+- Metrics: `CORES` and `INSTANCE_HOURS`
+- Chart: Two line charts with different colors
+- Inventory: Display name, billing provider, cores, instance hours, last seen
+
+### ROSA (Capacity Product with Prepaid/On-Demand)
+- Display Type: `CAPACITY`
+- Metrics: `CORES` and `INSTANCE_HOURS` with prepaid/on-demand categories
+- Chart: Uses threshold line and separate prepaid/on-demand series
+- Inventory: Standard columns plus threshold information
 
 ## File Checklist
 
@@ -477,38 +633,68 @@ npm run test:ci
 ## Common Pitfalls
 
 ❌ **Don't:**
-- Forget to update JSDoc type annotations
-- Use inconsistent naming conventions
+- Forget to update JSDoc type annotations in all 4 locations
+- Use inconsistent naming conventions (stick to existing patterns)
 - Skip the alphabetical ordering in constants
-- Copy capacity-based configurations for hourly products
-- Forget to update localization entries
+- Use capacity-based configurations for hourly products or vice versa
+- Forget to update localization entries in all necessary sections
+- Use incorrect URL paths in inventory links (should match Red Hat console paths)
 
 ✅ **Do:**
-- Use appropriate display type (`HOURLY` vs `CAPACITY`)
-- Follow existing naming patterns for consistency
-- Include proper inventory URL links for your product
+- Use appropriate display type (`HOURLY` vs `CAPACITY`) based on billing model
+- Follow existing naming patterns from similar products
+- Include proper inventory URL links that match Red Hat console paths
+- Add descriptive aliases for product discovery
 - Test thoroughly before committing
-- Use the correct metric types for your product
+- Export productGroup and productId from your configuration file
 
 ## Integration Points
 
 The product configuration integrates with:
-- **Router**: Uses `productPath` for URL routing
-- **API Services**: Uses `productId` for API calls
-- **Localization**: Uses product ID for translation keys
-- **Charts**: Uses metric types and display settings
-- **Inventory**: Uses inventory filters and sorting
+- **Router**: Uses `productPath` and `productId` for URL routing
+- **API Services**: Uses `productId` for API calls to the RHSM service
+- **Localization**: Uses product ID for translation keys in multiple contexts
+- **Charts**: Uses metric types and display settings for usage visualization
+- **Inventory**: Uses inventory filters for displaying instance data
+- **Toolbar**: Uses standard filter configurations for consistent UI
 
 ## Testing Strategy
 
-1. **Unit Tests**: Snapshots will capture structural changes
-2. **Integration Testing**: Verify product appears in navigation
+1. **Unit Tests**: Jest snapshots will capture structural changes
+2. **Integration Testing**: Verify product appears in navigation and data loads
 3. **Manual Testing**: Check charts, inventory, and localization
-4. **API Testing**: Verify correct API calls are made
+4. **API Testing**: Verify correct API calls are made with expected parameters
+5. **Visual Testing**: Ensure chart colors and displays match design standards
+
+## Troubleshooting Guide
+
+### Common Issues
+
+1. **Product not appearing in navigation**
+   - Check export statement includes `productGroup` and `productId`
+   - Verify file naming follows `product.yourProductId.js` pattern
+   - Ensure constants are properly added to rhsmConstants.js
+
+2. **Charts not displaying data**
+   - Verify the metric names match the API's expected metrics
+   - Check if custom display names are properly configured
+   - Ensure graph filter configuration is correct for the product type
+
+3. **Wrong display names in UI**
+   - Check localization entries in en-US.json
+   - Verify metric display name customizations are applied consistently
+
+4. **ESLint changes other code**
+   - Only accept linting changes related to your product addition
+   - Be careful with JSDoc formatting changes
+
+5. **Snapshot tests failing**
+   - Run the full update snapshot command
+   - Verify the snapshots only include expected changes
 
 ## Complete Implementation Examples
 
-### Example A: Single Metric Product (Security Service)
+### Example A: Single Metric Hourly Product (Based on RHACS)
 
 **Step 1: Add to rhsmConstants.js**
 ```javascript
@@ -583,7 +769,7 @@ const config = {
         let updatedDisplayName = displayName || instanceId;
         if (authorized) {
           updatedDisplayName = (
-            <Button isInline component="a" variant="link" href={`${helpers.UI_DEPLOY_PATH_LINK_PREFIX}/openshift/security/${instanceId}`}>
+            <Button isInline component="a" variant="link" href={`${helpers.UI_DEPLOY_PATH_LINK_PREFIX}/openshift/details/${instanceId}`}>
               {updatedDisplayName}
             </Button>
           );
@@ -591,6 +777,33 @@ const config = {
         return updatedDisplayName;
       },
       isSort: true
+    },
+    {
+      metric: INVENTORY_TYPES.BILLING_PROVIDER,
+      info: {
+        tooltip: () =>
+          translate(`curiosity-inventory.tooltip`, {
+            context: ['header', INVENTORY_TYPES.BILLING_PROVIDER]
+          })
+      },
+      cell: ({ [INVENTORY_TYPES.BILLING_PROVIDER]: provider, [INVENTORY_TYPES.BILLING_ACCOUNT_ID]: account }) => (
+        <Tooltip
+          content={translate(`curiosity-inventory.tooltip`, {
+            context: ['cell', INVENTORY_TYPES.BILLING_PROVIDER, !provider && 'none'],
+            provider: translate('curiosity-inventory.label', {
+              context: [INVENTORY_TYPES.BILLING_PROVIDER, provider]
+            }),
+            account
+          })}
+        >
+          {translate('curiosity-inventory.label', {
+            context: [INVENTORY_TYPES.BILLING_PROVIDER, provider || 'none']
+          })}
+        </Tooltip>
+      ),
+      isSort: true,
+      isWrap: true,
+      width: 15
     },
     {
       metric: RHSM_API_PATH_METRIC_TYPES.CORES,
@@ -603,11 +816,39 @@ const config = {
       isSort: true,
       isWrap: true,
       width: 15
+    },
+    {
+      metric: INVENTORY_TYPES.LAST_SEEN,
+      cell: ({ [INVENTORY_TYPES.LAST_SEEN]: lastSeen }) => (lastSeen && <DateFormat date={lastSeen} />) || '',
+      isSort: true,
+      isWrap: true,
+      width: 15
+    }
+  ],
+  initialInventorySettings: {
+    actions: [
+      {
+        id: RHSM_API_QUERY_SET_TYPES.DISPLAY_NAME
+      }
+    ]
+  },
+  initialToolbarFilters: [
+    {
+      id: RHSM_API_QUERY_SET_TYPES.BILLING_PROVIDER
+    },
+    {
+      id: 'rangedMonthly',
+      isSecondary: true,
+      position: SelectPosition.right
+    },
+    {
+      id: 'export',
+      isItem: true
     }
   ]
 };
 
-export { config as default, config };
+export { config as default, config, productGroup, productId };
 ```
 
 **Step 3: Add to locales/en-US.json**
@@ -621,61 +862,141 @@ export { config as default, config };
 }
 ```
 
-### Example B: Multi-Metric Product (Compute Service)
+### Example B: Multi-Metric Product (Based on OpenShift Dedicated)
 
-**Key differences for multi-metric products:**
+This example shows a product that tracks both cores and instance hours, similar to OpenShift Dedicated:
 
 ```javascript
-// Multiple chart filters with different colors
-initialGraphFilters: [
-  {
-    metric: RHSM_API_PATH_METRIC_TYPES.VCPUS,
-    fill: chartColorBlueLight.value,
-    stroke: chartColorBlueDark.value,
-    color: chartColorBlueDark.value,
-    chartType: ChartTypeVariant.line,
-    isStacked: false,
-    yAxisChartLabel: ({ id } = {}) => translate('curiosity-graph.label_axisY', { context: id })
-  },
-  {
-    metric: RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS,
-    fill: chartColorGoldLight.value,
-    stroke: chartColorGoldDark.value,
-    color: chartColorGoldDark.value,
-    chartType: ChartTypeVariant.line,
-    isStacked: false,
-    yAxisChartLabel: ({ id } = {}) => translate('curiosity-graph.label_axisY', { context: id })
-  }
-],
+import { chartColorBlueLight, chartColorBlueDark, chartColorCyanLight, chartColorCyanDark } from '../common/tokenHelpers';
+// Other imports remain the same
 
-// Multiple inventory columns
-initialInventoryFilters: [
-  // ... standard filters (display name, billing provider, last seen) ...
-  {
-    metric: RHSM_API_PATH_METRIC_TYPES.VCPUS,
-    cell: ({ [RHSM_API_PATH_METRIC_TYPES.VCPUS]: total }) =>
-      translate('curiosity-inventory.measurement', {
-        context: (total && RHSM_API_PATH_METRIC_TYPES.VCPUS) || undefined,
-        total: helpers.numberDisplay(total)?.format({ mantissa: 5, trimMantissa: true }),
-        testId: <span data-test={`instances-cell-${RHSM_API_PATH_METRIC_TYPES.VCPUS}`} data-value={`${total}`} />
-      }),
-    isSort: true,
-    isWrap: true,
-    width: 15
+const config = {
+  aliases: ['dedicated', 'openshift-dedicated'],
+  productGroup: 'openshift',
+  productId: RHSM_API_PATH_PRODUCT_TYPES.EXAMPLE_DEDICATED,
+  productLabel: RHSM_API_PATH_PRODUCT_TYPES.EXAMPLE_DEDICATED,
+  productPath: 'openshift',
+  productDisplay: DISPLAY_TYPES.HOURLY,
+  // Standard query settings
+
+  // Multiple chart filters with different colors for each metric
+  initialGraphFilters: [
+    {
+      metric: RHSM_API_PATH_METRIC_TYPES.CORES,
+      fill: chartColorBlueLight.value,
+      stroke: chartColorBlueDark.value,
+      color: chartColorBlueDark.value,
+      chartType: ChartTypeVariant.line,
+      isStacked: false,
+      yAxisChartLabel: ({ id } = {}) => translate('curiosity-graph.label_axisY', { context: id })
+    },
+    {
+      metric: RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS,
+      fill: chartColorCyanLight.value,
+      stroke: chartColorCyanDark.value,
+      color: chartColorCyanDark.value,
+      chartType: ChartTypeVariant.line,
+      isStacked: false,
+      yAxisChartLabel: ({ id } = {}) => translate('curiosity-graph.label_axisY', { context: id })
+    }
+  ],
+
+  // Standard graph settings
+
+  // Multiple inventory columns - one for each metric
+  initialInventoryFilters: [
+    // Standard display name and billing provider filters
+    {
+      metric: RHSM_API_PATH_METRIC_TYPES.CORES,
+      cell: ({ [RHSM_API_PATH_METRIC_TYPES.CORES]: total } = {}) =>
+        translate('curiosity-inventory.measurement', {
+          context: (total && 'value') || undefined,
+          total: (total && Number.parseFloat(total).toFixed(2)) || undefined,
+          testId: <span data-test={`instances-cell-${RHSM_API_PATH_METRIC_TYPES.CORES}`} data-value={`${total}`} />
+        }),
+      isSort: true,
+      isWrap: true,
+      width: 15
+    },
+    {
+      metric: RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS,
+      cell: ({ [RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS]: total } = {}) =>
+        translate('curiosity-inventory.measurement', {
+          context: (total && 'value') || undefined,
+          total: (total && Number.parseFloat(total).toFixed(2)) || undefined,
+          testId: (
+            <span data-test={`instances-cell-${RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS}`} data-value={`${total}`} />
+          )
+        }),
+      isSort: true,
+      isWrap: true,
+      width: 15
+    },
+    // Last seen column
+  ]
+};
+```
+
+### Example C: Capacity Product (Based on ROSA/RHACM)
+
+```javascript
+import { RHSM_API_QUERY_CATEGORY_TYPES as CATEGORY_TYPES } from '../services/rhsm/rhsmConstants';
+// Other imports remain the same
+
+const config = {
+  // Standard product information
+  productDisplay: DISPLAY_TYPES.CAPACITY,
+  // Standard query settings
+
+  graphTallyQuery: {
+    [RHSM_API_QUERY_SET_TYPES.GRANULARITY]: GRANULARITY_TYPES.DAILY,
+    [RHSM_API_QUERY_SET_TYPES.USE_RUNNING_TOTALS_FORMAT]: true // Important for capacity products
   },
-  {
-    metric: RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS,
-    cell: ({ [RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS]: total }) =>
-      translate('curiosity-inventory.measurement', {
-        context: (total && RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS) || undefined,
-        total: helpers.numberDisplay(total)?.format({ mantissa: 5, trimMantissa: true }),
-        testId: <span data-test={`instances-cell-${RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS}`} data-value={`${total}`} />
-      }),
-    isSort: true,
-    isWrap: true,
-    width: 15
+
+  // Capacity products use a nested filter structure with prepaid/on-demand categories
+  initialGraphFilters: [
+    {
+      filters: [
+        {
+          metric: RHSM_API_PATH_METRIC_TYPES.CORES,
+          fill: chartColorBlueLight.value,
+          stroke: chartColorBlueDark.value,
+          color: chartColorBlueDark.value,
+          query: {
+            [RHSM_API_QUERY_SET_TYPES.BILLING_CATEGORY]: CATEGORY_TYPES.PREPAID
+          }
+        },
+        {
+          metric: RHSM_API_PATH_METRIC_TYPES.CORES,
+          fill: chartColorGoldLight.value,
+          stroke: chartColorGoldDark.value,
+          color: chartColorGoldDark.value,
+          query: {
+            [RHSM_API_QUERY_SET_TYPES.BILLING_CATEGORY]: CATEGORY_TYPES.ON_DEMAND
+          }
+        },
+        {
+          metric: RHSM_API_PATH_METRIC_TYPES.CORES,
+          chartType: ChartTypeVariant.threshold
+        }
+      ]
+    }
+  ],
+
+  // Special graph card settings focused on remaining capacity
+  initialGraphSettings: {
+    cards: [
+      {
+        header: ({ dataSets = [] } = {}) =>
+          translate('curiosity-graph.cardHeadingMetric', {
+            context: ['remainingCapacity', dataSets?.[0]?.display?.chartId],
+            testId: 'graphRemainingCapacityCard-header'
+          }),
+        // Remainder of card settings focused on remaining capacity
+      }
+    ]
   }
-]
+};
 ```
 
 ## Troubleshooting Guide
