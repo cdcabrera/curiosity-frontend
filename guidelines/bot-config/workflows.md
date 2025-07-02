@@ -81,26 +81,19 @@ Agent: "Guidance reviewed. 2 recommendations added. Ready to work."
 - Each question should include examples from the relevant product category
 - Confirmation of gathered information before proceeding
 
-**Examples of Product Groups:**
-- `openshift` - Used for OpenShift Container, OpenShift Dedicated, OpenShift Metrics
-- `rhel` - Used for RHEL and RHEL variants
-- `ansible` - Used for Ansible Automation Platform
+**Note:** Each workflow guide contains specific examples and implementation details relevant to that particular workflow type.
 
-**Example Interaction:**
+**Example Interaction Pattern:**
 ```
-User: "openshift-awesome-platform"
-Agent: "What is the product long, or full, name? For example: 'OpenShift Container Platform', 'OpenShift Dedicated'."
-User: "OpenShift Awesome Platform"
-Agent: "What is the product short name? For example: 'OpenShift Container', 'OpenShift Dedicated'."
-User: "OpenShift Awesome"
-Agent: "What is the product group that OpenShift Awesome should belong to? For OpenShift products, the default is 'openshift'."
-User: "openshift"
-Agent: "What aliases should be used for product discovery? These are alternative names users might search for."
-User: "awesome, platform, openshift-awesome"
-Agent: "Any specific chart metrics or display settings needed?"
-User: "No, use default settings"
-Agent: "Thank you. I'll now create the configuration for OpenShift Awesome Platform with the following details:\n- Full name: OpenShift Awesome Platform\n- Short name: OpenShift Awesome\n- Product group: openshift\n- Aliases: awesome, platform, openshift-awesome\n- Default chart metrics and display settings\n\nProceeding with implementation..."
+User: "[workflow trigger statement]"
+Agent: "[first question from appropriate workflow guide]"
+User: "[user response]"
+Agent: "[next question based on user response]"
+...
+Agent: "[confirmation of collected information]"
 ```
+
+The specific questions, examples, and implementation details will be determined by the relevant workflow guide.
 
 ## Adding New Workflows
 
