@@ -57,6 +57,49 @@ User: "review repo guidelines"
 Agent: "Guidance reviewed. 2 recommendations added. Ready to work."
 ```
 
+### OpenShift Product Configuration
+
+**User Statements:**
+- "openshift-[product-name]"
+- "configure new openshift product [product-name]"
+- "add new openshift product [product-name]"
+- "create openshift [product-name] configuration"
+
+**Agent Actions:**
+1. MUST ask ALL of the following questions BEFORE proceeding with any implementation:
+   - What is the product long/full name? (e.g., "OpenShift Container Platform", "OpenShift Dedicated")
+   - What is the product short name? (e.g., "OpenShift Container", "OpenShift Dedicated")
+   - What is the product group? MUST explain that for OpenShift products, the default is "openshift"
+   - What aliases should be used for product discovery? 
+   - Any specific chart metrics or display settings needed?
+2. ONLY after gathering ALL required information, proceed with implementation
+3. Create configuration file following the product configuration pattern
+
+**Expected Response:**
+- Series of information-gathering questions, each with examples
+- Confirmation of gathered information before proceeding
+
+**Examples of Product Groups:**
+- `openshift` - Used for OpenShift Container, OpenShift Dedicated, OpenShift Metrics
+- `rhel` - Used for RHEL and RHEL variants
+- `ansible` - Used for Ansible Automation Platform
+
+**Example Interaction:**
+```
+User: "openshift-awesome-platform"
+Agent: "What is the product long, or full, name? For example: 'OpenShift Container Platform', 'OpenShift Dedicated'."
+User: "OpenShift Awesome Platform"
+Agent: "What is the product short name? For example: 'OpenShift Container', 'OpenShift Dedicated'."
+User: "OpenShift Awesome"
+Agent: "What is the product group that OpenShift Awesome should belong to? For OpenShift products, the default is 'openshift'."
+User: "openshift"
+Agent: "What aliases should be used for product discovery? These are alternative names users might search for."
+User: "awesome, platform, openshift-awesome"
+Agent: "Any specific chart metrics or display settings needed?"
+User: "No, use default settings"
+Agent: "Thank you. I'll now create the configuration for OpenShift Awesome Platform with the following details:\n- Full name: OpenShift Awesome Platform\n- Short name: OpenShift Awesome\n- Product group: openshift\n- Aliases: awesome, platform, openshift-awesome\n- Default chart metrics and display settings\n\nProceeding with implementation..."
+```
+
 ## Adding New Workflows
 
 When adding new workflows to this document, follow this structure:
