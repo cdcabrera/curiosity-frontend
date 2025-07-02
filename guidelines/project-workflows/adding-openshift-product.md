@@ -1,20 +1,23 @@
 ---
 guideline_version: "1.0.0"
 priority: 3
-applies_to: ["*.js", "config/*.js"]
+applies_to: ["*.js", "config/*.js", "*.json"]
 contexts: ["development", "product-config"]
 extends: ["../../GUIDELINES.md"]
-last_updated: "2025-06-27"
+last_updated: "2025-07-01"
 compatibility:
   min_version: "1.0.0"
   max_version: "2.0.0"
 agent_hints:
-  processing_order: "top_down"
+  processing_order: "sequential"
   validation_required: true
   key_concepts: ["openshift", "product-config", "hourly", "on-demand", "payg", "pay as you go"]
-  related_guidelines: ["guidelines/project-workflows/adding-rhel-annual-variant.md"]
+  related_guidelines: ["guidelines/project-workflows/adding-rhel-annual-variant.md", "guidelines/project-workflows/adding-rhel-payg-variant.md", "guidelines/project-workflows/adding-new-product.md"]
   importance: "high"
+  question_sequence: true
+  wait_for_response: true
   code_examples: true
+  critical_instructions: "ALWAYS ask the sequential questions when creating or adding an OpenShift product"
 ---
 
 # Adding OpenShift Hourly/On-Demand Products
@@ -27,7 +30,7 @@ OpenShift products in this application are configured as hourly billing products
 
 ## Interactive Configuration Process
 
-When asked to **"create openshift on-demand OR hourly"** configuration, respond by asking these questions sequentially (ask one question, wait for answer, then proceed to the next):
+When asked to **"create openshift on-demand OR hourly"**, **"add an openshift product"**, or **"create an openshift product"**, you MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
 
 1. **"What is the product id?"** - The API identifier for the product (e.g., "rhacs", "rhods")
 2. **"What is the product long, or full, name?"** - The complete display name (e.g., "Red Hat Advanced Cluster Security")
