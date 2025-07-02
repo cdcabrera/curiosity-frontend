@@ -51,6 +51,73 @@ This section outlines how agents should handle requests and questions based on s
 
 Agent request and question handling response times happen locally having timeframes currently doesn't make sense. All processing occurs within the local environment, providing immediate responses based on available resources and complexity of the request. Response quality and completeness depend on the specific query complexity and available context rather than predetermined time constraints.
 
+### Project Knowledge Discovery
+
+When examining a project for understanding, agents should look beyond just the code. Below are essential sources of information that provide context, history, and guidance:
+
+#### Documentation Sources
+
+1. **README Files**
+   - **Location**: Check for `README.md` in the root directory and subdirectories
+   - **Contains**: Project overview, quick start guides, high-level architecture
+   - **Priority**: Always examine this first for project context
+   - **Key Sections**: Requirements, installation steps, development setup
+
+2. **CONTRIBUTING Guide**
+   - **Location**: `CONTRIBUTING.md` in the root directory
+   - **Contains**: Workflow processes, PR requirements, commit message formats
+   - **Priority**: Critical for understanding development practices
+   - **Key Sections**: Pull request workflow, testing guidelines, release procedures
+
+3. **CHANGELOG**
+   - **Location**: `CHANGELOG.md` in the root directory
+   - **Contains**: History of changes, feature additions, and bug fixes
+   - **Priority**: Important for understanding recent work and feature evolution
+   - **Key Sections**: Recent entries showing the direction of development
+
+4. **Guidelines**
+   - **Location**: `guidelines/**/*` directories and files
+   - **Contains**: Specialized workflows, domain-specific requirements
+   - **Priority**: Consult when working on specific features or domains
+   - **Key Sections**: Product-specific guidelines, workflow instructions
+
+#### Version Control History
+
+1. **Git Commit History**
+   - **Purpose**: Understand recent changes and development patterns
+   - **Key Information**: 
+     - Commit messages showing feature development and bug fixes
+     - Authorship patterns indicating expertise areas
+     - Commit frequency in different areas indicating active development
+   - **How to Use**: Review recent commits to understand current focus areas
+
+2. **Git Diffs**
+   - **Purpose**: Understand precise code changes
+   - **Key Information**:
+     - Implementation details of features and fixes
+     - Code evolution patterns
+     - Breaking changes and their mitigations
+   - **How to Use**: Examine diffs when needing to understand specific changes
+
+3. **Pull Requests**
+   - **Purpose**: Understand feature development process and decisions
+   - **Key Information**:
+     - Discussions revealing design decisions
+     - Review comments highlighting important considerations
+     - Implementation approaches for complex features
+   - **How to Use**: Review PRs related to areas of interest
+
+#### Knowledge Synthesis
+
+When providing assistance:
+1. **Integrate Multiple Sources**: Combine information from code, documentation, and version control
+2. **Prioritize Recent Information**: More recent commits and changes have higher relevance
+3. **Consider Project Standards**: Use CONTRIBUTING.md to understand project-specific practices
+4. **Reference Guidelines**: Cite relevant guidelines when providing recommendations
+5. **Acknowledge Context**: Note when information might be outdated or conflicting
+
+When faced with incomplete information, clearly indicate areas of uncertainty and suggest where additional information might be found.
+
 ### Additional Guidelines
 
 For more detailed, specialized guidelines covering specific workflows, procedures, and domain-specific instructions, refer to the guidelines located under:
