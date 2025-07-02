@@ -38,6 +38,7 @@ Workflows consist of:
 - "look at guidelines"
 - "look at"
 - "review guidance"
+- "review guidelines"
 
 **Agent Actions:**
 1. Reset any previously loaded guidance
