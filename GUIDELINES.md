@@ -4,6 +4,23 @@
 
 This document provides core guidelines for agent behavior and request handling. Additional refined and specialized guidelines are located under `./guidelines/**/*` which provide more detailed, context-specific instructions for various workflows and procedures.
 
+## Guideline Trigger Prefixes
+
+The following prefix words can be used to trigger specific guideline-related interactions:
+
+| Prefix | Purpose | Example |
+|--------|---------|--------|
+| `workflow:` | Triggers a step-by-step workflow guide | `workflow: add rhel variant` |
+| `guideline:` | Provides information about a specific guideline | `guideline: adding rhel annual variant` |
+| `procedure:` | Initiates a formal procedure with validation | `procedure: create openshift product` |
+| `task:` | Starts a guided task with sequential steps | `task: add rhel payg variant` |
+
+When these prefix words are detected at the beginning of a request, the agent will automatically:
+1. Identify the appropriate guideline document
+2. Follow the structured question sequence if one exists
+3. Provide relevant code examples and implementation steps
+4. Validate inputs according to guideline requirements
+
 ## Agent Section
 
 ### Request and Question Handling
@@ -14,11 +31,13 @@ This section outlines how agents should handle requests and questions based on s
 
 1. **Initial Assessment**
    - Identify key phrases and keywords in user requests
+   - Detect guideline trigger prefixes (`workflow:`, `guideline:`, `procedure:`, `task:`)  
    - Determine the category of request based on recognized patterns
    - Prioritize urgent or time-sensitive requests appropriately
 
 2. **Response Protocol**
    - Match identified keywords to appropriate response templates
+   - For guideline trigger prefixes, follow the structured question sequence
    - Use standardized responses for common questions
    - Escalate complex inquiries to specialized agents when necessary
 
@@ -46,6 +65,7 @@ This section outlines how agents should handle requests and questions based on s
 | Account Issues | "can't login", "password reset", "account locked" | Direct to account support |
 | Subscription | "renewal", "upgrade plan", "subscription expired" | Route to subscription team |
 | Product Questions | "how to use", "feature missing", "doesn't work" | Technical documentation reference |
+| Guideline Requests | "workflow:", "guideline:", "procedure:", "task:" | Follow structured guideline protocol |
 
 #### Local Processing Context
 

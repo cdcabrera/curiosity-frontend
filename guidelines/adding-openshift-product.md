@@ -18,6 +18,7 @@ agent_hints:
   wait_for_response: true
   code_examples: true
   critical_instructions: "ALWAYS ask the sequential questions when creating or adding an OpenShift product"
+  trigger_prefixes: ["workflow: add openshift", "workflow: create openshift", "task: add openshift product", "procedure: create openshift", "guideline: openshift product"]
 ---
 
 # Adding OpenShift Hourly/On-Demand Products

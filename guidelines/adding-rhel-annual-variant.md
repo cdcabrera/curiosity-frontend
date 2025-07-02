@@ -18,6 +18,7 @@ agent_hints:
   wait_for_response: true
   code_examples: true
   critical_instructions: "ALWAYS ask the sequential questions when creating or adding a RHEL variant"
+  trigger_prefixes: ["workflow: add rhel variant", "workflow: add rhel annual", "task: add rhel variant", "procedure: add rhel variant", "guideline: rhel variant"]
 ---
 
 # Adding RHEL Annual Variants
