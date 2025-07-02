@@ -12,7 +12,7 @@ agent_hints:
   processing_order: "sequential"
   validation_required: true
   key_concepts: ["openshift", "product-config", "hourly", "on-demand", "payg", "pay as you go"]
-  related_guidelines: ["guidelines/project-workflows/adding-rhel-annual-variant.md", "guidelines/project-workflows/adding-rhel-payg-variant.md", "guidelines/project-workflows/adding-new-product.md"]
+  related_guidelines: ["guidelines/adding-rhel-annual-variant.md", "guidelines/adding-rhel-payg-variant.md"]
   importance: "high"
   question_sequence: true
   wait_for_response: true
