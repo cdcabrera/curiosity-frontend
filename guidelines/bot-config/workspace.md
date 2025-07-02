@@ -2,9 +2,9 @@
 guideline_version: "1.0.0"
 priority: 3
 applies_to: ["*.js", "*.jsx", "*.ts", "*.tsx", "*.md"]
-contexts: ["development", "bot-configuration", "automation"]
+contexts: ["development", "bot-configuration", "automation", "workflow"]
 extends: ["../../GUIDELINES.md"]
-last_updated: "2025-07-01"
+last_updated: "2025-07-02"
 compatibility:
   min_version: "1.0.0"
   max_version: "2.0.0"
