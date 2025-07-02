@@ -69,22 +69,16 @@ Agent: "Guidance reviewed. 2 recommendations added. Ready to work."
 - "create an openshift product"
 
 **Agent Actions:**
-1. MUST ask the following questions SEQUENTIALLY (ask one question, wait for answer, then proceed to the next):
-   - **"What is the product id?"** - The API identifier for the product (e.g., "rhacs", "rhods", "rosa")
-   - **"What is the product long, or full, name?"** - The complete display name (e.g., "Red Hat Advanced Cluster Security")
-   - **"What is the product short name?"** - The abbreviated display name (e.g., "RHACS")
-   - **"What is the product display type?"** - Either "hourly" for HOURLY products or "capacity" for CAPACITY products with prepaid/on-demand metrics
-   - **"Is there an existing product variant config that matches what you want?"**
-     - If **no**: Continue to the metrics question
-     - If **yes**: Ask "What existing product config matches what you want?" (e.g., "rhacs", "rhods" for HOURLY or "rosa", "rhacm" for CAPACITY)
-   - **"What metric or metrics need to be displayed?"** - The primary metric(s) for charts and inventory (e.g., "Cores", "vCPUs", "Instance-hours")
-   - **"Are the metric display names unique?"** - Do any technical metrics need to display differently to users?
-     - If **yes**: Ask "What should each metric display as?" (e.g., technical: "Cores" → display: "vCPUs")
-2. ONLY after gathering ALL required information, proceed with implementation
-3. Create configuration file following the product configuration pattern
+1. MUST ask the following questions SEQUENTIALLY (ask one question, wait for answer, then proceed to the next) as defined in "guidelines/project-workflows/*"
+   - For OpenShift products, follow the sequence in "guidelines/project-workflows/adding-openshift-product.md"
+   - For RHEL products, follow the sequence in relevant RHEL workflow guides
+   - For other products, follow the sequence in "guidelines/project-workflows/adding-new-product.md"
+2. ONLY after gathering ALL required information from the relevant workflow guide, proceed with implementation
+3. Create configuration file following the product configuration pattern defined in the appropriate workflow guide
 
 **Expected Response:**
-- Series of information-gathering questions, each with examples
+- Series of information-gathering questions based on the specific workflow guide
+- Each question should include examples from the relevant product category
 - Confirmation of gathered information before proceeding
 
 **Examples of Product Groups:**
