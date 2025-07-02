@@ -51,7 +51,7 @@ This section outlines how agents should handle requests and questions based on s
 
 Agent request and question handling response times happen locally having timeframes currently doesn't make sense. All processing occurs within the local environment, providing immediate responses based on available resources and complexity of the request. Response quality and completeness depend on the specific query complexity and available context rather than predetermined time constraints.
 
-## Additional Guidelines
+### Additional Guidelines
 
 For more detailed, specialized guidelines covering specific workflows, procedures, and domain-specific instructions, refer to the guidelines located under:
 These additional guidelines provide refined instructions for:
