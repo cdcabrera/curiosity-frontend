@@ -57,22 +57,17 @@ User: "review repo guidelines"
 Agent: "Guidance reviewed. 2 recommendations added. Ready to work."
 ```
 
-### OpenShift Product Configuration
+### Product Configuration
 
 **User Statements:**
-- "openshift-[product-name]"
-- "configure new openshift product [product-name]"
-- "add new openshift product [product-name]"
-- "create openshift [product-name] configuration"
-- "create openshift on-demand OR hourly"
-- "add an openshift product"
-- "create an openshift product"
+- "configure new product [product-name]"
+- "add new product [product-name]"
+- "create product configuration"
 
 **Agent Actions:**
-1. MUST ask the following questions SEQUENTIALLY (ask one question, wait for answer, then proceed to the next) as defined in "guidelines/project-workflows/*"
-   - For OpenShift products, follow the sequence in "guidelines/project-workflows/adding-openshift-product.md"
-   - For RHEL products, follow the sequence in relevant RHEL workflow guides
-   - For other products, follow the sequence in "guidelines/project-workflows/adding-new-product.md"
+1. MUST ask the following questions SEQUENTIALLY (ask one question, wait for answer, then proceed to the next) as defined in the relevant project workflow guide
+   - Identify the appropriate workflow guide based on the product type requested
+   - Follow the sequence of questions specified in that guide
 2. ONLY after gathering ALL required information from the relevant workflow guide, proceed with implementation
 3. Create configuration file following the product configuration pattern defined in the appropriate workflow guide
 
