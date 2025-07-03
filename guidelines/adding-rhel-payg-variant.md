@@ -498,6 +498,20 @@ const config = {
 }
 ```
 
+## Git Reference Commits
+
+For complete implementation details and full context, refer to these actual commits:
+
+### RHEL for x86 ELS PAYG Implementation
+- **Commit Hash**: `2ca7797a44320311fdca54f211636b310b492f25`
+- **Description**: Add RHEL for x86 ELS PAYG variant
+- **Files Modified**: rhsmConstants.js, product configuration, localization files
+
+### RHEL for x86 PAYG Add-On Implementation
+- **Commit Hash**: `d66edfaa93c4242ed6ea042350c9cee74565a614`
+- **Description**: Add RHEL for x86 PAYG Add-On variant
+- **Files Modified**: rhsmConstants.js, product configuration, localization files
+
 ## Key Differences: PAYG vs Annual Variants
 
 ### PAYG Variant Characteristics
