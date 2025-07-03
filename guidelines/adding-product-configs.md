@@ -89,6 +89,9 @@ There is only one OpenShift annual display.
 
 ## Implementation for RHEL Annual
 
+**Important:**
+- Agent must review all git reference commits before continuing
+
 ### Git Reference Commits
 
 For complete implementation details and full context, refer to these actual commits:
@@ -138,6 +141,9 @@ For complete implementation details and full context, refer to these actual comm
 
 ## Implementation for OpenShift PAYG
 
+**Important:**
+- Agent must review all git reference commits before continuing
+
 ### Git Reference Commits
 
 For complete implementation details and full context, refer to these actual commits:
@@ -169,6 +175,9 @@ For complete implementation details and full context, refer to these actual comm
 
 ## Implementation for RHEL PAYG
 
+**Important:**
+- Agent must review all git reference commits before continuing
+
 ### Git Reference Commits
 
 For complete implementation details and full context, refer to these actual commits:
@@ -182,6 +191,42 @@ For complete implementation details and full context, refer to these actual comm
 - **Commit Hash**: `d66edfaa93c4242ed6ea042350c9cee74565a614`
 - **Description**: Add RHEL for x86 PAYG Add-On variant
 - **Files Modified**: rhsmConstants.js, product configuration files, en-US.json, test snapshots
+
+## Localization Entries
+
+Add the necessary translation entries to `public/locales/en-US.json` for your new variant:
+
+```json
+{
+  "curiosity-toolbar": {
+    "label_groupVariant_your-variant-id": "Your Variant Short Name"
+  },
+  "curiosity-view": {
+    "title_your-variant-id": "Your Variant Full Name",
+    "subtitle_your-variant-id": "Your Variant Description",
+    "description_your-variant-id": "Your Variant Description"
+  }
+}
+```
+
+Add additional translation entries by comparing git reference commits and reviewing other entries in sections in the `public/locales/en-US.json`:
+
+- `curiosity-graph`
+- `curiosity-inventory`
+
+```json
+{
+  "curiosity-graph": {},
+  "curiosity-inventory": {}
+}
+```
+
+**Requirements:**
+- Review git reference commits for existing patterns
+- Add entries to ALL relevant sections (toolbar, view, graph, inventory)
+- Use the correct product ID exactly as defined in the constants
+- Maintain alphabetical order within each section
+- For standard descriptions that match, use the `$t()` translation reference
 
 ### File Checklist
 
@@ -197,10 +242,10 @@ For complete implementation details and full context, refer to these actual comm
 
 ❌ **Don't:**
 - Forget to update ALL JSDoc type annotations
+- Forget to update ALL localization
 - Use inconsistent naming conventions (stick to existing patterns)
 - Skip the alphabetical ordering in constants
 - Change unrelated parts of the constants file
-- Skip adding entries to ALL necessary localization sections
 
 ✅ **Do:**
 - Follow alphabetical ordering in all locations
