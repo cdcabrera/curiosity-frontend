@@ -21,15 +21,15 @@ agent_hints:
   trigger_prefixes: ["/workflow payg", "/workflow on-demand"," "/workflow annual"]
 ---
 
-# Adding Annual and PAYG Variants
+# Adding PAYG, On-demand, and Annual Variants
 
-This guide provides step-by-step instructions for adding new Pay-As-You-Go (PAYG) and annual product configurations to the curiosity-frontend application.
+This guide provides step-by-step instructions for agents adding new Pay-As-You-Go (PAYG), on-demand, and annual product configurations to the curiosity-frontend application.
 
 ## Overview
 
 ## Interactive Configuration Process
 
-You MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
+Agent MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
 
 1. **"What is the product ID for the variant?"** - The API identifier for the variant
   - Examples: `RHEL for x86`, `rhel-for-x86-els-unconverted`, `rhods`, `rhacs`
@@ -131,21 +131,6 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Run `npm run test:lintfix` to format code
 - [ ] Run `npm run test:ci` to verify all tests pass
 
-### Common Pitfalls
-
-❌ **Don't:**
-- Forget to update ALL JSDoc type annotations
-- Skip adding entries to ALL necessary localization sections
-- Use inconsistent naming conventions
-- Change unrelated parts of the constants file
-- Add a new product config file
-
-✅ **Do:**
-- Follow alphabetical ordering in all locations
-- Use consistent naming patterns for similar variant types
-- Add ALL required localization entries
-- Verify all tests pass before committing
-
 ## Implementation for OpenShift PAYG
 
 ### Git Reference Commits
@@ -193,24 +178,6 @@ For complete implementation details and full context, refer to these actual comm
 - **Description**: Add RHEL for x86 PAYG Add-On variant
 - **Files Modified**: rhsmConstants.js, product configuration files, en-US.json, test snapshots
 
-### Key Differences: PAYG vs Annual Variants
-
-#### PAYG Variant Characteristics
-1. **Display Type**: Uses `DISPLAY_TYPES.HOURLY` instead of `DISPLAY_TYPES.CAPACITY`
-2. **Metrics**: Typically focuses on `VCPUS` instead of `CORES` or `SOCKETS`
-3. **Naming**: Includes "PAYG", "Pay-As-You-Go", or "On-Demand" in names
-4. **Configuration File**: Requires a dedicated product configuration file
-5. **Billing**: References cloud provider billing accounts
-6. **Description**: Emphasizes monitoring usage for cloud provider subscriptions
-
-#### Annual Variant Characteristics
-1. **Display Type**: Uses `DISPLAY_TYPES.CAPACITY`
-2. **Metrics**: Typically focuses on `CORES` and `SOCKETS`
-3. **Naming**: Includes "Annual" in names
-4. **Configuration**: Often shares base RHEL configuration with minor customizations
-5. **Billing**: References standard subscription models
-6. **Description**: Emphasizes tracking usage against subscription thresholds
-
 ### File Checklist
 
 - [ ] Add variant constant to appropriate section in `src/services/rhsm/rhsmConstants.js`
@@ -221,27 +188,18 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Run `npm run test:lintfix` to format code
 - [ ] Run `npm run test:ci` to verify all tests pass
 
-### Common Pitfalls
+## Common Pitfalls
 
 ❌ **Don't:**
 - Forget to update ALL JSDoc type annotations
-- Skip creating a dedicated product configuration file
-- Use inconsistent naming conventions
-- Forget to set `productDisplay: DISPLAY_TYPES.HOURLY`
-- Miss updating the variant group in `productVariants` array
+- Use inconsistent naming conventions (stick to existing patterns)
+- Skip the alphabetical ordering in constants
+- Change unrelated parts of the constants file
+- Skip adding entries to ALL necessary localization sections
 
 ✅ **Do:**
 - Follow alphabetical ordering in all locations
-- Use consistent naming patterns for similar variant types
-- Create a complete product configuration file
-- Include appropriate PAYG terminology in localization
+- Follow existing naming patterns from similar products and variant types
+- Add descriptive aliases for product discovery if a new product configuration is created
+- Export productGroup and productId from your configuration file
 - Verify all tests pass before committing
-
-
-
-
-
-
-
-
-
