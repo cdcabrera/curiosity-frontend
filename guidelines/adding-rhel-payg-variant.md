@@ -18,7 +18,7 @@ agent_hints:
   wait_for_response: true
   code_examples: true
   critical_instructions: "ALWAYS ask the sequential questions when creating or adding a RHEL PAYG variant"
-  trigger_prefixes: ["/workflow add rhel payg", "/workflow rhel payg"]
+  trigger_prefixes: ["/workflow add payg rhel", "/workflow payg rhel"]
 ---
 
 # Adding RHEL PAYG Variants
