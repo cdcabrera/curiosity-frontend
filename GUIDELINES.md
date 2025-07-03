@@ -4,25 +4,17 @@
 
 This document provides core guidelines for agent behavior and request handling. Additional refined and specialized guidelines are located under `./guidelines/**/*` which provide more detailed, context-specific instructions for various workflows and procedures.
 
-## User Section
-
-### Guideline Trigger Prefixes
-
-The following prefix words can be used to trigger specific guideline-related interactions:
-
-| Prefix | Purpose | Example |
-|--------|---------|--------|
-| `/workflow` | Triggers a step-by-step workflow guide | `/workflow add rhel` |
-
-When these prefix words are detected at the beginning of a request, the agent will automatically:
-1. Identify the appropriate guideline document based on the workflow name (e.g., "add rhel" maps to `guidelines/adding-rhel-annual-variant.md`)
-2. Follow the structured question sequence defined in the guideline's `agent_hints.question_sequence` property
-3. Provide relevant code examples from the guideline's implementation sections
-4. Validate inputs according to guideline requirements specified in the document
-
-Each guideline document in the `guidelines/` directory includes metadata at the top with `trigger_prefixes` that specify which workflow commands activate that particular guide.
-
 ## Agent Section
+
+### Summary
+
+For more detailed, specialized guidelines covering specific workflows, procedures, and domain-specific instructions, refer to the guidelines located under: `./guidelines/**/*`.
+
+These additional guidelines provide refined instructions for:
+- Project workflows and procedures
+- Technical implementation details
+
+When working on specific tasks, consult both this core guidelines document and any relevant specialized guidelines in the guidelines directory structure.
 
 ### Request and Question Handling
 
@@ -32,7 +24,7 @@ This section outlines how agents should handle requests and questions based on s
 
 1. **Initial Assessment**
    - Identify key phrases and keywords in user requests
-   - Detect guideline trigger prefixes (`/workflow`)
+   - Detect guideline trigger prefixes identified in "Trigger Words, Statements or Phrases, and Questions"
    - Determine the category of request based on recognized patterns
    - Prioritize urgent or time-sensitive requests appropriately
 
@@ -58,22 +50,26 @@ This section outlines how agents should handle requests and questions based on s
    - Set reminders for pending items
    - Schedule follow-ups for unresolved issues
 
-#### Trigger Words and Phrases
+#### Local Processing Context
+
+Agent request and question handling response times happen according to the constraints of the related guideline.
+
+#### Trigger Words, Statements or Phrases, and Questions
+
+The following prefix words are used to trigger specific guideline-related interactions:
 
 | Category | Trigger Words/Phrases | **Important Action**                 |
 |----------|----------------------|--------------------------------------|
 | Guideline Requests | "/workflow" | 1. Identify matching guideline document in `guidelines/` directory<br>2. Check frontmatter for `trigger_prefixes` that match the command<br>3. Follow sequential question process defined in guideline<br>4. Provide implementation steps with code examples |
 
-#### Local Processing Context
+When these prefix words are detected at the beginning of a request, the agent will automatically respond with a step-by-step workflow.
 
-Agent request and question handling response times happen locally having timeframes currently doesn't make sense. All processing occurs within the local environment, providing immediate responses based on available resources and complexity of the request. Response quality and completeness depend on the specific query complexity and available context rather than predetermined time constraints.
+#### Workflow Trigger Implementation
 
-### Workflow Trigger Implementation
-
-When a user begins a request with a workflow trigger prefix (e.g., `/workflow add rhel`), follow these implementation steps:
+When a user begins a request with a workflow trigger prefix (e.g., `/workflow add rhel payg`), follow these implementation steps:
 
 1. **Match Guideline Document**:
-   - Parse the workflow command to identify the workflow type (`add`) and subject (`rhel`)
+   - Parse the workflow command to identify the workflow type (`add`) and subject (`rhel payg`)
    - Search the `guidelines/` directory for matching documents
    - Check each guideline's frontmatter for `trigger_prefixes` that match the command
    - Select the most specific matching guideline document
@@ -88,12 +84,14 @@ When a user begins a request with a workflow trigger prefix (e.g., `/workflow ad
    - Once all required information is collected, provide the step-by-step implementation instructions
    - Include relevant code examples from the guideline document
    - Reference specific file locations and naming conventions
-   - Highlight any critical requirements or common pitfalls
+   - Concisely highlight any critical requirements or common pitfalls
 
 4. **Complete the Workflow**:
-   - Summarize the actions to be taken
-   - Provide a checklist of implementation steps
+   - Concisely summarize the actions to be taken
+   - Concisely provide a checklist of implementation steps
    - Offer continued assistance for implementation questions
+   - Run guidance scripts
+   - Complete the workflow by following the listed steps
 
 Example match patterns:
 - `/workflow add rhel` → `guidelines/adding-rhel-annual-variant.md`
@@ -215,15 +213,3 @@ When working with guideline documents, understand their common structure:
    - Common pitfalls to avoid
 
 When processing a workflow request, analyze the guideline document structure to understand the complete process before beginning the interactive sequence.
-
-### Additional Guidelines
-
-For more detailed, specialized guidelines covering specific workflows, procedures, and domain-specific instructions, refer to the guidelines located under:
-These additional guidelines provide refined instructions for:
-- Project workflows and procedures
-- Product-specific configurations
-- Development best practices
-- Technical implementation details
-- Domain-specific requirements
-
-When working on specific tasks or domains, consult both this core guidelines document and any relevant specialized guidelines in the guidelines directory structure.
