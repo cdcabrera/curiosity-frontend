@@ -134,6 +134,9 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Run `npm run test:ci -- --updateSnapshot` to update test snapshots
 - [ ] Run `npm run test:lintfix` to format code
 - [ ] Run `npm run test:ci` to verify all tests pass
+- [ ] Agent concisely lists any of the previous steps that require user completion, or that the agent was unable to complete
+- [ ] Agent has asked user "Can you confirm success?"
+- [ ] User has confirmed success or not responded within 15 minutes
 
 ❌ **Don't:**
 - Create a new product config file for this implementation
@@ -172,6 +175,9 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Run `npm run test:ci -- --updateSnapshot` - Update Jest snapshots
 - [ ] Run `npm run test:lintfix` - Format code
 - [ ] Run `npm run test:ci` - Verify all tests pass
+- [ ] Agent concisely lists any of the previous steps that require user completion, or that the agent was unable to complete
+- [ ] Agent has asked user "Can you confirm success?"
+- [ ] User has confirmed success or not responded within 15 minutes
 
 ## Implementation for RHEL PAYG
 
@@ -191,6 +197,24 @@ For complete implementation details and full context, refer to these actual comm
 - **Commit Hash**: `d66edfaa93c4242ed6ea042350c9cee74565a614`
 - **Description**: Add RHEL for x86 PAYG Add-On variant
 - **Files Modified**: rhsmConstants.js, product configuration files, en-US.json, test snapshots
+
+### File Checklist
+
+- [ ] Add variant constant to appropriate section in `src/services/rhsm/rhsmConstants.js`
+- [ ] Update JSDoc type annotations (all 3+ locations)
+- [ ] Create product configuration file `src/config/product.yourVariantName.js`
+- [ ] Add localization entries to `public/locales/en-US.json`
+- [ ] Run `npm run test:ci -- --updateSnapshot` to update test snapshots
+- [ ] Run `npm run test:lintfix` to format code
+- [ ] Run `npm run test:ci` to verify all tests pass
+- [ ] Agent concisely lists any of the previous steps that require user completion, or that the agent was unable to complete 
+- [ ] Agent has asked user "Can you confirm success?"
+- [ ] User has confirmed success or not responded within 15 minutes
+
+**Requirements:**
+- After the user has confirmed success exit the process and reset any information gathered from the interactive process
+- If the user closes the process externally exit the process and reset any information gathered from the interactive process
+- If the user does not respond within 15 minutes exit the process and reset any information gathered from the interactive process
 
 ## Localization Entries
 
@@ -226,25 +250,7 @@ Add additional translation entries by comparing git reference commits and review
 - Add entries to ALL relevant sections (toolbar, view, graph, inventory)
 - Use the correct product ID exactly as defined in the constants
 - Maintain alphabetical order within each section
-- For standard descriptions that match, use the `$t()` translation reference
-
-### File Checklist
-
-- [ ] Add variant constant to appropriate section in `src/services/rhsm/rhsmConstants.js`
-- [ ] Update JSDoc type annotations (all 3+ locations)
-- [ ] Create product configuration file `src/config/product.yourVariantName.js`
-- [ ] Add localization entries to `public/locales/en-US.json`
-- [ ] Run `npm run test:ci -- --updateSnapshot` to update test snapshots
-- [ ] Run `npm run test:lintfix` to format code
-- [ ] Run `npm run test:ci` to verify all tests pass
-- [ ] Agent concisely lists any of the previous steps that require user completion, or that the agent was unable to complete 
-- [ ] Agent has asked user "Can you confirm success?"
-- [ ] User has confirmed success or not responded within 15 minutes
-
-**Requirements:**
-- After the user has confirmed success exit the process and reset any information gathered from the interactive process
-- If the user closes the process externally exit the process and reset any information gathered from the interactive process
-- If the user does not respond within 15 minutes exit the process and reset any information gathered from the interactive process
+- For standard descriptions that match, use the `$(curiosity-view.[locale entry]_[product group])` translation reference
 
 ## Common Pitfalls
 
@@ -261,3 +267,4 @@ Add additional translation entries by comparing git reference commits and review
 - Add descriptive aliases for product discovery if a new product configuration is created
 - Export productGroup and productId from your configuration file
 - Verify all tests pass before committing
+
