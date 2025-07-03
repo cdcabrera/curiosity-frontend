@@ -75,7 +75,7 @@ Agent MUST ask these questions sequentially (ask one question, wait for answer, 
 - DO NOT assume any values; always ask for explicit confirmation
 - Each question MUST be asked separately, waiting for a response before proceeding
 - Do NOT skip any questions unless explicitly indicated in the steps or requested by the user
-- Exit the process if the user requests to stop or exit
+- Exit the process if the user requests to stop or exit, then reset any information gathered from the interactive process
 
 ## Implementation for OpenShift Annual
 
@@ -85,6 +85,7 @@ There is only one OpenShift annual display.
 - The user has a unique product or has made a mistake.
 - The user needs to create this implementation.
 - Exit the process and explain to the user in a concise statement why you are stopping.
+- Reset any information gathered from the interactive process
 
 ## Implementation for RHEL Annual
 
@@ -132,7 +133,8 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Run `npm run test:ci` to verify all tests pass
 
 ❌ **Don't:**
-- Create a new product config file for this implementation 
+- Create a new product config file for this implementation
+- Forget to add all localizations
 
 ## Implementation for OpenShift PAYG
 
