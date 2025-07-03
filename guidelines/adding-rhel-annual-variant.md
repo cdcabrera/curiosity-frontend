@@ -235,6 +235,40 @@ RHEL_X86_ELS_UNCONVERTED: 'rhel-for-x86-els-unconverted',
 }
 ```
 
+## Git Reference Commits
+
+For complete implementation details and full context, refer to these actual commits:
+
+### RHEL AUS Add-On Implementation
+- **Commit Hash**: `7e5fe666e104bddfd1ff91a22619332407ba147b`
+- **Description**: Add RHEL Advanced Update Support Add-On variant
+- **Files Modified**: rhsmConstants.js, en-US.json, test snapshots
+
+### RHEL for x86 ELS Unconverted Implementation  
+- **Commit Hash**: `bd534990f5f6c2bcf44eaa1c113cde11959c0d14`
+- **Description**: Add RHEL for x86 Extended Life Cycle Support variant
+- **Files Modified**: rhsmConstants.js, en-US.json, test snapshots
+
+### RHEL for x86 RS Implementation
+- **Commit Hash**: `0afc6e4111a9e2f18a623cbd8ab8f4f68a8e9c5f`
+- **Description**: Add RHEL for x86 RS variant
+- **Files Modified**: rhsmConstants.js, en-US.json, test snapshots
+
+### RHEL for x86 HA Implementation
+- **Commit Hash**: `23c42dea75f165e4d0dfb12910247a2c9abdda87`
+- **Description**: Add RHEL for x86 HA variant
+- **Files Modified**: rhsmConstants.js, en-US.json, test snapshots
+
+### RHEL for x86 EUS Implementation
+- **Commit Hash**: `651188ac8e18a9315b3f4dfa1b5d1018ec5e3c3c`
+- **Description**: Add RHEL for x86 EUS variant
+- **Files Modified**: rhsmConstants.js, en-US.json, test snapshots
+
+### RHEL for SAP x86 Implementation
+- **Commit Hash**: `5267af002885ef30040662dafea3f2ba339ebe72`
+- **Description**: Add RHEL for SAP x86 variant
+- **Files Modified**: rhsmConstants.js, en-US.json, test snapshots
+
 ## File Checklist
 
 - [ ] Add variant constant to `src/services/rhsm/rhsmConstants.js`
