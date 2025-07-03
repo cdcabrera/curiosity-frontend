@@ -237,6 +237,13 @@ Add additional translation entries by comparing git reference commits and review
 - [ ] Run `npm run test:ci -- --updateSnapshot` to update test snapshots
 - [ ] Run `npm run test:lintfix` to format code
 - [ ] Run `npm run test:ci` to verify all tests pass
+- [ ] Agent has asked user "Can you confirm success?"
+- [ ] User has confirmed success or not responded within 15 minutes
+
+**Requirements:**
+- After the user has confirmed success exit the process and reset any information gathered from the interactive process
+- If the user closes the process externally exit the process and reset any information gathered from the interactive process
+- If the user does not respond within 15 minutes exit the process and reset any information gathered from the interactive process
 
 ## Common Pitfalls
 
