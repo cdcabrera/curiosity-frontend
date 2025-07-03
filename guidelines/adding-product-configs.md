@@ -237,6 +237,7 @@ Add additional translation entries by comparing git reference commits and review
 - [ ] Run `npm run test:ci -- --updateSnapshot` to update test snapshots
 - [ ] Run `npm run test:lintfix` to format code
 - [ ] Run `npm run test:ci` to verify all tests pass
+- [ ] Agent concisely lists any of the previous steps that require user completion, or that the agent was unable to complete 
 - [ ] Agent has asked user "Can you confirm success?"
 - [ ] User has confirmed success or not responded within 15 minutes
 
