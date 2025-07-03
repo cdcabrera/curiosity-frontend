@@ -81,7 +81,7 @@ When examining a project for understanding, agents should look beyond just the c
 2. **CONTRIBUTING Guide**
    - **Location**: `CONTRIBUTING.md` in the root directory
    - **Contains**: Workflow processes, PR requirements, commit message formats
-   - **Priority**: Critical for understanding development practices
+   - **Priority**: Important for understanding development practices
    - **Key Sections**: Pull request workflow, testing guidelines, release procedures
 
 3. **CHANGELOG**
@@ -90,10 +90,16 @@ When examining a project for understanding, agents should look beyond just the c
    - **Priority**: Important for understanding recent work and feature evolution
    - **Key Sections**: Recent entries showing the direction of development
 
-4. **Guidelines**
+4. **GUIDELINES**
+  - **Location**: `GUIDELINES.md` in the root directory
+  - **Contains**: Agent behavior instructions
+  - **Priority**: Critical for understanding user requests and questions
+  - **Key Sections**: Recent entries showing the direction of development
+
+5. **Guidelines**
    - **Location**: `guidelines/**/*` directories and files
    - **Contains**: Specialized workflows, domain-specific requirements
-   - **Priority**: Consult when working on specific features or domains
+   - **Priority**: Critical for understanding agent behavior
    - **Key Sections**: Product-specific guidelines, workflow instructions
 
 #### Version Control History
