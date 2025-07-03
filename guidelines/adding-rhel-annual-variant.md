@@ -33,7 +33,7 @@ RHEL annual variants in this application include add-ons like Extended Update Su
 
 You MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
 
-1. **"What is the product ID for the variant?"** - The API identifier for the variant
+1. **"What is the product ID for the ANNUAL variant?"** - The API identifier for the variant
    - Examples: `RHEL for x86`, `rhel-for-x86-eus`, `rhel-aus-addon`
    - Standard variants use format: `RHEL for [Purpose]`
    - Special variants use format: `rhel-for-[purpose]-[type]` or similar kebab-case
