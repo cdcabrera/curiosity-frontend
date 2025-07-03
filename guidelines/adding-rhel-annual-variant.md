@@ -17,8 +17,8 @@ agent_hints:
   question_sequence: true
   wait_for_response: true
   code_examples: true
-  critical_instructions: "ALWAYS ask the sequential questions when creating or adding a RHEL variant"
-  trigger_prefixes: ["/workflow add rhel", "/workflow rhel"]
+  critical_instructions: "ALWAYS ask the sequential questions when creating or adding a RHEL annual variant"
+  trigger_prefixes: ["/workflow add rhel"]
 ---
 
 # Adding RHEL Annual Variants
@@ -31,7 +31,7 @@ RHEL annual variants in this application include add-ons like Extended Update Su
 
 ## Interactive Configuration Process
 
-When asked to **"add a rhel variant"**, **"create a rhel variant"**, or **"create an annual rhel variant"**, you MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
+You MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
 
 1. **"What is the product ID for the variant?"** - The API identifier for the variant
    - Examples: `RHEL for x86`, `rhel-for-x86-eus`, `rhel-aus-addon`
@@ -285,6 +285,7 @@ For complete implementation details and full context, refer to these actual comm
 - Skip adding entries to ALL necessary localization sections
 - Use inconsistent naming conventions
 - Change unrelated parts of the constants file
+- Add a new product config file
 
 ✅ **Do:**
 - Follow alphabetical ordering in all locations

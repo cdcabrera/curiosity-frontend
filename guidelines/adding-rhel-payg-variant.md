@@ -31,7 +31,7 @@ RHEL PAYG variants in this application represent hourly-billed or on-demand cons
 
 ## Interactive Configuration Process
 
-When asked to **"add a rhel payg variant"**, **"create a rhel payg"**, or **"create a rhel on-demand variant"**, you MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
+You MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
 
 1. **"What is the product ID for the PAYG variant?"** - The API identifier for the variant
    - Examples: `rhel-x86-els-payg`, `rhel-for-sap-payg`, `rhel-for-x86-hourly`

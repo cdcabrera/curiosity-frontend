@@ -31,7 +31,7 @@ OpenShift products in this application are configured as hourly billing products
 
 ## Interactive Configuration Process
 
-When asked to **"create openshift on-demand OR hourly"**, **"add an openshift product"**, or **"create an openshift product"**, or **"create an openshift variant"**, you MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
+You MUST ask these questions sequentially (ask one question, wait for answer, then proceed to the next):
 
 1. **"What is the product id?"** - The API identifier for the product (e.g., "rhacs", "rhods", "rosa")
 2. **"What is the product long, or full, name?"** - The complete display name (e.g., "Red Hat Advanced Cluster Security")
