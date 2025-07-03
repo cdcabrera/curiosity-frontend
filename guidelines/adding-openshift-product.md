@@ -1069,17 +1069,17 @@ For complete implementation details and full context, refer to these actual comm
 ### RHACS Implementation
 - **Commit Hash**: `4cdbc99221321daaecff3492ceaa39509ff76505`
 - **Description**: Add Red Hat Advanced Cluster Security product
-- **Files Modified**: rhsmConstants.js, product configuration, localization files
+- **Files Modified**: rhsmConstants.js, product configuration files, en-US.json, test snapshots
 
 ### RHACM Implementation
 - **Commit Hash**: `14db2a98717df177474cad171dc673ac3770219c`
 - **Description**: Add Red Hat Advanced Cluster Management product
-- **Files Modified**: rhsmConstants.js, product configuration, localization files
+- **Files Modified**: rhsmConstants.js, product configuration files, en-US.json, test snapshots
 
 ### RHODS Implementation
 - **Commit Hash**: `2ca0496a88618343c2bc1f17fd955a8544f268b3`
 - **Description**: Add Red Hat OpenShift Data Science product
-- **Files Modified**: rhsmConstants.js, product configuration, localization files
+- **Files Modified**: rhsmConstants.js, product configuration files, en-US.json, test snapshots
 
 ## Advanced Configuration
 
