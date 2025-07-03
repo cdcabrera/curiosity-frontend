@@ -142,6 +142,10 @@ For complete implementation details and full context, refer to these actual comm
 - Create a new product config file for this implementation
 - Forget to add all localizations
 
+**Requirements:**
+- After the user has confirmed success exit the process and reset any information gathered from the interactive process
+- If the user closes the process externally exit the process and reset any information gathered from the interactive process
+
 ## Implementation for OpenShift PAYG
 
 **Important:**
@@ -179,6 +183,10 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Agent has asked user "Can you confirm success?"
 - [ ] User has confirmed success or not responded within 15 minutes
 
+**Requirements:**
+- After the user has confirmed success exit the process and reset any information gathered from the interactive process
+- If the user closes the process externally exit the process and reset any information gathered from the interactive process
+
 ## Implementation for RHEL PAYG
 
 **Important:**
@@ -214,7 +222,6 @@ For complete implementation details and full context, refer to these actual comm
 **Requirements:**
 - After the user has confirmed success exit the process and reset any information gathered from the interactive process
 - If the user closes the process externally exit the process and reset any information gathered from the interactive process
-- If the user does not respond within 15 minutes exit the process and reset any information gathered from the interactive process
 
 ## Localization Entries
 
