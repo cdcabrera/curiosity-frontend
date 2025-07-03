@@ -131,6 +131,9 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Run `npm run test:lintfix` to format code
 - [ ] Run `npm run test:ci` to verify all tests pass
 
+❌ **Don't:**
+- Create a new product config file for this implementation 
+
 ## Implementation for OpenShift PAYG
 
 ### Git Reference Commits

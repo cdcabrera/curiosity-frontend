@@ -8,6 +8,14 @@ This document provides core guidelines for agent behavior and request handling. 
 
 ### Summary
 
+As an agent working with this codebase, you should:
+
+1. **Follow sequential workflows** when modifying products and configurations
+2. **Ask clarifying questions** when information is incomplete
+3. **Validate input** before implementing any changes
+4. **Reference existing patterns** when creating new components
+5. **Maintain code quality** through consistent formatting and comprehensive testing
+
 For more detailed, specialized guidelines covering specific workflows, procedures, and domain-specific instructions, refer to the guidelines located under: `./guidelines/**/*`.
 
 These additional guidelines provide refined instructions for:
