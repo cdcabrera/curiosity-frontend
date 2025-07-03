@@ -66,10 +66,10 @@ When these prefix words are detected at the beginning of a request, the agent wi
 
 #### Workflow Trigger Implementation
 
-When a user begins a request with a workflow trigger prefix (e.g., `/workflow add rhel payg`), follow these implementation steps:
+When a user begins a request with a workflow trigger prefix (e.g., `/workflow payg`), follow these implementation steps:
 
 1. **Match Guideline Document**:
-   - Parse the workflow command to identify the workflow type (`add`) and subject (`rhel payg`)
+   - Parse the workflow command to identify the workflow type (`payg`)
    - Search the `guidelines/` directory for matching documents
    - Check each guideline's frontmatter for `trigger_prefixes` that match the command
    - Select the most specific matching guideline document
@@ -94,9 +94,9 @@ When a user begins a request with a workflow trigger prefix (e.g., `/workflow ad
    - Complete the workflow by following the listed steps
 
 Example match patterns:
-- `/workflow add rhel` → `guidelines/adding-rhel-annual-variant.md`
-- `/workflow openshift` → `guidelines/adding-openshift-product.md`
-- `/workflow rhel payg` → `guidelines/adding-rhel-payg-variant.md`
+- `/workflow payg` → `guidelines/adding-product-configs.md`
+- `/workflow on-demand` → `guidelines/adding-product-configs.md`
+- `/workflow annual` → `guidelines/adding-product-configs.md`
 
 ### Project Knowledge Discovery
 
@@ -136,7 +136,7 @@ When examining a project for understanding, agents should look beyond just the c
    - **Metadata**: Each guideline includes YAML frontmatter with:
      - `guideline_version`: Version of the guideline
      - `agent_hints`: Processing instructions (question_sequence, validation_required)
-     - `trigger_prefixes`: Commands that activate this guideline (e.g., `/workflow add rhel`)
+     - `trigger_prefixes`: Commands that activate this guideline (e.g., `/workflow payg`)
      - `related_guidelines`: Links to related workflow documents
 
 #### Version Control History
@@ -189,7 +189,7 @@ When working with guideline documents, understand their common structure:
      processing_order: "sequential"
      validation_required: true
      question_sequence: true
-     trigger_prefixes: ["/workflow add rhel", "/workflow rhel"]
+     trigger_prefixes: ["/workflow payg", "/workflow on-demand"," "/workflow annual"]
    ---
    ```
 
