@@ -693,6 +693,12 @@ You can then leverage the agent, through chat, to help you do common tasks like 
 
 - **`/workflow product`** - Typing this in agent chat should trigger adding a product configuration through a question/answer sequence.
 
+##### Customizing developer experience
+
+As developers, we often have our own flavor of working, and now that includes with AI agents. To that point we've added agent guidance
+to allow customization through a gitignored `GUIDELINES.local.md` file. If you, as a developer, come across refinements that can be added
+to the guidelines, you're encouraged to contribute.
+
 #### Agent Section
 
 As an agent working with this codebase, this repository contains a hierarchical guidelines system:
