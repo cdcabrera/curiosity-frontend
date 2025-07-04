@@ -676,3 +676,20 @@ To update snapshots from the terminal run
   $ npm run test:integration-dev
   ```
 </details>
+
+<details>
+<summary><h3 style="display: inline-block">AI Agent Guidelines</h3></summary>
+
+This repository contains a `GUIDELINES.md` file that is specifically designed for AI coding assistants and agents. This file provides comprehensive guidance on:
+
+- Repository structure and organization
+- Code style and formatting standards
+- Component architecture patterns
+- Testing expectations and requirements
+- Common workflows and processes
+
+If you're using an AI assistant to help with development in this repository, please direct it to review the `GUIDELINES.md` file first to ensure it follows the project's conventions and best practices.
+
+> Note: Human contributors should continue to follow the guidelines in this CONTRIBUTING.md file. The GUIDELINES.md file is optimized for AI consumption and contains more detailed technical specifications.
+
+</details>
