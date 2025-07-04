@@ -75,6 +75,7 @@ Agent MUST ask these questions sequentially (ask one question, wait for answer, 
 - DO NOT assume any values; always ask for explicit confirmation
 - Each question MUST be asked separately, waiting for a response before proceeding
 - Do NOT skip any questions unless explicitly indicated in the steps or requested by the user
+- Do NOT make up any questions unless explicitly indicated in the steps or requested by the user
 - Exit the process if the user requests to stop or exit, then reset any information gathered from the interactive process
 
 ## Implementation for OpenShift Annual
@@ -143,6 +144,7 @@ For complete implementation details and full context, refer to these actual comm
 - Forget to add all localizations
 
 **Requirements:**
+- Follow the file checklist
 - After the user has confirmed success exit the process and reset any information gathered from the interactive process
 
 ## Implementation for OpenShift PAYG
@@ -186,6 +188,7 @@ For complete implementation details and full context, refer to these actual comm
 - Forget to add all localizations
 
 **Requirements:**
+- Follow the file checklist
 - After the user has confirmed success exit the process and reset any information gathered from the interactive process
 
 ## Implementation for RHEL PAYG
@@ -224,6 +227,7 @@ For complete implementation details and full context, refer to these actual comm
 - Forget to add all localizations
 
 **Requirements:**
+- Follow the file checklist
 - After the user has confirmed success exit the process and reset any information gathered from the interactive process
 
 ## Localization Entries
@@ -270,6 +274,8 @@ Add additional translation entries by comparing git reference commits and review
 - Use inconsistent naming conventions (stick to existing patterns)
 - Skip the alphabetical ordering in constants
 - Change unrelated parts of the constants file
+- Skip, or ignore, steps
+- Skip git references
 
 ✅ **Do:**
 - Follow alphabetical ordering in all locations

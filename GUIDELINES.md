@@ -86,6 +86,7 @@ When a user begins a request with a workflow trigger prefix (e.g., `/workflow pr
    - If the guideline has `question_sequence: true` in its `agent_hints`, follow the numbered question sequence
    - Ask only one question at a time, waiting for a user response before proceeding
    - Do not skip questions unless explicitly instructed in the guideline
+   - Do not make up new questions unless explicitly instructed in the guideline
    - Validate each answer against any validation criteria in the guideline
 
 3. **Provide Implementation Guidance**:
@@ -106,6 +107,7 @@ Example match patterns:
 
 **Important:**
 - The agent will only look for workflows in the `guidelines/` directory
+- The agent will follow the steps listed in guidelines files
 
 ### Project Knowledge Discovery
 
@@ -123,7 +125,7 @@ When examining a project for understanding, agents should look beyond just the c
    - **Location**: `CONTRIBUTING.md` in the root directory
    - **Contains**: Workflow processes, PR requirements, commit message formats
    - **Priority**: Important for understanding development practices
-   - **Key Sections**: Pull request workflow, testing guidelines, release procedures
+   - **Key Sections**: Pull request workflow, testing guidelines, release procedures, AI agent guidance
 
 3. **CHANGELOG**
    - **Location**: `CHANGELOG.md` in the root directory
