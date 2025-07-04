@@ -104,7 +104,7 @@ When a user begins a request with a workflow trigger prefix (e.g., `/workflow pr
 Example match patterns:
 - `/workflow product` → `guidelines/adding-product-configs.md`
 
-**Critical:**
+**Important:**
 - The agent will only look for workflows in the `guidelines/` directory
 
 ### Project Knowledge Discovery

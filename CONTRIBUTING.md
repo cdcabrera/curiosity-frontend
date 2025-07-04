@@ -677,19 +677,27 @@ To update snapshots from the terminal run
   ```
 </details>
 
+## AI Agent
 <details>
-<summary><h3 style="display: inline-block">AI Agent Guidelines</h3></summary>
-
-This repository contains a `GUIDELINES.md` file that is specifically designed for AI coding assistants and agents. This file provides comprehensive guidance on:
-
-- Repository structure and organization
-- Code style and formatting standards
-- Component architecture patterns
-- Testing expectations and requirements
-- Common workflows and processes
+<summary><h3 style="display: inline-block">Guidelines</h3></summary>
 
 If you're using an AI assistant to help with development in this repository, please direct it to review the `GUIDELINES.md` file first to ensure it follows the project's conventions and best practices.
 
-> Note: Human contributors should continue to follow the guidelines in this CONTRIBUTING.md file. The GUIDELINES.md file is optimized for AI consumption and contains more detailed technical specifications.
+#### User Section
+
+Current agent interaction can be triggered with the chat command
+
+- **`review the repo guidelines`** - Your agent should attempt to scan common files like `README.md` and `CONTRIBUTING.md`
+
+You can then leverage the agent, through chat, to help you do common tasks like add a product configuration:
+
+- **`/workflow product`** - Typing this in agent chat should trigger adding a product configuration through a question/answer sequence.
+
+#### Agent Section
+
+As an agent working with this codebase this repository contains guidelines for AI coding assistants and agents found at:
+
+- **`GUIDELINES.md`** - The base agent guidance
+- **`./guidelines/**/*.md`** - Additional agent guidance
 
 </details>
