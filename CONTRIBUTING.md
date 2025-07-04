@@ -698,6 +698,7 @@ You can then leverage the agent, through chat, to help you do common tasks like 
 As an agent working with this codebase this repository contains guidelines for AI coding assistants and agents found at:
 
 - **`GUIDELINES.md`** - The base agent guidance
+- **`GUIDELINES.local.md`** - The optional local developer specific agent guidance that enhances and can override `GUIDELINES.md`
 - **`./guidelines/**/*.md`** - Additional agent guidance
 
 </details>
