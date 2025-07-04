@@ -58,9 +58,29 @@ This section outlines how agents should handle requests and questions based on s
    - Set reminders for pending items
    - Schedule follow-ups for unresolved issues
 
+#### Code Example Handling
+
+When working with code examples in guidelines:
+1. **Reference Commit Integration** - Use git commit references to understand implementation details
+2. **Pattern Recognition** - Identify similar patterns across implementations
+3. **Adaptation** - Adapt examples to match the specific requirements provided
+4. **Validation** - Ensure examples are updated to work with current codebase versions
+
+#### Error Handling and Edge Cases
+
+When following guideline workflows:
+1. **Validation Failures** - If user input fails validation, explain the specific requirements and ask again
+2. **Conflicting Requirements** - If requirements conflict with existing patterns, highlight the conflict and seek clarification
+3. **Missing Information** - If critical information is unavailable, explain what's missing and why it's needed
+4. **Process Interruptions** - If a workflow is interrupted, document progress and provide resumption guidance
+
 #### Local Processing Context
 
-Agent request and question handling response times happen according to the constraints of the related guideline.
+Agent request and question handling should:
+1. **Respect Timing Constraints** - Follow timing guidelines specified in specialized workflows
+2. **Prioritize Critical Requirements** - Items marked with "critical_instructions" should be given highest priority
+3. **Maintain Context Across Interactions** - Preserve information gathered during sequential questions
+4. **Apply Local Overrides** - Check GUIDELINES.local.md for developer-specific preferences that override defaults
 
 #### Trigger Words, Statements or Phrases, and Questions
 

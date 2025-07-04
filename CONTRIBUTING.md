@@ -695,10 +695,11 @@ You can then leverage the agent, through chat, to help you do common tasks like 
 
 #### Agent Section
 
-As an agent working with this codebase this repository contains guidelines for AI coding assistants and agents found at:
+As an agent working with this codebase, this repository contains a hierarchical guidelines system:
+- **`GUIDELINES.md`** - Core agent guidance and behavior standards
+- **`GUIDELINES.local.md`** - Developer-specific overrides and enhancements (optional and gitignored)
+- **`./guidelines/**/*.md`** - Specialized workflow and domain-specific instructions
 
-- **`GUIDELINES.md`** - The base agent guidance
-- **`GUIDELINES.local.md`** - The optional local developer specific agent guidance that enhances and can override `GUIDELINES.md`
-- **`./guidelines/**/*.md`** - Additional agent guidance
+The guidelines system should be processed in this order, with specialized guidelines taking precedence for their specific domains, and local guidelines overriding general guidelines when present.
 
 </details>
