@@ -11,14 +11,14 @@ compatibility:
 agent_hints:
   processing_order: "sequential"
   validation_required: true
-  key_concepts: ["payg", "pay-as-you-go", "hourly", "on-demand", "annual", "product-config"]
+  key_concepts: ["payg", "pay-as-you-go", "hourly", "on-demand", "annual", "product", "product-config"]
   related_guidelines: []
   importance: "high"
   question_sequence: true
   wait_for_response: true
   code_examples: true
   critical_instructions: "ALWAYS ask the sequential questions when creating or adding a PRODUCT"
-  trigger_prefixes: ["/workflow payg", "/workflow on-demand"," "/workflow annual"]
+  trigger_prefixes: ["/workflow product"]
 ---
 
 # Adding PAYG, On-demand, and Annual Variants

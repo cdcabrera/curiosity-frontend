@@ -74,10 +74,10 @@ When these prefix words are detected at the beginning of a request, the agent wi
 
 #### Workflow Trigger Implementation
 
-When a user begins a request with a workflow trigger prefix (e.g., `/workflow payg`), follow these implementation steps:
+When a user begins a request with a workflow trigger prefix (e.g., `/workflow product`), follow these implementation steps:
 
 1. **Match Guideline Document**:
-   - Parse the workflow command to identify the workflow type (`payg`)
+   - Parse the workflow command to identify the workflow type (`product`)
    - Search the `guidelines/` directory for matching documents
    - Check each guideline's frontmatter for `trigger_prefixes` that match the command
    - Select the most specific matching guideline document
@@ -102,9 +102,7 @@ When a user begins a request with a workflow trigger prefix (e.g., `/workflow pa
    - Complete the workflow by following the listed steps
 
 Example match patterns:
-- `/workflow payg` → `guidelines/adding-product-configs.md`
-- `/workflow on-demand` → `guidelines/adding-product-configs.md`
-- `/workflow annual` → `guidelines/adding-product-configs.md`
+- `/workflow product` → `guidelines/adding-product-configs.md`
 
 **Critical:**
 - The agent will only look for workflows in the `guidelines/` directory
