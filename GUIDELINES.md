@@ -106,6 +106,9 @@ Example match patterns:
 - `/workflow on-demand` → `guidelines/adding-product-configs.md`
 - `/workflow annual` → `guidelines/adding-product-configs.md`
 
+**Critical:**
+- The agent will only look for workflows in the `guidelines/` directory
+
 ### Project Knowledge Discovery
 
 When examining a project for understanding, agents should look beyond just the code. Below are essential sources of information that provide context, history, and guidance:

@@ -136,7 +136,7 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Run `npm run test:ci` to verify all tests pass
 - [ ] Agent concisely lists any of the previous steps that require user completion, or that the agent was unable to complete
 - [ ] Agent has asked user "Can you confirm success?"
-- [ ] User has confirmed success or not responded within 15 minutes
+- [ ] User has confirmed success
 
 ❌ **Don't:**
 - Create a new product config file for this implementation
@@ -144,7 +144,6 @@ For complete implementation details and full context, refer to these actual comm
 
 **Requirements:**
 - After the user has confirmed success exit the process and reset any information gathered from the interactive process
-- If the user closes the process externally exit the process and reset any information gathered from the interactive process
 
 ## Implementation for OpenShift PAYG
 
@@ -181,11 +180,13 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Run `npm run test:ci` - Verify all tests pass
 - [ ] Agent concisely lists any of the previous steps that require user completion, or that the agent was unable to complete
 - [ ] Agent has asked user "Can you confirm success?"
-- [ ] User has confirmed success or not responded within 15 minutes
+- [ ] User has confirmed success
+
+❌ **Don't:**
+- Forget to add all localizations
 
 **Requirements:**
 - After the user has confirmed success exit the process and reset any information gathered from the interactive process
-- If the user closes the process externally exit the process and reset any information gathered from the interactive process
 
 ## Implementation for RHEL PAYG
 
@@ -217,11 +218,13 @@ For complete implementation details and full context, refer to these actual comm
 - [ ] Run `npm run test:ci` to verify all tests pass
 - [ ] Agent concisely lists any of the previous steps that require user completion, or that the agent was unable to complete 
 - [ ] Agent has asked user "Can you confirm success?"
-- [ ] User has confirmed success or not responded within 15 minutes
+- [ ] User has confirmed success
+
+❌ **Don't:**
+- Forget to add all localizations
 
 **Requirements:**
 - After the user has confirmed success exit the process and reset any information gathered from the interactive process
-- If the user closes the process externally exit the process and reset any information gathered from the interactive process
 
 ## Localization Entries
 
