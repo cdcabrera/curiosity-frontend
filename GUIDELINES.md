@@ -244,3 +244,23 @@ When working with guideline documents, understand their common structure:
    - Common pitfalls to avoid
 
 When processing a workflow request, analyze the guideline document structure to understand the complete process before beginning the interactive sequence.
+
+### Local Guidelines Detection
+
+As an agent working with this repository, you should be aware that developers may have personalized guidelines:
+
+1. **Check for GUIDELINES.local.md**
+   - This file may or may not exist in the repository root
+   - It contains developer-specific preferences and overrides
+   - It is git-ignored and thus not visible in the repository
+   - If present, the preferences in this file take precedence over standard guidelines
+
+2. **Processing Order**
+   - First process the main GUIDELINES.md (this document)
+   - Then check for and process GUIDELINES.local.md if it exists
+   - Finally, process any relevant specialized guidelines from the guidelines/ directory
+
+3. **Respecting Developer Preferences**
+   - Local guidelines may modify workflow sequences, validation rules, or other behaviors
+   - Always adapt your responses to align with local guideline specifications
+   - If local guidelines conflict with repository standards, follow the local preference
