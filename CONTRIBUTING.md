@@ -65,7 +65,7 @@ Commit messages follow three basic guidelines
   ```
   [message] (#1234)
   ```
-  
+
   You can also include the pull request number on a single commit, but
   GitHub will automatically apply the pull request number when the
   `squash` button is used on a pull request.
@@ -156,7 +156,7 @@ To merge code into production stable a maintainer must run the release commit pr
    1. `$ npm install`
    1. `$ npm run release --dry-run` to confirm the release output version and commits.
    1. `$ npm run release` to generate file changes, and then commit them.
-      
+
       >If the version recommended should be different you can run the command with an override version following a semver format
       >  ```
       >  $ npm run release --override X.X.X
@@ -170,7 +170,7 @@ To merge code into production stable a maintainer must run the release commit pr
 1. Using the [Curiosity GitHub releases interface](https://github.com/RedHatInsights/curiosity-frontend/releases)
    1. Draft a new release from `stable` confirming you are aligned with the `chore(release): X.X.X` commit hash
    1. Create the new tag using the **SAME** semver version created by the release commit but add a `v` prefix to it, i.e. `vX.X.X`, for consistency.
-   
+
    > To avoid issues with inconsistent Git tagging use it is recommended you use the GitHub releases interface.
 1. Finally, submit a merge request to update the `app-interface` deployment yaml
    - Copy the tagged Git hash and update the `app-interface` configuration hash within `[app-interface-insights-rhsm]/deploy-clowder.yml`
@@ -345,7 +345,7 @@ affects various aspects of both `local` and `proxy` development.
     REACT_APP_DEBUG_PERMISSION_APP_ONE=subscriptions:*:*
     REACT_APP_DEBUG_PERMISSION_APP_TWO=inventory:*:*
     ```
-   
+
 #### Advanced dotenv files
 The dotenv files are structured to cascade each additional dotenv file settings from a root `.env` file.
 ```
@@ -662,14 +662,14 @@ If you're having trouble getting an accurate code coverage report, or it's faili
   ```
   $ npm run test:clearCache
   ```
-  
+
 #### Integration-like testing
 To run tests associated with checking build output run
    ```
    $ npm run build
    $ npm run test:integration
    ```
-   
+
 ##### Updating integration-like test snapshots
 To update snapshots from the terminal run 
   ```
@@ -707,5 +707,14 @@ As an agent working with this codebase, this repository contains a hierarchical 
 - **`./guidelines/**/*.md`** - Specialized workflow and domain-specific instructions
 
 The guidelines system should be processed in this order, with specialized guidelines taking precedence for their specific domains, and local guidelines overriding general guidelines when present.
+
+##### Finding Local Guidelines
+
+To discover if local guidelines are available, agents should use the standard directory listing command:
+```
+$ ls
+```
+
+Look for `GUIDELINES.local.md` in the repository root. This file contains developer-specific customizations and local environment overrides that supplement the core guidelines.
 
 </details>
