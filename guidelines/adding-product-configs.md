@@ -286,3 +286,111 @@ Add additional translation entries by comparing git reference commits and review
 - Export productGroup and productId from your configuration file
 - Verify all tests pass before committing
 
+## Common Mistakes and Lessons Learned
+
+Based on recent implementations, here are specific mistakes to avoid and correct patterns to follow:
+
+### File Naming Patterns
+
+❌ **Don't:**
+- Use unnecessary words in filenames (e.g., `product.openshiftForLoremIpsum.js`)
+- Use inconsistent casing (e.g., mixing camelCase and kebab-case)
+
+✅ **Do:**
+- Follow camelCase for product config files: `product.openshiftLoremIpsum.js`
+- Remove unnecessary words like "for" from filenames
+- Match the pattern of existing sibling files in the config directory
+
+### Capacity Configuration
+
+❌ **Don't:**
+- Add non-existent `capacity: [RHSM_API_PATH_METRIC_TYPES.VCPUS]` property
+- Assume capacity configuration without checking existing patterns
+- Apply threshold configuration to all metrics in capacity products
+
+✅ **Do:**
+- Use `productDisplay: DISPLAY_TYPES.CAPACITY` for capacity-based products
+- Only apply `chartType: ChartTypeVariant.threshold` to the primary capacity metric
+- Reference ROSA (`product.rosa.js`) for OpenShift capacity patterns
+- Keep secondary metrics (like `INSTANCE_HOURS`) as regular usage metrics without threshold
+
+### Graph Filters Structure
+
+❌ **Don't:**
+- Use simple metric arrays for capacity products
+- Apply threshold to all metrics indiscriminately
+
+✅ **Do:**
+- Use `filters` array structure for capacity products:
+```javascript
+initialGraphFilters: [
+  {
+    filters: [
+      {
+        metric: RHSM_API_PATH_METRIC_TYPES.VCPUS,
+        fill: chartColorBlueLight.value,
+        stroke: chartColorBlueDark.value,
+        color: chartColorBlueDark.value
+      },
+      {
+        metric: RHSM_API_PATH_METRIC_TYPES.VCPUS,
+        chartType: ChartTypeVariant.threshold
+      }
+    ]
+  },
+  {
+    filters: [
+      {
+        metric: RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS,
+        fill: chartColorBlueLight.value,
+        stroke: chartColorBlueDark.value,
+        color: chartColorBlueDark.value
+      }
+    ]
+  }
+]
+```
+
+### Reference Patterns
+
+**For OpenShift PAYG with Capacity:**
+- **Primary Reference**: `product.rosa.js` (Red Hat OpenShift Service on AWS)
+- **Secondary Reference**: `product.rhacs.js` (Red Hat Advanced Cluster Security)
+
+**For OpenShift PAYG without Capacity:**
+- **Primary Reference**: `product.rhacs.js` (Red Hat Advanced Cluster Security)
+
+**For RHEL Annual:**
+- **Primary Reference**: `product.rhel.js` (Red Hat Enterprise Linux)
+
+### Validation Steps
+
+Before confirming success, verify:
+1. **File naming**: Matches camelCase pattern without unnecessary words
+2. **Capacity configuration**: Only primary metric has threshold, secondary metrics are regular
+3. **Graph filters**: Use `filters` array structure for capacity products
+4. **Localization**: Product-specific entries follow `openshift-for-lorem-ipsum` pattern
+5. **Tests**: All tests pass without linting errors
+6. **Snapshots**: Updated and consistent
+
+### Quick Reference Commands
+
+```bash
+# Check file naming pattern
+ls src/config/product.*.js
+
+# Verify capacity configuration
+grep -r "capacity.*\[" src/config/
+
+# Check graph filters structure
+grep -A 20 "initialGraphFilters" src/config/product.yourVariant.js
+
+# Validate localization entries
+grep -r "your-variant-id" public/locales/en-US.json
+
+# Run validation
+npm run test:ci -- --testPathPattern=src/config/product.yourVariant.js
+npm run test:lintfix
+npm run test:ci
+```
+

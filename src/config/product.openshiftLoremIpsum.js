@@ -110,10 +110,6 @@ const config = {
           fill: chartColorBlueLight.value,
           stroke: chartColorBlueDark.value,
           color: chartColorBlueDark.value
-        },
-        {
-          metric: RHSM_API_PATH_METRIC_TYPES.INSTANCE_HOURS,
-          chartType: ChartTypeVariant.threshold
         }
       ]
     }
