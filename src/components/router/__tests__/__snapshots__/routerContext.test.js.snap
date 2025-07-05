@@ -180,7 +180,7 @@ exports[`RouterContext should apply a hook for useNavigate: navigation push 1`] 
   [
     {},
     "",
-    "/subscriptions/rhel?lorem=ipsum",
+    "/subscriptions/openshift?lorem=ipsum",
     undefined,
   ],
   [

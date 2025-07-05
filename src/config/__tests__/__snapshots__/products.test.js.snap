@@ -389,6 +389,7 @@ exports[`Product configurations should return specific methods and properties: p
     "ansible-aap-managed",
     "OpenShift Container Platform",
     "OpenShift-dedicated-metrics",
+    "openshift-for-lorem-ipsum",
     "OpenShift-metrics",
     "rhacm",
     "rhacs",
