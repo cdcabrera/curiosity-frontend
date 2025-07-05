@@ -175,7 +175,7 @@ For complete implementation details and full context, refer to these actual comm
 
 - [ ] Add product constant to `src/services/rhsm/rhsmConstants.js`
 - [ ] Update JSDoc type annotations (4 locations in rhsmConstants.js)
-- [ ] Create product configuration file `src/config/product.yourProduct.js`
+- [ ] Create product configuration file `src/config/product.yourVariantName.js`
 - [ ] Add localization entries to `public/locales/en-US.json`
 - [ ] Run `npm run test:ci -- --updateSnapshot` - Update Jest snapshots
 - [ ] Run `npm run test:lintfix` - Format code
@@ -186,6 +186,7 @@ For complete implementation details and full context, refer to these actual comm
 
 ❌ **Don't:**
 - Forget to add all localizations
+- Add a partial product configuration
 
 **Requirements:**
 - Follow the file checklist
@@ -225,6 +226,7 @@ For complete implementation details and full context, refer to these actual comm
 
 ❌ **Don't:**
 - Forget to add all localizations
+- Add a partial product configuration
 
 **Requirements:**
 - Follow the file checklist
