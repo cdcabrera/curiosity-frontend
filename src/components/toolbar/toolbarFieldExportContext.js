@@ -34,10 +34,10 @@ const useExportConfirmation = ({
   const { productId } = useAliasProduct();
   const dispatch = useAliasDispatch();
   const confirmAppLoaded = useAliasAppLoad();
-  const { addNotification, removeNotification } = useAliasNotifications();
+  const { addNotification } = useAliasNotifications();
 
   useUnmount(() => {
-    removeNotification('swatch-exports-individual-status');
+    // removeNotification('swatch-exports-individual-status');
   });
 
   return useCallback(
@@ -240,7 +240,7 @@ const useExistingExports = ({
   useNotifications: useAliasNotifications = NotificationsContext.useNotifications
 } = {}) => {
   const dispatch = useAliasDispatch();
-  const { addNotification, removeNotification } = useAliasNotifications();
+  const { addNotification, removeNotification, hasNotification } = useAliasNotifications();
   const onConfirmation = useAliasExistingExportsConfirmation();
   const { data, fulfilled } = useAliasSelectorsResponse(({ app }) => app?.exportsExisting);
   const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
@@ -249,7 +249,6 @@ const useExistingExports = ({
     dispatch(getAliasExistingExportsStatus());
 
     return () => {
-      removeNotification('swatch-exports-status');
       dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
     };
   });
@@ -257,8 +256,10 @@ const useExistingExports = ({
   useEffect(() => {
     const isAnythingAvailable = isAnythingPending || isAnythingCompleted || false;
     const totalResults = completed.length + pending.length;
+    const isExistingNotification = hasNotification('swatch-exports-individual-status') !== undefined;
+    const isExistingSelfNotification = hasNotification('swatch-exports-status') !== undefined;
 
-    if (isAnythingAvailable && totalResults) {
+    if (isAnythingAvailable && totalResults && !isExistingNotification && !isExistingSelfNotification) {
       addNotification({
         swatchId: 'swatch-exports-status',
         title: t('curiosity-toolbar.notifications', {
@@ -310,6 +311,7 @@ const useExistingExports = ({
     completed,
     dispatch,
     fulfilled,
+    hasNotification,
     isAnythingCompleted,
     isAnythingPending,
     onConfirmation,
