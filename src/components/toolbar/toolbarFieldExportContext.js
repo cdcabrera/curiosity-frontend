@@ -241,7 +241,7 @@ const useExistingExports = ({
   const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
 
   useEffectOnce(() => {
-    dispatch(getAliasExistingExportsStatus());
+    dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }, getAliasExistingExportsStatus()]);
 
     return () => {
       dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
