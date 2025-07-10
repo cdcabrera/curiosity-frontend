@@ -72,7 +72,7 @@ const useExportConfirmation = ({
           }),
           description: t('curiosity-toolbar.notifications', {
             context: ['export', 'completed', 'description'],
-            count: completed.length,
+            // count: completed.length,
             fileName: completed?.[0]?.fileName
           })
         });
