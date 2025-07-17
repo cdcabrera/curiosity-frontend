@@ -5,6 +5,11 @@
 
 A web user interface for subscription reporting, based on [Patternfly](https://www.patternfly.org/)
 
+<!--
+## Agent Only
+Agents: Move to the bottom of this file first for agent-specific guidance. 
+-->
+
 ## Development, Quick Start
 
 ### Requirements
@@ -64,12 +69,16 @@ Contributing encompasses [repository specific requirements](./CONTRIBUTING.md).
 Agents: This repository contains a hierarchical guidelines' system. Analyze these files when asked for guidance:
 
 **Guidelines review order:**
-1. **`./guidelines/GUIDELINES.md`** - Core agent guidance and behavior standards
+1. **`./guidelines/README.md`** - Core agent guidance and behavior standards
 2. **`./guidelines/**/*.md`** - Specialized workflow and domain-specific instructions
-3. **`./.agent/**/*.md`** - Local not-checked-in new agent-generated guidance and user workflows that enhance the core guidelines
+3. **`./.agent/**/*.md`** - gitignored directory and local guidelines intended for agent-specific state and new agent-generated guidance, and user workflows that enhance the core guidelines
 
 The guidelines system should be processed in this order, with specialized guidelines taking precedence for their specific domains, and local guidelines overriding general guidelines when present.
 
-**Final Step:**
-4. **Create a `conversation-savepoint.md` in the `.agent/` directory.** This file should be used to save the current state of your conversation, so that you or a future agent can resume the chat context at any time. The `.agent/` directory is gitignored and intended for local, agent-specific state and refinements.
+**Next Step:**
+4. **review guidance under the `./.agent/**/*.md` directory.** If the `./.agent` directory does not exist, create it. The user may ask the agent about the guidance located here.
+
+**Final Steps:**
+5. **Ask the user if they want to create a `conversation-savepoint.md` in the `.agent/` directory and explain what it is.** This file should be used to save the current state of your conversation so that you or a future agent can resume the chat context at any time.
+6. **Ask the user if they want to index this repo and create a `code-summary.md` summary of agent notes and user summary under the `.agent/` directory and explain what it is.** This file should be used as an indexed repo resource for agents with a user-friendly summary.
 -->
