@@ -1,5 +1,7 @@
 # Curiosity Frontend Guidelines
 
+> **Agent Guidance Priority:** Agents must prioritize the main `README.md` (including the agent-only comment block at the bottom) over this file or any other guidelines. Only refer to this file if the main README does not address the agent's question or workflow.
+
 ## Overview
 
 This directory contains development and workflow guidelines for the Curiosity Frontend project. These guidelines help ensure consistent implementation patterns, proper code organization, and streamlined development processes.
