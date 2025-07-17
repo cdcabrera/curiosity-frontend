@@ -10,6 +10,13 @@
  * @returns {Function}
  */
 const multiActionMiddleware = store => next => action =>
-  (Array.isArray(action) && action.map(a => store.dispatch(a))) || next(action);
+  (Array.isArray(action) &&
+    action.map(a => {
+      if (a?.type) {
+        return store.dispatch(a);
+      }
+      return store.dispatch({ type: 'SKIP_ACTION' });
+    })) ||
+  next(action);
 
 export { multiActionMiddleware as default, multiActionMiddleware };

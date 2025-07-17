@@ -90,6 +90,13 @@ const useNotifications = ({ context = NotificationsContext } = {}) => {
       }
 
       return baseAddNotification({ ...remainingNotification, swatchid: updatedSwatchId });
+      /*
+      return {
+        type: 'ADD_NOTIFICATION',
+        ...(updatedSwatchId && { swatchid: updatedSwatchId }),
+        ...(remainingNotification.id && { id: remainingNotification.id })
+      };
+      */
     },
     [baseAddNotification, baseRemoveNotification, getNotification]
   );
@@ -113,6 +120,13 @@ const useNotifications = ({ context = NotificationsContext } = {}) => {
           `Notification with id "${id}" not found. Make sure the notification was created with the "swatchId" prop, or you used the generated id provided by notifications.`
         );
       }
+      /*
+      return {
+        type: 'REMOVE_NOTIFICATION',
+        id,
+        isNotification: notification !== undefined
+      };
+       */
     },
     [getNotification, baseRemoveNotification]
   );
