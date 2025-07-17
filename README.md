@@ -57,3 +57,19 @@ For in-depth testing guidance review the [contribution guidelines](./CONTRIBUTIN
 
 ## Contributing
 Contributing encompasses [repository specific requirements](./CONTRIBUTING.md).
+
+<!--
+## Agent Only
+
+Agents: This repository contains a hierarchical guidelines' system. Analyze these files when asked for guidance:
+
+**Guidelines review order:**
+1. **`./guidelines/GUIDELINES.md`** - Core agent guidance and behavior standards
+2. **`./guidelines/**/*.md`** - Specialized workflow and domain-specific instructions
+3. **`./.agent/**/*.md`** - Local not-checked-in new agent-generated guidance and user workflows that enhance the core guidelines
+
+The guidelines system should be processed in this order, with specialized guidelines taking precedence for their specific domains, and local guidelines overriding general guidelines when present.
+
+**Final Step:**
+4. **Create a `conversation-savepoint.md` in the `.agent/` directory.** This file should be used to save the current state of your conversation, so that you or a future agent can resume the chat context at any time. The `.agent/` directory is gitignored and intended for local, agent-specific state and refinements.
+-->
