@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useEffectOnce } from 'react-use';
 import { Button } from '@patternfly/react-core';
 import { reduxActions, reduxTypes, storeHooks } from '../../redux';
@@ -234,6 +234,7 @@ const useExistingExports = ({
   useNotifications: useAliasNotifications = NotificationsContext.useNotifications,
   useSelectorsResponse: useAliasSelectorsResponse = storeHooks.reactRedux.useSelectorsResponse
 } = {}) => {
+  const [hasLoaded, setHasLoaded] = useState(false):
   const dispatch = useAliasDispatch();
   const { addNotification, removeNotification, hasNotification } = useAliasNotifications();
   const onConfirmation = useAliasExistingExportsConfirmation();
@@ -241,7 +242,9 @@ const useExistingExports = ({
   const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
 
   useEffectOnce(() => {
-    dispatch(getAliasExistingExportsStatus());
+    if (!hasLoaded) {
+      dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }, getAliasExistingExportsStatus()]);
+    }
 
     return () => {
       dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
@@ -255,7 +258,8 @@ const useExistingExports = ({
     const isExistingNotifications =
       hasNotification('swatch-exports-individual-status') || hasNotification('swatch-exports-status');
 
-    if (isAnythingAvailable && totalResults && !isExistingNotifications) {
+    if (!hasLoaded && isAnythingAvailable && totalResults && !isExistingNotifications) {
+      setHasLoaded(true);
       addNotification({
         swatchId: 'swatch-exports-status',
         title: t('curiosity-toolbar.notifications', {
