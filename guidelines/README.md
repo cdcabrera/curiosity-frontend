@@ -60,6 +60,17 @@ Process guidelines in the order listed below, with specialized guidelines taking
 
 ### Core Agent Behavior Standards
 
+<!--
+Before the agent runs `$ date` the agent should explain what it's going to be used for. Agents should attempt to run `$ date` to get the system date before applying dates and times anywhere.
+
+Common uses for dates include:
+- Updating "Last Updated" timestamps in documentation files
+- Adding creation dates to new files or savepoints
+- Timestamping conversation states or session information
+- Recording when changes or updates were made to configuration files
+- Ensuring accurate date references in commit messages or change logs
+-->
+
 - **Sequential Processing**: Ask questions one at a time, wait for responses
 - **Reference-Based Implementation**: Always review git reference commits before implementation
 - **Validation Required**: Follow file checklists completely and run validation commands
