@@ -2,13 +2,13 @@
 
 ## Overview
 
-This directory contains development and workflow guidelines for the Curiosity Frontend project. These guidelines help ensure consistent implementation patterns, proper code organization, and streamlined development processes.
+This directory contains agent development and workflow guidelines for the Curiosity Frontend project. These guidelines help ensure consistent agent implementation patterns, proper code organization, and streamlined development processes.
 
 ## User Guide
 
 ### Development Guidelines
 
-The guidelines in this directory provide structured approaches for common development tasks in the Curiosity Frontend project:
+The agent guidelines in this directory provide structured approaches for common development tasks in the Curiosity Frontend project:
 
 - **Product Configuration**: Step-by-step processes for adding new product variants (PAYG, on-demand, and annual subscriptions)
 - **Code Standards**: Consistent patterns for file naming, localization, and testing
