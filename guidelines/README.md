@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains agent development and workflow guidelines for the Curiosity Frontend project. These guidelines help ensure consistent agent implementation patterns, proper code organization, and streamlined development processes.
+This directory contains agent-specific development and workflow guidelines for the Curiosity Frontend project. These guidelines help ensure consistent agent implementation patterns, proper code organization, and streamlined development processes.
 
 ## User Guide
 
@@ -16,17 +16,20 @@ The agent guidelines in this directory provide structured approaches for common 
 
 ### Getting Started
 
-1. **Review the specific guideline** for your task (see index below)
-2. **Follow the sequential processes** outlined in each guideline
-3. **Reference the provided git commits** for implementation examples
-4. **Run the validation steps** to ensure proper implementation
+#### Workflows
 
-### Key Principles
+Activating agent-based workflows and automation has been centered around the use of keyword prompts.
 
-- **Interactive Configuration**: Many workflows use sequential question-and-answer processes
-- **Reference-Based Implementation**: Guidelines include specific git commit references for examples
-- **Validation-First Approach**: All implementations include testing and validation steps
-- **Consistent Patterns**: Follow established naming conventions and file structures
+##### Available Prompts
+- **Setup a product configuration** - `/workflow product`
+
+#### Code Standards
+
+TBD.
+
+#### Patternfly Development
+
+TBD.
 
 ---
 

@@ -56,7 +56,9 @@ Run and update unit tests while developing instead of after-the-fact. In a new t
 For in-depth testing guidance review the [contribution guidelines](./CONTRIBUTING.md#testing) 
 
 ## Contributing
-Contributing encompasses [repository specific requirements](./CONTRIBUTING.md).
+Contributing encompasses
+- [Repository coding requirements](./CONTRIBUTING.md) - Includes everything from commit messaging practices and environment setup to unit testing.  
+- [User and AI agent guidance](./guidelines/README.md) - Includes everything from interactive workflows and prompts to general automation
 
 ## Agent Only
 Agents: This repository contains a hierarchical guidelines' system. Agents should review agent-only comment blocks.
