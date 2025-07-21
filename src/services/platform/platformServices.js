@@ -398,14 +398,10 @@ const getExistingExports = (idList, params = {}, options = {}) => {
         ...poll?.location
       },
       validate: response => {
-        console.log('>>>>>>>>>>>>> response: ', response, ' >>>>>>>>>>>>>>>>>>');
-
         // FixMe: replace classic querySelector logic for "does the ui wrapper exist?" with external service cancel
         if (!document.querySelector('.curiosity') || response?.data?.data?.isAnything === false) {
           return true;
         }
-
-        console.log('>>>>>>>>>> idList: ', idList, ' >>>>>>>>>>>>>>>>>>');
 
         const failedResults = response?.data?.data?.failed || [];
         const completedResults = response?.data?.data?.completed || [];
@@ -534,23 +530,22 @@ const postExport = async (data = {}, options = {}) => {
           return true;
         }
 
-        const foundDownload = response?.data?.data?.completed.find(
-          ({ id }) => downloadId !== undefined && id === downloadId
-        );
-
         const foundFailed = response?.data?.data?.failed?.find(
           ({ id }) => downloadId !== undefined && id === downloadId
         );
 
+        const foundDownload = response?.data?.data?.completed.find(
+          ({ id }) => downloadId !== undefined && id === downloadId
+        );
+
+        if (foundFailed) {
+          const { id } = foundFailed;
+          deleteExport(id);
+        }
+
         if (foundDownload) {
           const { id, fileName } = foundDownload;
           getExport(id, { fileName });
-        }
-
-        if (foundFailed) {
-          // Clean up failed export
-          const { id } = foundFailed;
-          deleteExport(id);
         }
 
         return foundDownload !== undefined || foundFailed !== undefined;

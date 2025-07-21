@@ -209,7 +209,6 @@ const useExistingExportsConfirmation = ({
           })
       })(dispatch).then(({ value } = {}) => {
         if (confirmAppLoaded()) {
-          console.log('>>>>>> RESPONSE USE EXISTING HOOK', value?.data?.data?.isAnything);
           if (value?.data?.data?.isAnything) {
             addNotification({
               swatchId: 'swatch-exports-existing-confirmation',
