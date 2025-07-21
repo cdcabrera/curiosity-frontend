@@ -188,8 +188,8 @@ const deleteExport = (id, options = {}) => {
  *           "created_at": "2024-01-24T16:20:31.229Z",
  *           "completed_at": "2024-01-24T16:20:31.229Z",
  *           "expires_at": "2024-01-24T16:20:31.229Z",
- *           "format": "json",
- *           "status": "pending"
+ *           "format": "csv",
+ *           "status": "failed"
  *         }
  *       ]
  *     }
@@ -226,6 +226,12 @@ const deleteExport = (id, options = {}) => {
  *           "status": "partial"
  *         }
  *       ]
+ *     }
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "data": []
  *     }
  *
  * @apiErrorExample {json} Error-Response:
@@ -392,21 +398,45 @@ const getExistingExports = (idList, params = {}, options = {}) => {
         ...poll?.location
       },
       validate: response => {
+        console.log('>>>>>>>>>>>>> response: ', response, ' >>>>>>>>>>>>>>>>>>');
+
         // FixMe: replace classic querySelector logic for "does the ui wrapper exist?" with external service cancel
-        if (!document.querySelector('.curiosity')) {
+        if (!document.querySelector('.curiosity') || response?.data?.data?.isAnything === false) {
           return true;
         }
 
-        const completedResults = response?.data?.data?.completed;
-        const isIdListCompleted =
-          idList.filter(({ id }) => completedResults.find(({ id: completedId }) => completedId === id) !== undefined)
-            .length === idList.length;
+        console.log('>>>>>>>>>> idList: ', idList, ' >>>>>>>>>>>>>>>>>>');
 
-        if (isIdListCompleted && completedResults.length > 0) {
-          Promise.all(idList.map(({ id, fileName }) => getExport(id, { fileName })));
+        const failedResults = response?.data?.data?.failed || [];
+        const completedResults = response?.data?.data?.completed || [];
+
+        // Check if any of the requested exports have failed
+        const failedIds = idList.filter(
+          ({ id }) => failedResults.find(({ id: failedId }) => failedId === id) !== undefined
+        );
+
+        // Check if any of the requested exports have completed
+        const completedIds = idList.filter(
+          ({ id }) => completedResults.find(({ id: completedId }) => completedId === id) !== undefined
+        );
+
+        // Any export has failed, stop polling and cleanup.
+        if (failedIds.length > 0) {
+          Promise.all(failedIds.map(({ id }) => deleteExport(id)));
         }
 
-        return isIdListCompleted;
+        // Any export completed, download it.
+        if (completedResults.length > 0) {
+          Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName })));
+        }
+
+        return (
+          idList.filter(
+            ({ id }) =>
+              completedIds.find(({ id: completedId }) => completedId === id) === undefined &&
+              failedIds.find(({ id: failedId }) => failedId === id) === undefined
+          ).length === 0
+        );
       },
       ...poll
     },
@@ -500,11 +530,15 @@ const postExport = async (data = {}, options = {}) => {
       },
       validate: response => {
         // FixMe: replace classic querySelector logic for "does the ui wrapper exist?" with external service cancel
-        if (!document.querySelector('.curiosity')) {
+        if (!document.querySelector('.curiosity') || response?.data?.data?.isAnything === false) {
           return true;
         }
 
         const foundDownload = response?.data?.data?.completed.find(
+          ({ id }) => downloadId !== undefined && id === downloadId
+        );
+
+        const foundFailed = response?.data?.data?.failed?.find(
           ({ id }) => downloadId !== undefined && id === downloadId
         );
 
@@ -513,7 +547,13 @@ const postExport = async (data = {}, options = {}) => {
           getExport(id, { fileName });
         }
 
-        return foundDownload !== undefined;
+        if (foundFailed) {
+          // Clean up failed export
+          const { id } = foundFailed;
+          deleteExport(id);
+        }
+
+        return foundDownload !== undefined || foundFailed !== undefined;
       }
     },
     method: 'post',
