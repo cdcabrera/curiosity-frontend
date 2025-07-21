@@ -105,8 +105,7 @@ const createPromise = ({
        * (1) the action type
        * (2) the action meta
        */
-      const TYPE = action.type;
-      const META = action.meta;
+      const { type: TYPE, meta: META } = action || {};
 
       /**
        * Instantiate and define constants for the action type suffixes.
@@ -165,6 +164,11 @@ const createPromise = ({
 
       const handleReject = reason => {
         const rejectedAction = getAction(reason, true);
+
+        if (META?.rejectCallback && typeof META.rejectCallback === 'function') {
+          rejectedAction.callback = META.rejectCallback(reason);
+        }
+
         dispatch(rejectedAction);
 
         if (isCatchRejection === false) {
@@ -174,6 +178,11 @@ const createPromise = ({
 
       const handleFulfill = (value = null) => {
         const resolvedAction = getAction(value, false);
+
+        if (META?.resolveCallback && typeof META.resolveCallback === 'function') {
+          resolvedAction.callback = META.resolveCallback(value);
+        }
+
         dispatch(resolvedAction);
 
         return { value, action: resolvedAction };
@@ -184,7 +193,7 @@ const createPromise = ({
        * This object describes the pending state of a promise and will include
        * any data (for optimistic updates) and/or meta from the original action.
        */
-      next({
+      const pendingAction = {
         // Concatenate the type string.
         type: [TYPE, PENDING].join(PROMISE_TYPE_DELIMITER),
 
@@ -193,7 +202,13 @@ const createPromise = ({
 
         // Include meta data if it is defined.
         ...(META !== undefined ? { meta: META } : {})
-      });
+      };
+
+      if (META?.pendingCallback && typeof META.pendingCallback === 'function') {
+        pendingAction.callback = META.pendingCallback();
+      }
+
+      next(pendingAction);
 
       /**
        * Second, dispatch a rejected or fulfilled action and move on to the
