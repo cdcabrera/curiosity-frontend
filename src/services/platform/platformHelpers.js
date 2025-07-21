@@ -26,21 +26,23 @@ const getExportProductId = str => {
 /**
  * Normalize an export status to be either `pending`, `complete`, or `failed`.
  *
- * Fine-grain status messages are considered `pending`. May need to reevaluate
- * the `partial` status.
- *
- * @param {string} str
+ * @param {PLATFORM_API_EXPORT_STATUS_TYPES} str
  * @returns {string}
  */
 const getExportStatus = str => {
-  const updatedStr = str;
-  let updatedStatus = PLATFORM_API_EXPORT_STATUS_TYPES.PENDING;
+  let updatedStatus;
 
-  if (
-    updatedStr === PLATFORM_API_EXPORT_STATUS_TYPES.FAILED ||
-    updatedStr === PLATFORM_API_EXPORT_STATUS_TYPES.COMPLETE
-  ) {
-    updatedStatus = updatedStr;
+  switch (str) {
+    case PLATFORM_API_EXPORT_STATUS_TYPES.PARTIAL:
+    case PLATFORM_API_EXPORT_STATUS_TYPES.FAILED:
+      updatedStatus = PLATFORM_API_EXPORT_STATUS_TYPES.FAILED;
+      break;
+    case PLATFORM_API_EXPORT_STATUS_TYPES.COMPLETE:
+      updatedStatus = PLATFORM_API_EXPORT_STATUS_TYPES.COMPLETE;
+      break;
+    case PLATFORM_API_EXPORT_STATUS_TYPES.RUNNING:
+    default:
+      updatedStatus = PLATFORM_API_EXPORT_STATUS_TYPES.PENDING;
   }
 
   return updatedStatus;
