@@ -121,7 +121,10 @@ const exports = response => {
 
     // Only consider the entire product line as `failed` if there are no `pending` or `completed` exports.
     updatedResponse.data.products[productId].isFailed =
-      (failed.length > 0 && !updatedResponse.data.products[productId].isPending && !updatedResponse.data.products[productId].isCompleted) || false;
+      (failed.length > 0 &&
+        !updatedResponse.data.products[productId].isPending &&
+        !updatedResponse.data.products[productId].isCompleted) ||
+      false;
   });
 
   // Anything pending still
@@ -133,7 +136,8 @@ const exports = response => {
 
   // Only consider the entire line as `failed` if there are no `pending` or `completed` exports.
   updatedResponse.data.isFailed =
-    (updatedResponse.data.failed.length > 0 && !updatedResponse.data.isPending && !updatedResponse.data.isCompleted) || false;
+    (updatedResponse.data.failed.length > 0 && !updatedResponse.data.isPending && !updatedResponse.data.isCompleted) ||
+    false;
 
   return updatedResponse;
 };
@@ -224,8 +228,7 @@ const userPermissions = (response, { config = rbacConfig } = {}) => {
 const platformTransformers = {
   exports,
   user,
-  permissions: userPermissions,
-  getStatus
+  permissions: userPermissions
 };
 
-export { platformTransformers as default, platformTransformers, exports, user, userPermissions, getStatus };
+export { platformTransformers as default, platformTransformers, exports, user, userPermissions };

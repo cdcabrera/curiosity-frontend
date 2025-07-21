@@ -57,33 +57,22 @@ const useExportConfirmation = ({
         return;
       }
 
-      // Display completed notification
-      if (isCompleted) {
-        addNotification({
-          swatchId: 'swatch-exports-individual-status',
-          variant: NotificationVariant.success,
-          title: t('curiosity-toolbar.notifications', {
-            context: ['export', 'completed', 'title'],
-            testId: 'exportNotification-individual-completed'
-          }),
-          description: t('curiosity-toolbar.notifications', {
-            context: ['export', 'completed', 'description'],
-            fileName: completed?.[0]?.fileName
-          })
-        });
-      }
+      // Display completed or failed notifications
+      if (isCompleted || isFailed) {
+        const exportVariant = (isFailed && NotificationVariant.danger) || NotificationVariant.success;
+        const exportStatus = (isFailed && 'failed') || 'completed';
+        const exportFile = (isFailed && failed?.[0]?.fileName) || completed?.[0]?.fileName;
 
-      // Display failed notification
-      if (isFailed) {
         addNotification({
           swatchId: 'swatch-exports-individual-status',
-          variant: NotificationVariant.danger,
+          variant: exportVariant,
           title: t('curiosity-toolbar.notifications', {
-            context: ['export', 'failed', 'title'],
-            testId: 'exportNotification-individual-failed'
+            context: ['export', exportStatus, 'title'],
+            testId: `exportNotification-individual-${exportStatus}`
           }),
           description: t('curiosity-toolbar.notifications', {
-            context: ['export', 'failed', 'description']
+            context: ['export', exportStatus, 'description'],
+            fileName: exportFile
           })
         });
       }
@@ -255,7 +244,7 @@ const useExistingExports = ({
   const { addNotification, removeNotification, hasNotification } = useAliasNotifications();
   const onConfirmation = useAliasExistingExportsConfirmation();
   const { data, fulfilled } = useAliasSelectorsResponse(({ app }) => app?.exportsExisting);
-  const { completed = [], isAnythingPending, isAnythingCompleted, isAnythingFailed, pending = [], failed = [] } = data?.[0]?.data || {};
+  const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
 
   useEffectOnce(() => {
     dispatch(getAliasExistingExportsStatus());
@@ -267,8 +256,8 @@ const useExistingExports = ({
   });
 
   useEffect(() => {
-    const isAnythingAvailable = isAnythingCompleted || isAnythingPending || isAnythingFailed || false;
-    const totalResults = completed.length + pending.length + failed.length;
+    const isAnythingAvailable = isAnythingCompleted || isAnythingPending || false;
+    const totalResults = completed.length + pending.length;
     // Confirm existing toast IDs for "toast pending/success" OR "existing toast message".
     const isExistingNotifications =
       hasNotification('swatch-exports-individual-status') || hasNotification('swatch-exports-status');
@@ -290,19 +279,17 @@ const useExistingExports = ({
                 'description',
                 'existing',
                 completed.length && 'completed',
-                pending.length && 'pending',
-                failed.length && 'failed'
+                pending.length && 'pending'
               ],
               count: totalResults,
               completed: completed.length,
-              pending: pending.length,
-              failed: failed.length
+              pending: pending.length
             })}
             <div style={{ paddingTop: '0.5rem' }}>
               <Button
                 data-test="exportButtonConfirm"
                 variant="primary"
-                onClick={() => onConfirmation('yes', [...completed, ...pending, ...failed])}
+                onClick={() => onConfirmation('yes', [...completed, ...pending])}
                 autoFocus
               >
                 {t('curiosity-toolbar.button', { context: 'yes' })}
@@ -310,7 +297,7 @@ const useExistingExports = ({
               <Button
                 data-test="exportButtonCancel"
                 variant="plain"
-                onClick={() => onConfirmation('no', [...completed, ...pending, ...failed])}
+                onClick={() => onConfirmation('no', [...completed, ...pending])}
               >
                 {t('curiosity-toolbar.button', { context: 'no' })}
               </Button>
