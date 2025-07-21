@@ -165,6 +165,15 @@ const deleteExport = (id, options = {}) => {
  *           "expires_at": "2024-01-24T16:20:31.229Z",
  *           "format": "json",
  *           "status": "complete"
+ *         },
+ *         {
+ *           "id": "x123456-5717-4562-b3fc-2c963f66afa6",
+ *           "name": "swatch-rhel-for-x86-els-payg",
+ *           "created_at": "2024-01-24T16:20:31.229Z",
+ *           "completed_at": "2024-01-24T16:20:31.229Z",
+ *           "expires_at": "2024-01-24T16:20:31.229Z",
+ *           "format": "csv",
+ *           "status": "failed"
  *         }
  *       ]
  *     }
@@ -397,12 +406,12 @@ const getExistingExports = (idList, params = {}, options = {}) => {
           return true;
         }
 
-        const completedResults = response?.data?.data?.completed;
+        const completedResults = response?.data?.data?.completed || [];
         const failedResults = response?.data?.data?.failed || [];
 
         // Check if any of the requested exports have failed
-        const failedIds = idList.filter(({ id }) =>
-          failedResults.find(({ id: failedId }) => failedId === id) !== undefined
+        const failedIds = idList.filter(
+          ({ id }) => failedResults.find(({ id: failedId }) => failedId === id) !== undefined
         );
 
         // If any export has failed, we should stop polling for it
@@ -412,14 +421,15 @@ const getExistingExports = (idList, params = {}, options = {}) => {
         }
 
         const isIdListCompletedOrFailed =
-          idList.filter(({ id }) =>
-            completedResults.find(({ id: completedId }) => completedId === id) !== undefined ||
-            failedResults.find(({ id: failedId }) => failedId === id) !== undefined
+          idList.filter(
+            ({ id }) =>
+              completedResults.find(({ id: completedId }) => completedId === id) !== undefined ||
+              failedResults.find(({ id: failedId }) => failedId === id) !== undefined
           ).length === idList.length;
 
-        if (completedResults && completedResults.length > 0) {
-          const completedIds = idList.filter(({ id }) =>
-            completedResults.find(({ id: completedId }) => completedId === id) !== undefined
+        if (isIdListCompletedOrFailed && completedResults.length > 0) {
+          const completedIds = idList.filter(
+            ({ id }) => completedResults.find(({ id: completedId }) => completedId === id) !== undefined
           );
           Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName })));
         }
