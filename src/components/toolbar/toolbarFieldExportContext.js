@@ -7,6 +7,7 @@ import { NotificationsContext, NotificationVariant } from '../notifications/noti
 import { PLATFORM_API_EXPORT_POST_TYPES as POST_TYPES } from '../../services/platform/platformConstants';
 import { translate } from '../i18n/i18n';
 import { useAppLoad } from '../../hooks/useApp';
+import { helpers } from '../../common';
 
 /**
  * @memberof ToolbarFieldExport
@@ -78,10 +79,14 @@ const useExportConfirmation = ({
             context: ['export', exportStatus, 'title'],
             testId: `exportNotification-individual-${exportStatus}`
           }),
-          description: t('curiosity-toolbar.notifications', {
-            context: ['export', exportStatus, 'description'],
-            fileName: exportFile
-          })
+          description: t(
+            'curiosity-toolbar.notifications',
+            {
+              context: ['export', exportStatus, 'description'],
+              fileName: exportFile
+            },
+            [<Button isInline component="a" variant="link" target="_blank" href={helpers.UI_LINK_PLATFORM_STATUS} />]
+          )
         });
       }
 
