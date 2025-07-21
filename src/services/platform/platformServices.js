@@ -398,15 +398,33 @@ const getExistingExports = (idList, params = {}, options = {}) => {
         }
 
         const completedResults = response?.data?.data?.completed;
-        const isIdListCompleted =
-          idList.filter(({ id }) => completedResults.find(({ id: completedId }) => completedId === id) !== undefined)
-            .length === idList.length;
+        const failedResults = response?.data?.data?.failed || [];
 
-        if (isIdListCompleted && completedResults.length > 0) {
-          Promise.all(idList.map(({ id, fileName }) => getExport(id, { fileName })));
+        // Check if any of the requested exports have failed
+        const failedIds = idList.filter(({ id }) =>
+          failedResults.find(({ id: failedId }) => failedId === id) !== undefined
+        );
+
+        // If any export has failed, we should stop polling for it
+        if (failedIds.length > 0) {
+          // Clean up failed exports
+          Promise.all(failedIds.map(({ id }) => deleteExport(id)));
         }
 
-        return isIdListCompleted;
+        const isIdListCompletedOrFailed =
+          idList.filter(({ id }) =>
+            completedResults.find(({ id: completedId }) => completedId === id) !== undefined ||
+            failedResults.find(({ id: failedId }) => failedId === id) !== undefined
+          ).length === idList.length;
+
+        if (completedResults && completedResults.length > 0) {
+          const completedIds = idList.filter(({ id }) =>
+            completedResults.find(({ id: completedId }) => completedId === id) !== undefined
+          );
+          Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName })));
+        }
+
+        return isIdListCompletedOrFailed;
       },
       ...poll
     },
@@ -508,12 +526,22 @@ const postExport = async (data = {}, options = {}) => {
           ({ id }) => downloadId !== undefined && id === downloadId
         );
 
+        const foundFailed = response?.data?.data?.failed?.find(
+          ({ id }) => downloadId !== undefined && id === downloadId
+        );
+
         if (foundDownload) {
           const { id, fileName } = foundDownload;
           getExport(id, { fileName });
         }
 
-        return foundDownload !== undefined;
+        if (foundFailed) {
+          // Clean up failed export
+          const { id } = foundFailed;
+          deleteExport(id);
+        }
+
+        return foundDownload !== undefined || foundFailed !== undefined;
       }
     },
     method: 'post',
