@@ -43,6 +43,7 @@ describe('ToolbarFieldExport Component', () => {
       data: {
         data: {
           completed: [{ id: 'helloWorld', fileName: 'helloWorldFileName' }],
+          isAnything: true,
           isCompleted: false,
           isPending: true,
           pending: [{ id: 'dolorSit', fileName: 'dolorSitFileName' }],

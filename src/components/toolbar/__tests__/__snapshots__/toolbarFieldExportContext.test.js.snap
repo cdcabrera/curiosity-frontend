@@ -114,7 +114,17 @@ exports[`ToolbarFieldExport Component should expose an export polling status con
   [
     [
       {
+        "completed": [
+          {
+            "fileName": "helloWorldFileName",
+            "id": "helloWorld",
+          },
+        ],
+        "failed": [],
         "id": "loremIpsum",
+        "isAnything": true,
+        "isCompleted": false,
+        "isFailed": undefined,
         "isPending": true,
         "pending": [
           {
