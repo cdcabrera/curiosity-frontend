@@ -93,13 +93,13 @@ exports[`Platform Transformers should attempt to parse an exports response: expo
   "data": {
     "completed": [],
     "failed": [],
-    "isAnything": false,
+    "isAnything": true,
     "isAnythingCompleted": false,
     "isAnythingFailed": false,
     "isAnythingPending": true,
     "isCompleted": false,
     "isFailed": false,
-    "isPending": false,
+    "isPending": true,
     "pending": [
       {
         "fileName": "20190720_000000_csv_swatch_report_rhel_for_x_86",
@@ -114,6 +114,9 @@ exports[`Platform Transformers should attempt to parse an exports response: expo
       "RHEL for x86": {
         "completed": [],
         "failed": [],
+        "isCompleted": false,
+        "isFailed": false,
+        "isPending": true,
         "pending": [
           {
             "fileName": "20190720_000000_csv_swatch_report_rhel_for_x_86",

@@ -112,7 +112,7 @@ const exports = response => {
   updatedResponse.data.isAnythingCompleted = updatedResponse.data.completed.length > 0;
   updatedResponse.data.isAnythingFailed = updatedResponse.data.failed.length > 0;
   updatedResponse.data.isAnything =
-    updatedResponse.data.isAnythingPending.isAnythingPending ||
+    updatedResponse.data.isAnythingPending ||
     updatedResponse.data.isAnythingCompleted ||
     updatedResponse.data.isAnythingFailed;
 
@@ -120,7 +120,7 @@ const exports = response => {
     return updatedResponse;
   }
 
-  Object.entries(updatedResponse.data.products).forEach(([productId, { pending, completed, failed }]) => {
+  Object.entries(updatedResponse.data.products).forEach(([productId, { pending, completed, failed } = {}]) => {
     // Anything pending still
     updatedResponse.data.products[productId].isPending = pending.length > 0;
 
