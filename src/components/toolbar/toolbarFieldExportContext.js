@@ -38,7 +38,7 @@ const useExportConfirmation = ({
 
   return useCallback(
     ({ error, data } = {}, retryCount) => {
-      const { completed = [], isCompleted, isPending, pending = [] } = data?.data || {};
+      const { completed = [], isCompleted, isPending, isFailed, pending = [], failed = [] } = data?.data || {};
 
       if (error || !confirmAppLoaded()) {
         return;
@@ -73,13 +73,30 @@ const useExportConfirmation = ({
         });
       }
 
+      // Display failed notification
+      if (isFailed) {
+        addNotification({
+          swatchId: 'swatch-exports-individual-status',
+          variant: NotificationVariant.danger,
+          title: t('curiosity-toolbar.notifications', {
+            context: ['export', 'failed', 'title'],
+            testId: 'exportNotification-individual-failed'
+          }),
+          description: t('curiosity-toolbar.notifications', {
+            context: ['export', 'failed', 'description']
+          })
+        });
+      }
+
       // Dispatch a status regardless of completion
       dispatch([
         {
           type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
           id: productId,
           isPending,
-          pending
+          isFailed,
+          pending,
+          failed
         }
       ]);
     },
@@ -238,7 +255,7 @@ const useExistingExports = ({
   const { addNotification, removeNotification, hasNotification } = useAliasNotifications();
   const onConfirmation = useAliasExistingExportsConfirmation();
   const { data, fulfilled } = useAliasSelectorsResponse(({ app }) => app?.exportsExisting);
-  const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
+  const { completed = [], isAnythingPending, isAnythingCompleted, isAnythingFailed, pending = [], failed = [] } = data?.[0]?.data || {};
 
   useEffectOnce(() => {
     dispatch(getAliasExistingExportsStatus());
@@ -250,8 +267,8 @@ const useExistingExports = ({
   });
 
   useEffect(() => {
-    const isAnythingAvailable = isAnythingCompleted || isAnythingPending || false;
-    const totalResults = completed.length + pending.length;
+    const isAnythingAvailable = isAnythingCompleted || isAnythingPending || isAnythingFailed || false;
+    const totalResults = completed.length + pending.length + failed.length;
     // Confirm existing toast IDs for "toast pending/success" OR "existing toast message".
     const isExistingNotifications =
       hasNotification('swatch-exports-individual-status') || hasNotification('swatch-exports-status');
@@ -273,17 +290,19 @@ const useExistingExports = ({
                 'description',
                 'existing',
                 completed.length && 'completed',
-                pending.length && 'pending'
+                pending.length && 'pending',
+                failed.length && 'failed'
               ],
               count: totalResults,
               completed: completed.length,
-              pending: pending.length
+              pending: pending.length,
+              failed: failed.length
             })}
             <div style={{ paddingTop: '0.5rem' }}>
               <Button
                 data-test="exportButtonConfirm"
                 variant="primary"
-                onClick={() => onConfirmation('yes', [...completed, ...pending])}
+                onClick={() => onConfirmation('yes', [...completed, ...pending, ...failed])}
                 autoFocus
               >
                 {t('curiosity-toolbar.button', { context: 'yes' })}
@@ -291,7 +310,7 @@ const useExistingExports = ({
               <Button
                 data-test="exportButtonCancel"
                 variant="plain"
-                onClick={() => onConfirmation('no', [...completed, ...pending])}
+                onClick={() => onConfirmation('no', [...completed, ...pending, ...failed])}
               >
                 {t('curiosity-toolbar.button', { context: 'no' })}
               </Button>
