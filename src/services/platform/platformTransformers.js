@@ -34,6 +34,7 @@ const exports = response => {
     [platformConstants.PLATFORM_API_EXPORT_RESPONSE_TYPES.STATUS]: status
   } = response || {};
 
+  updatedResponse.data.isAnything = false;
   updatedResponse.data.isAnythingPending = false;
   updatedResponse.data.isAnythingCompleted = false;
   updatedResponse.data.isAnythingFailed = false;
@@ -110,6 +111,14 @@ const exports = response => {
   updatedResponse.data.isAnythingPending = updatedResponse.data.pending.length > 0;
   updatedResponse.data.isAnythingCompleted = updatedResponse.data.completed.length > 0;
   updatedResponse.data.isAnythingFailed = updatedResponse.data.failed.length > 0;
+  updatedResponse.data.isAnything =
+    updatedResponse.data.isAnythingPending.isAnythingPending ||
+    updatedResponse.data.isAnythingCompleted ||
+    updatedResponse.data.isAnythingFailed;
+
+  if (updatedResponse.data.isAnything === false) {
+    return updatedResponse;
+  }
 
   Object.entries(updatedResponse.data.products).forEach(([productId, { pending, completed, failed }]) => {
     // Anything pending still

@@ -182,58 +182,6 @@ const deleteExport = (id, options = {}) => {
  *     HTTP/1.1 200 OK
  *     {
  *       "data": [
- *         {
- *           "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
- *           "name": "swatch-RHEL for x86",
- *           "created_at": "2024-01-24T16:20:31.229Z",
- *           "completed_at": "2024-01-24T16:20:31.229Z",
- *           "expires_at": "2024-01-24T16:20:31.229Z",
- *           "format": "json",
- *           "status": "pending"
- *         },
- *         {
- *           "id": "x123456-5717-4562-b3fc-2c963f66afa6",
- *           "name": "swatch-rhel-for-x86-els-payg",
- *           "created_at": "2024-01-24T16:20:31.229Z",
- *           "completed_at": "2024-01-24T16:20:31.229Z",
- *           "expires_at": "2024-01-24T16:20:31.229Z",
- *           "format": "json",
- *           "status": "pending"
- *         }
- *       ]
- *     }
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "data": [
- *         {
- *           "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
- *           "name": "swatch-RHEL for x86",
- *           "created_at": "2024-01-24T16:20:31.229Z",
- *           "completed_at": "2024-01-24T16:20:31.229Z",
- *           "expires_at": "2024-01-24T16:20:31.229Z",
- *           "format": "json",
- *           "status": "complete"
- *         },
- *         {
- *           "id": "x123456-5717-4562-b3fc-2c963f66afa6",
- *           "name": "swatch-rhel-for-x86-els-payg",
- *           "created_at": "2024-01-24T16:20:31.229Z",
- *           "completed_at": "2024-01-24T16:20:31.229Z",
- *           "expires_at": "2024-01-24T16:20:31.229Z",
- *           "format": "json",
- *           "status": "complete"
- *         },
- *         {
- *           "id": "x123456-5717-4562-b3fc-2c963f66afa6",
- *           "name": "unknown-export",
- *           "created_at": "2024-01-24T16:20:31.229Z",
- *           "completed_at": "2024-01-24T16:20:31.229Z",
- *           "expires_at": "2024-01-24T16:20:31.229Z",
- *           "format": "json",
- *           "status": "partial"
- *         }
  *       ]
  *     }
  *
@@ -401,40 +349,71 @@ const getExistingExports = (idList, params = {}, options = {}) => {
         ...poll?.location
       },
       validate: response => {
+        console.log('>>>>>>>>>>>>> response: ', response, ' >>>>>>>>>>>>>>>>>>');
+
         // FixMe: replace classic querySelector logic for "does the ui wrapper exist?" with external service cancel
-        if (!document.querySelector('.curiosity')) {
+        if (!document.querySelector('.curiosity') || response?.data?.data?.isAnything === false) {
           return true;
         }
 
-        const completedResults = response?.data?.data?.completed || [];
+        console.log('>>>>>>>>>> idList: ', idList, ' >>>>>>>>>>>>>>>>>>');
+
         const failedResults = response?.data?.data?.failed || [];
+        const completedResults = response?.data?.data?.completed || [];
 
         // Check if any of the requested exports have failed
         const failedIds = idList.filter(
           ({ id }) => failedResults.find(({ id: failedId }) => failedId === id) !== undefined
         );
 
-        // If any export has failed, we should stop polling for it
+        // Check if any of the requested exports have completed
+        const completedIds = idList.filter(
+          ({ id }) => completedResults.find(({ id: completedId }) => completedId === id) !== undefined
+        );
+
+        // Any export has failed, stop polling and cleanup.
         if (failedIds.length > 0) {
-          // Clean up failed exports
           Promise.all(failedIds.map(({ id }) => deleteExport(id)));
+        }
+
+        // Any export completed, download it.
+        if (completedResults.length > 0) {
+          Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName })));
         }
 
         const isIdListCompletedOrFailed =
           idList.filter(
             ({ id }) =>
-              completedResults.find(({ id: completedId }) => completedId === id) !== undefined ||
-              failedResults.find(({ id: failedId }) => failedId === id) !== undefined
-          ).length === idList.length;
+              completedIds.find(({ id: completedId }) => completedId === id) === undefined &&
+              failedIds.find(({ id: failedId }) => failedId === id) === undefined
+          ).length === 0;
 
-        if (isIdListCompletedOrFailed && completedResults.length > 0) {
-          const completedIds = idList.filter(
-            ({ id }) => completedResults.find(({ id: completedId }) => completedId === id) !== undefined
-          );
-          Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName })));
-        }
+        console.log('>>>>>>>>>> isIdListCompletedOrFailed: ', isIdListCompletedOrFailed, ' >>>>>>>>>>>>>>>>>>');
 
         return isIdListCompletedOrFailed;
+        // return [...failedIds, ...completedIds].length === idList.length;
+
+        /*
+         *const isIdListCompletedOrFailed =
+         *  idList.filter(
+         *    ({ id }) =>
+         *      completedResults.find(({ id: completedId }) => completedId === id) !== undefined ||
+         *      failedResults.find(({ id: failedId }) => failedId === id) !== undefined
+         *  ).length === idList.length;
+         *
+         *if (completedResults.length > 0) {
+         *  const completedIds = idList.filter(
+         *    ({ id }) => completedResults.find(({ id: completedId }) => completedId === id) !== undefined
+         *  );
+         *  Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName })));
+         *}
+         *
+         *console.log('>>>>>>>>>> completedResults: ', completedResults, ' >>>>>>>>>>>>>>>>>>');
+         *console.log('>>>>>>>>>> failedResults: ', failedResults, ' >>>>>>>>>>>>>>>>>>');
+         *console.log('>>>>>>>>>> isIdListCompletedOrFailed: ', isIdListCompletedOrFailed, ' >>>>>>>>>>>>>>>>>>');
+         *
+         *return isIdListCompletedOrFailed;
+         */
       },
       ...poll
     },
@@ -528,7 +507,7 @@ const postExport = async (data = {}, options = {}) => {
       },
       validate: response => {
         // FixMe: replace classic querySelector logic for "does the ui wrapper exist?" with external service cancel
-        if (!document.querySelector('.curiosity')) {
+        if (!document.querySelector('.curiosity') || response?.data?.data?.isAnything === false) {
           return true;
         }
 

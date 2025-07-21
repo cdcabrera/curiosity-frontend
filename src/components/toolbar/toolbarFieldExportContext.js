@@ -38,9 +38,17 @@ const useExportConfirmation = ({
 
   return useCallback(
     ({ error, data } = {}, retryCount) => {
-      const { completed = [], isCompleted, isPending, isFailed, pending = [], failed = [] } = data?.data || {};
+      const {
+        completed = [],
+        isAnything,
+        isCompleted,
+        isPending,
+        isFailed,
+        pending = [],
+        failed = []
+      } = data?.data || {};
 
-      if (error || !confirmAppLoaded()) {
+      if (error || !confirmAppLoaded() || !isAnything) {
         return;
       }
 
@@ -82,8 +90,11 @@ const useExportConfirmation = ({
         {
           type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
           id: productId,
+          isAnything,
+          isCompleted,
           isPending,
           isFailed,
+          completed,
           pending,
           failed
         }
@@ -191,21 +202,24 @@ const useExistingExportsConfirmation = ({
               testId: 'exportNotification-existing-pending'
             })
           })
-      })(dispatch).then(() => {
+      })(dispatch).then(({ value } = {}) => {
         if (confirmAppLoaded()) {
-          addNotification({
-            swatchId: 'swatch-exports-existing-confirmation',
-            variant: NotificationVariant.success,
-            title: t('curiosity-toolbar.notifications', {
-              context: ['export', 'completed', 'titleGlobal'],
-              count: allResults.length,
-              testId: 'exportNotification-existing-completed'
-            }),
-            description: t('curiosity-toolbar.notifications', {
-              context: ['export', 'completed', 'descriptionGlobal'],
-              count: allResults.length
-            })
-          });
+          console.log('>>>>>> RESPONSE USE EXISTING HOOK', value?.data?.data?.isAnything);
+          if (value?.data?.data?.isAnything) {
+            addNotification({
+              swatchId: 'swatch-exports-existing-confirmation',
+              variant: NotificationVariant.success,
+              title: t('curiosity-toolbar.notifications', {
+                context: ['export', 'completed', 'titleGlobal'],
+                count: allResults.length,
+                testId: 'exportNotification-existing-completed'
+              }),
+              description: t('curiosity-toolbar.notifications', {
+                context: ['export', 'completed', 'descriptionGlobal'],
+                count: allResults.length
+              })
+            });
+          }
         }
       });
     },
