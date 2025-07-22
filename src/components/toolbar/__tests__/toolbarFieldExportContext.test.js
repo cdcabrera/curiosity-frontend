@@ -162,6 +162,6 @@ describe('ToolbarFieldExport Component', () => {
   ])('should aggregate export status, polling status with a hook, $description', async ({ params }) => {
     const { result, unmount } = await renderHook(() => useExportStatus(params));
     await unmount();
-    expect(result).toMatchSnapshot('');
+    expect(result).toMatchSnapshot();
   });
 });
