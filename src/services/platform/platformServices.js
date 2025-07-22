@@ -418,12 +418,16 @@ const getExistingExports = (idList, params = {}, options = {}) => {
 
         // Any export has failed, stop polling and cleanup.
         if (failedIds.length > 0) {
-          Promise.all(failedIds.map(({ id }) => deleteExport(id)));
+          Promise.all(failedIds.map(({ id }) => deleteExport(id))).catch(error => {
+            console.error('Failed to delete exports:', error);
+          });
         }
 
         // Any export completed, download it.
         if (completedResults.length > 0) {
-          Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName })));
+          Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName }))).catch(error => {
+            console.error('Failed to download exports:', error);
+          });
         }
 
         return (
@@ -540,12 +544,16 @@ const postExport = async (data = {}, options = {}) => {
 
         if (foundFailed) {
           const { id } = foundFailed;
-          deleteExport(id);
+          deleteExport(id).catch(error => {
+            console.error('Failed to delete export:', error);
+          });
         }
 
         if (foundDownload) {
           const { id, fileName } = foundDownload;
-          getExport(id, { fileName });
+          getExport(id, { fileName }).catch(error => {
+            console.error('Failed to download export:', error);
+          });
         }
 
         return foundDownload !== undefined || foundFailed !== undefined;
