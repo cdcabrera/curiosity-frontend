@@ -397,7 +397,7 @@ const getExistingExports = (idList, params = {}, options = {}) => {
         url: process.env.REACT_APP_SERVICES_PLATFORM_EXPORT,
         ...poll?.location
       },
-      validate: response => {
+      validate: async response => {
         // FixMe: replace classic querySelector logic for "does the ui wrapper exist?" with external service cancel
         if (!document.querySelector('.curiosity') || response?.data?.data?.isAnything === false) {
           return true;
@@ -416,18 +416,18 @@ const getExistingExports = (idList, params = {}, options = {}) => {
           ({ id }) => completedResults.find(({ id: completedId }) => completedId === id) !== undefined
         );
 
-        // Any export has failed, stop polling and cleanup.
+        // Any export has failed, stop and cleanup. We `await` to avoid ID conflicts with polling against the service.
         if (failedIds.length > 0) {
-          Promise.all(failedIds.map(({ id }) => deleteExport(id))).catch(error => {
+          await Promise.all(failedIds.map(({ id }) => deleteExport(id))).catch(error => {
             if (!helpers.PROD_MODE) {
               console.warn('Failed to delete exports:', error);
             }
           });
         }
 
-        // Any export completed, download it.
+        // Any export completed, download it. We `await` to avoid ID conflicts with polling against the service.
         if (completedResults.length > 0) {
-          Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName }))).catch(error => {
+          await Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName }))).catch(error => {
             if (!helpers.PROD_MODE) {
               console.warn('Failed to download exports:', error);
             }
@@ -532,7 +532,7 @@ const postExport = async (data = {}, options = {}) => {
           poll.status.call(null, successResponse, ...args);
         }
       },
-      validate: response => {
+      validate: async response => {
         // FixMe: replace classic querySelector logic for "does the ui wrapper exist?" with external service cancel
         if (!document.querySelector('.curiosity') || response?.data?.data?.isAnything === false) {
           return true;
@@ -546,18 +546,20 @@ const postExport = async (data = {}, options = {}) => {
           ({ id }) => downloadId !== undefined && id === downloadId
         );
 
+        // Export has failed, stop and cleanup. We `await` to avoid ID conflicts with polling against the service.
         if (foundFailed) {
           const { id } = foundFailed;
-          deleteExport(id).catch(error => {
+          await deleteExport(id).catch(error => {
             if (!helpers.PROD_MODE) {
               console.warn('Failed to delete export:', error);
             }
           });
         }
 
+        // Export completed, download it. We `await` to avoid ID conflicts with polling against the service.
         if (foundDownload) {
           const { id, fileName } = foundDownload;
-          getExport(id, { fileName }).catch(error => {
+          await getExport(id, { fileName }).catch(error => {
             if (!helpers.PROD_MODE) {
               console.warn('Failed to download export:', error);
             }
