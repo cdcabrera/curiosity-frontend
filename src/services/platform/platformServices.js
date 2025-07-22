@@ -419,14 +419,18 @@ const getExistingExports = (idList, params = {}, options = {}) => {
         // Any export has failed, stop polling and cleanup.
         if (failedIds.length > 0) {
           Promise.all(failedIds.map(({ id }) => deleteExport(id))).catch(error => {
-            console.error('Failed to delete exports:', error);
+            if (!helpers.PROD_MODE) {
+              console.warn('Failed to delete exports:', error);
+            }
           });
         }
 
         // Any export completed, download it.
         if (completedResults.length > 0) {
           Promise.all(completedIds.map(({ id, fileName }) => getExport(id, { fileName }))).catch(error => {
-            console.error('Failed to download exports:', error);
+            if (!helpers.PROD_MODE) {
+              console.warn('Failed to download exports:', error);
+            }
           });
         }
 
@@ -545,14 +549,18 @@ const postExport = async (data = {}, options = {}) => {
         if (foundFailed) {
           const { id } = foundFailed;
           deleteExport(id).catch(error => {
-            console.error('Failed to delete export:', error);
+            if (!helpers.PROD_MODE) {
+              console.warn('Failed to delete export:', error);
+            }
           });
         }
 
         if (foundDownload) {
           const { id, fileName } = foundDownload;
           getExport(id, { fileName }).catch(error => {
-            console.error('Failed to download export:', error);
+            if (!helpers.PROD_MODE) {
+              console.warn('Failed to download export:', error);
+            }
           });
         }
 
