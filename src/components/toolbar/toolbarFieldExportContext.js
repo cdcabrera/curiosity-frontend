@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useEffectOnce } from 'react-use';
 import { Button } from '@patternfly/react-core';
+import { LRUCache } from 'lru-cache';
 import { reduxActions, reduxTypes, storeHooks } from '../../redux';
 import { useProduct } from '../productView/productViewContext';
 import { NotificationsContext, NotificationVariant } from '../notifications/notifications';
@@ -13,6 +14,19 @@ import { helpers } from '../../common';
  * @memberof ToolbarFieldExport
  * @module ToolbarFieldExportContext
  */
+
+/**
+ * Cache store for confirming if the existing exports checked fired.
+ *
+ * If the page/UI is not refreshed the cache will reset after 5 minutes and allow subsequent checks.
+ *
+ * @type {object}
+ */
+const exportCache = new LRUCache({
+  ttl: 300000,
+  max: 1,
+  updateAgeOnGet: true
+});
 
 /**
  * Return a polling status callback. Used when creating an export.
@@ -49,20 +63,7 @@ const useExportConfirmation = ({
         failed = []
       } = data?.data || {};
 
-      if (error || !confirmAppLoaded() || !isAnything) {
-        return;
-      }
-
-      // Display pending notification. No data is returned on the initial status response.
-      if (retryCount === -1) {
-        addNotification({
-          swatchId: 'swatch-exports-individual-status',
-          variant: NotificationVariant.info,
-          title: t('curiosity-toolbar.notifications', {
-            context: ['export', 'pending', 'title'],
-            testId: 'exportNotification-individual-pending'
-          })
-        });
+      if (error || !confirmAppLoaded()) {
         return;
       }
 
@@ -124,10 +125,10 @@ const useExport = ({
   createExport: createAliasExport = reduxActions.platform.createExport,
   t = translate,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
-  useExportConfirmation: useAliasExportConfirmation = useExportConfirmation,
+  // useExportConfirmation: useAliasExportConfirmation = useExportConfirmation,
   useNotifications: useAliasNotifications = NotificationsContext.useNotifications
 } = {}) => {
-  const statusConfirmation = useAliasExportConfirmation();
+  // const statusConfirmation = useAliasExportConfirmation();
   const dispatch = useAliasDispatch();
   const { addNotification } = useAliasNotifications();
 
@@ -144,8 +145,20 @@ const useExport = ({
         createAliasExport(
           id,
           data,
-          { poll: { status: statusConfirmation } },
+          // { poll: { status: statusConfirmation } },
+          {},
           {
+            pendingCallback: (...args) => {
+              console.log('>>>>> posting export pending', args);
+              addNotification({
+                swatchId: 'swatch-exports-individual-status',
+                variant: NotificationVariant.info,
+                title: t('curiosity-toolbar.notifications', {
+                  context: ['export', 'pending', 'title'],
+                  testId: 'exportNotification-individual-pending'
+                })
+              });
+            },
             rejectCallback: () =>
               addNotification({
                 variant: NotificationVariant.warning,
@@ -156,12 +169,16 @@ const useExport = ({
                 description: t('curiosity-toolbar.notifications', {
                   context: ['export', 'error', 'description']
                 })
-              })
+              }),
+            resolveCallback: (...args) => {
+              console.log('>>>>>> resolve single callback', args);
+            }
           }
         )
       ]);
     },
-    [addNotification, createAliasExport, dispatch, statusConfirmation, t]
+    // [addNotification, createAliasExport, dispatch, statusConfirmation, t]
+    [addNotification, createAliasExport, dispatch, t]
   );
 };
 
@@ -206,10 +223,21 @@ const useExistingExportsConfirmation = ({
               context: ['export', 'pending', 'titleGlobal'],
               testId: 'exportNotification-existing-pending'
             })
-          })
-      })(dispatch).then(({ value } = {}) => {
-        if (confirmAppLoaded()) {
-          if (value?.data?.data?.isAnything) {
+          }),
+        rejectCallback: () =>
+          addNotification({
+            variant: NotificationVariant.warning,
+            title: t('curiosity-toolbar.notifications', {
+              context: ['export', 'error', 'title'],
+              testId: 'exportNotification-existing-error'
+            }),
+            description: t('curiosity-toolbar.notifications', {
+              context: ['export', 'error', 'description']
+            })
+          }),
+        resolveCallback: ({ payload } = {}) => {
+          console.log('>>>>>>>>>>>>>>> existing resolve', payload);
+          if (confirmAppLoaded() && payload?.data?.data?.isAnything) {
             addNotification({
               swatchId: 'swatch-exports-existing-confirmation',
               variant: NotificationVariant.success,
@@ -225,7 +253,7 @@ const useExistingExportsConfirmation = ({
             });
           }
         }
-      });
+      })(dispatch);
     },
     [
       addNotification,
@@ -243,6 +271,7 @@ const useExistingExportsConfirmation = ({
  * Apply an existing exports hook for user abandoned reports. Allow bulk polling status with download.
  *
  * @param {object} options
+ * @param {object} options.cache
  * @param {reduxActions.platform.getExistingExportsStatus} options.getExistingExportsStatus
  * @param {translate} options.t
  * @param {storeHooks.reactRedux.useDispatch} options.useDispatch
@@ -251,6 +280,7 @@ const useExistingExportsConfirmation = ({
  * @param {storeHooks.reactRedux.useSelectorsResponse} options.useSelectorsResponse
  */
 const useExistingExports = ({
+  cache = exportCache,
   getExistingExportsStatus: getAliasExistingExportsStatus = reduxActions.platform.getExistingExportsStatus,
   t = translate,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
@@ -265,7 +295,9 @@ const useExistingExports = ({
   const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
 
   useEffectOnce(() => {
-    dispatch(getAliasExistingExportsStatus());
+    if (!cache.get('isExistingExports')) {
+      dispatch(getAliasExistingExportsStatus());
+    }
 
     return () => {
       removeNotification('swatch-exports-status');
@@ -281,6 +313,7 @@ const useExistingExports = ({
       hasNotification('swatch-exports-individual-status') || hasNotification('swatch-exports-status');
 
     if (isAnythingAvailable && totalResults && !isExistingNotifications) {
+      cache.set('isExistingExports', true);
       addNotification({
         swatchId: 'swatch-exports-status',
         title: t('curiosity-toolbar.notifications', {

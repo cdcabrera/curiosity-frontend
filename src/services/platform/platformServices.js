@@ -512,7 +512,7 @@ const postExport = async (data = {}, options = {}) => {
   } = options;
 
   let downloadId;
-  const postResponse = await axiosServiceCall({
+  return axiosServiceCall({
     ...restOptions,
     poll: {
       ...poll,
@@ -526,15 +526,14 @@ const postExport = async (data = {}, options = {}) => {
         },
         ...poll?.location
       },
-      status: (successResponse, ...args) => {
-        // FixMe: replace classic querySelector logic for "does the ui wrapper exist?" with external service cancel
-        if (document.querySelector('.curiosity') && typeof poll?.status === 'function') {
-          poll.status.call(null, successResponse, ...args);
-        }
-      },
       validate: async response => {
+        // initial response, load the export identifier
+        if (response?.data?.id && !downloadId) {
+          downloadId = response.data.id;
+        }
+
         // FixMe: replace classic querySelector logic for "does the ui wrapper exist?" with external service cancel
-        if (!document.querySelector('.curiosity') || response?.data?.data?.isAnything === false) {
+        if (!downloadId || !document.querySelector('.curiosity') || response?.data?.data?.isAnything === false) {
           return true;
         }
 
@@ -549,21 +548,29 @@ const postExport = async (data = {}, options = {}) => {
         // Export has failed, stop and cleanup. We `await` to avoid ID conflicts with polling against the service.
         if (foundFailed) {
           const { id } = foundFailed;
-          await deleteExport(id).catch(error => {
-            if (!helpers.PROD_MODE) {
-              console.warn('Failed to delete export:', error);
-            }
-          });
+          await deleteExport(id)
+            .catch(error => {
+              if (!helpers.PROD_MODE) {
+                console.warn('Failed to delete export:', error);
+              }
+            })
+            .finally(() => {
+              downloadId = undefined;
+            });
         }
 
         // Export completed, download it. We `await` to avoid ID conflicts with polling against the service.
         if (foundDownload) {
           const { id, fileName } = foundDownload;
-          await getExport(id, { fileName }).catch(error => {
-            if (!helpers.PROD_MODE) {
-              console.warn('Failed to download export:', error);
-            }
-          });
+          await getExport(id, { fileName })
+            .catch(error => {
+              if (!helpers.PROD_MODE) {
+                console.warn('Failed to download export:', error);
+              }
+            })
+            .finally(() => {
+              downloadId = undefined;
+            });
         }
 
         return foundDownload !== undefined || foundFailed !== undefined;
@@ -578,9 +585,6 @@ const postExport = async (data = {}, options = {}) => {
     schema,
     transform
   });
-
-  downloadId = postResponse.data.id;
-  return postResponse;
 };
 
 const platformServices = {
