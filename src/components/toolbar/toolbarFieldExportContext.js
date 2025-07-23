@@ -29,9 +29,10 @@ const exportCache = new LRUCache({
 });
 
 /**
- * Return a polling status callback. Used when creating an export.
+ * Apply an export hook for an export post. The service automatically sets up polling, then force downloads the file.
  *
  * @param {object} options
+ * @param {reduxActions.platform.createExport} options.createExport
  * @param {translate} options.t
  * @param {useAppLoad} options.useAppLoad
  * @param {storeHooks.reactRedux.useDispatch} options.useDispatch
@@ -39,97 +40,17 @@ const exportCache = new LRUCache({
  * @param {useProduct} options.useProduct
  * @returns {Function}
  */
-const useExportConfirmation = ({
+const useExport = ({
+  createExport: createAliasExport = reduxActions.platform.createExport,
   t = translate,
   useAppLoad: useAliasAppLoad = useAppLoad,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
   useNotifications: useAliasNotifications = NotificationsContext.useNotifications,
   useProduct: useAliasProduct = useProduct
 } = {}) => {
-  const { productId } = useAliasProduct();
   const dispatch = useAliasDispatch();
   const confirmAppLoaded = useAliasAppLoad();
-  const { addNotification } = useAliasNotifications();
-
-  return useCallback(
-    ({ error, data } = {}, retryCount) => {
-      const {
-        completed = [],
-        isAnything,
-        isCompleted,
-        isPending,
-        isFailed,
-        pending = [],
-        failed = []
-      } = data?.data || {};
-
-      if (error || !confirmAppLoaded()) {
-        return;
-      }
-
-      // Display completed or failed notifications
-      if (isCompleted || isFailed) {
-        const exportVariant = (isFailed && NotificationVariant.danger) || NotificationVariant.success;
-        const exportStatus = (isFailed && 'failed') || 'completed';
-        const exportFile = (isFailed && failed?.[0]?.fileName) || completed?.[0]?.fileName;
-
-        addNotification({
-          swatchId: 'swatch-exports-individual-status',
-          variant: exportVariant,
-          title: t('curiosity-toolbar.notifications', {
-            context: ['export', exportStatus, 'title'],
-            testId: `exportNotification-individual-${exportStatus}`
-          }),
-          description: t(
-            'curiosity-toolbar.notifications',
-            {
-              context: ['export', exportStatus, 'description'],
-              fileName: exportFile
-            },
-            [<Button isInline component="a" variant="link" target="_blank" href={helpers.UI_LINK_PLATFORM_STATUS} />]
-          )
-        });
-      }
-
-      // Dispatch a status regardless of completion
-      dispatch([
-        {
-          type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
-          id: productId,
-          isAnything,
-          isCompleted,
-          isPending,
-          isFailed,
-          completed,
-          pending,
-          failed
-        }
-      ]);
-    },
-    [addNotification, confirmAppLoaded, dispatch, productId, t]
-  );
-};
-
-/**
- * Apply an export hook for an export post. The service automatically sets up polling, then force downloads the file.
- *
- * @param {object} options
- * @param {reduxActions.platform.createExport} options.createExport
- * @param {translate} options.t
- * @param {storeHooks.reactRedux.useDispatch} options.useDispatch
- * @param {useExportConfirmation} options.useExportConfirmation
- * @param {NotificationsContext.useNotifications} options.useNotifications
- * @returns {Function}
- */
-const useExport = ({
-  createExport: createAliasExport = reduxActions.platform.createExport,
-  t = translate,
-  useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
-  // useExportConfirmation: useAliasExportConfirmation = useExportConfirmation,
-  useNotifications: useAliasNotifications = NotificationsContext.useNotifications
-} = {}) => {
-  // const statusConfirmation = useAliasExportConfirmation();
-  const dispatch = useAliasDispatch();
+  const { productId } = useAliasProduct();
   const { addNotification } = useAliasNotifications();
 
   return useCallback(
@@ -145,11 +66,9 @@ const useExport = ({
         createAliasExport(
           id,
           data,
-          // { poll: { status: statusConfirmation } },
           {},
           {
             pendingCallback: (...args) => {
-              console.log('>>>>> posting export pending', args);
               addNotification({
                 swatchId: 'swatch-exports-individual-status',
                 variant: NotificationVariant.info,
@@ -170,15 +89,59 @@ const useExport = ({
                   context: ['export', 'error', 'description']
                 })
               }),
-            resolveCallback: (...args) => {
-              console.log('>>>>>> resolve single callback', args);
+            resolveCallback: ({ payload } = {}) => {
+              const { completed = [], isCompleted, isFailed, pending = [], failed = [] } = payload?.data?.data || {};
+
+              if (!confirmAppLoaded()) {
+                return;
+              }
+
+              // Display completed or failed notifications
+              if (isCompleted || isFailed) {
+                const exportVariant = (isFailed && NotificationVariant.danger) || NotificationVariant.success;
+                const exportStatus = (isFailed && 'failed') || 'completed';
+                const exportFile = (isFailed && failed?.[0]?.fileName) || completed?.[0]?.fileName;
+
+                addNotification({
+                  swatchId: 'swatch-exports-individual-status',
+                  variant: exportVariant,
+                  title: t('curiosity-toolbar.notifications', {
+                    context: ['export', exportStatus, 'title'],
+                    testId: `exportNotification-individual-${exportStatus}`
+                  }),
+                  description: t(
+                    'curiosity-toolbar.notifications',
+                    {
+                      context: ['export', exportStatus, 'description'],
+                      fileName: exportFile
+                    },
+                    [
+                      <Button
+                        isInline
+                        component="a"
+                        variant="link"
+                        target="_blank"
+                        href={helpers.UI_LINK_PLATFORM_STATUS}
+                      />
+                    ]
+                  )
+                });
+              }
+
+              // Dispatch to update product specific dropdown display options for export loading/pending status
+              dispatch([
+                {
+                  type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
+                  id: productId,
+                  pending
+                }
+              ]);
             }
           }
         )
       ]);
     },
-    // [addNotification, createAliasExport, dispatch, statusConfirmation, t]
-    [addNotification, createAliasExport, dispatch, t]
+    [addNotification, confirmAppLoaded, createAliasExport, dispatch, productId, t]
   );
 };
 
@@ -236,7 +199,6 @@ const useExistingExportsConfirmation = ({
             })
           }),
         resolveCallback: ({ payload } = {}) => {
-          console.log('>>>>>>>>>>>>>>> existing resolve', payload);
           if (confirmAppLoaded() && payload?.data?.data?.isAnything) {
             addNotification({
               swatchId: 'swatch-exports-existing-confirmation',
@@ -405,18 +367,9 @@ const useExportStatus = ({
 
 const context = {
   useExport,
-  useExportConfirmation,
   useExportStatus,
   useExistingExports,
   useExistingExportsConfirmation
 };
 
-export {
-  context as default,
-  context,
-  useExport,
-  useExportConfirmation,
-  useExportStatus,
-  useExistingExports,
-  useExistingExportsConfirmation
-};
+export { context as default, context, useExport, useExportStatus, useExistingExports, useExistingExportsConfirmation };
