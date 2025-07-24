@@ -179,7 +179,7 @@ const useExistingExportsConfirmation = ({
         })
       });
 
-      return dispatch(getAliasExistingExports(allResults)).then(
+      dispatch(getAliasExistingExports(allResults)).then(
         ({ value } = {}) => {
           console.log('>>>>>>>> response', value);
           if (confirmAppLoaded() && value?.data?.data?.isAnything) {
