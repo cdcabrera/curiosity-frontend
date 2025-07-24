@@ -23,6 +23,277 @@ exports[`ToolbarFieldExport Component should aggregate export status, polling st
 }
 `;
 
+exports[`ToolbarFieldExport Component should allow and export, and expose polling status confirmation, app loaded, different product 1`] = `
+{
+  "dispatch": [
+    {
+      "type": "return",
+      "value": {
+        "id": "loremIpsum",
+        "isPending": true,
+        "isSelectUpdated": true,
+        "pending": [
+          {
+            "format": undefined,
+          },
+        ],
+        "type": "SET_PLATFORM_EXPORT_STATUS",
+      },
+    },
+    {
+      "type": "return",
+      "value": [Function],
+    },
+    {
+      "type": "return",
+      "value": [
+        {
+          "id": "loremIpsum",
+          "pending": [],
+          "type": "SET_PLATFORM_EXPORT_STATUS",
+        },
+      ],
+    },
+  ],
+  "notification": [
+    [
+      {
+        "swatchId": "swatch-exports-individual-status",
+        "title": "t(curiosity-toolbar.notifications_export_pending, {"context":"title","testId":"exportNotification-individual-pending"})",
+        "variant": "info",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`ToolbarFieldExport Component should allow and export, and expose polling status confirmation, app loaded, no data 1`] = `
+{
+  "dispatch": [
+    {
+      "type": "return",
+      "value": {
+        "id": "loremIpsum",
+        "isPending": true,
+        "isSelectUpdated": true,
+        "pending": [
+          {
+            "format": undefined,
+          },
+        ],
+        "type": "SET_PLATFORM_EXPORT_STATUS",
+      },
+    },
+    {
+      "type": "return",
+      "value": [Function],
+    },
+    {
+      "type": "return",
+      "value": [
+        {
+          "id": "loremIpsum",
+          "pending": [],
+          "type": "SET_PLATFORM_EXPORT_STATUS",
+        },
+      ],
+    },
+  ],
+  "notification": [
+    [
+      {
+        "swatchId": "swatch-exports-individual-status",
+        "title": "t(curiosity-toolbar.notifications_export_pending, {"context":"title","testId":"exportNotification-individual-pending"})",
+        "variant": "info",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`ToolbarFieldExport Component should allow and export, and expose polling status confirmation, app not loaded 1`] = `
+{
+  "dispatch": [],
+  "notification": [],
+}
+`;
+
+exports[`ToolbarFieldExport Component should allow and export, and expose polling status confirmation, completed notification 1`] = `
+{
+  "dispatch": [
+    {
+      "type": "return",
+      "value": {
+        "id": "loremIpsum",
+        "isPending": true,
+        "isSelectUpdated": true,
+        "pending": [
+          {
+            "format": undefined,
+          },
+        ],
+        "type": "SET_PLATFORM_EXPORT_STATUS",
+      },
+    },
+    {
+      "type": "return",
+      "value": [Function],
+    },
+    {
+      "type": "return",
+      "value": [
+        {
+          "id": "loremIpsum",
+          "pending": [],
+          "type": "SET_PLATFORM_EXPORT_STATUS",
+        },
+      ],
+    },
+  ],
+  "notification": [
+    [
+      {
+        "swatchId": "swatch-exports-individual-status",
+        "title": "t(curiosity-toolbar.notifications_export_pending, {"context":"title","testId":"exportNotification-individual-pending"})",
+        "variant": "info",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`ToolbarFieldExport Component should allow and export, and expose polling status confirmation, failed notification 1`] = `
+{
+  "dispatch": [
+    {
+      "type": "return",
+      "value": {
+        "id": "loremIpsum",
+        "isPending": true,
+        "isSelectUpdated": true,
+        "pending": [
+          {
+            "format": undefined,
+          },
+        ],
+        "type": "SET_PLATFORM_EXPORT_STATUS",
+      },
+    },
+    {
+      "type": "return",
+      "value": [Function],
+    },
+    {
+      "type": "return",
+      "value": [
+        {
+          "id": "loremIpsum",
+          "pending": [],
+          "type": "SET_PLATFORM_EXPORT_STATUS",
+        },
+      ],
+    },
+  ],
+  "notification": [
+    [
+      {
+        "swatchId": "swatch-exports-individual-status",
+        "title": "t(curiosity-toolbar.notifications_export_pending, {"context":"title","testId":"exportNotification-individual-pending"})",
+        "variant": "info",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`ToolbarFieldExport Component should allow and export, and expose polling status confirmation, multi-status no notification 1`] = `
+{
+  "dispatch": [
+    {
+      "type": "return",
+      "value": {
+        "id": "loremIpsum",
+        "isPending": true,
+        "isSelectUpdated": true,
+        "pending": [
+          {
+            "format": undefined,
+          },
+        ],
+        "type": "SET_PLATFORM_EXPORT_STATUS",
+      },
+    },
+    {
+      "type": "return",
+      "value": [Function],
+    },
+    {
+      "type": "return",
+      "value": [
+        {
+          "id": "loremIpsum",
+          "pending": [],
+          "type": "SET_PLATFORM_EXPORT_STATUS",
+        },
+      ],
+    },
+  ],
+  "notification": [
+    [
+      {
+        "swatchId": "swatch-exports-individual-status",
+        "title": "t(curiosity-toolbar.notifications_export_pending, {"context":"title","testId":"exportNotification-individual-pending"})",
+        "variant": "info",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`ToolbarFieldExport Component should allow and export, and expose polling status confirmation, pending notification 1`] = `
+{
+  "dispatch": [
+    {
+      "type": "return",
+      "value": {
+        "id": "loremIpsum",
+        "isPending": true,
+        "isSelectUpdated": true,
+        "pending": [
+          {
+            "format": undefined,
+          },
+        ],
+        "type": "SET_PLATFORM_EXPORT_STATUS",
+      },
+    },
+    {
+      "type": "return",
+      "value": [Function],
+    },
+    {
+      "type": "return",
+      "value": [
+        {
+          "id": "loremIpsum",
+          "pending": [],
+          "type": "SET_PLATFORM_EXPORT_STATUS",
+        },
+      ],
+    },
+  ],
+  "notification": [
+    [
+      {
+        "swatchId": "swatch-exports-individual-status",
+        "title": "t(curiosity-toolbar.notifications_export_pending, {"context":"title","testId":"exportNotification-individual-pending"})",
+        "variant": "info",
+      },
+    ],
+  ],
+}
+`;
+
 exports[`ToolbarFieldExport Component should allow export service calls on existing exports: existingExports 1`] = `
 [
   [
@@ -65,28 +336,6 @@ exports[`ToolbarFieldExport Component should allow export service calls on exist
 ]
 `;
 
-exports[`ToolbarFieldExport Component should allow export service calls: createExport 1`] = `
-[
-  {
-    "type": "return",
-    "value": [
-      {
-        "id": "mock-product-id",
-        "isPending": true,
-        "isSelectUpdated": true,
-        "pending": [
-          {
-            "format": undefined,
-          },
-        ],
-        "type": "SET_PLATFORM_EXPORT_STATUS",
-      },
-      "dispatch => Promise.resolve(dispatch(...args))",
-    ],
-  },
-]
-`;
-
 exports[`ToolbarFieldExport Component should allow service calls on user confirmation: confirmation 1`] = `
 [
   [
@@ -101,39 +350,6 @@ exports[`ToolbarFieldExport Component should allow service calls on user confirm
       "ipsum",
       "dolor",
       "sit",
-    ],
-    {
-      "pendingCallback": [Function],
-    },
-  ],
-]
-`;
-
-exports[`ToolbarFieldExport Component should expose an export polling status confirmation: statusConfirmation 1`] = `
-[
-  [
-    [
-      {
-        "completed": [
-          {
-            "fileName": "helloWorldFileName",
-            "id": "helloWorld",
-          },
-        ],
-        "failed": [],
-        "id": "loremIpsum",
-        "isAnything": true,
-        "isCompleted": false,
-        "isFailed": undefined,
-        "isPending": true,
-        "pending": [
-          {
-            "fileName": "dolorSitFileName",
-            "id": "dolorSit",
-          },
-        ],
-        "type": "SET_PLATFORM_EXPORT_STATUS",
-      },
     ],
   ],
 ]

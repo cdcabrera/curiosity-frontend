@@ -37,7 +37,6 @@ const exportCache = new LRUCache({
  * @param {useAppLoad} options.useAppLoad
  * @param {storeHooks.reactRedux.useDispatch} options.useDispatch
  * @param {NotificationsContext.useNotifications} options.useNotifications
- * @param {useProduct} options.useProduct
  * @returns {Function}
  */
 const useExport = ({
@@ -45,16 +44,28 @@ const useExport = ({
   t = translate,
   useAppLoad: useAliasAppLoad = useAppLoad,
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
-  useNotifications: useAliasNotifications = NotificationsContext.useNotifications,
-  useProduct: useAliasProduct = useProduct
+  useNotifications: useAliasNotifications = NotificationsContext.useNotifications
 } = {}) => {
   const dispatch = useAliasDispatch();
   const confirmAppLoaded = useAliasAppLoad();
-  const { productId } = useAliasProduct();
   const { addNotification } = useAliasNotifications();
 
   return useCallback(
-    async (id, data) => {
+    async (productId, data) => {
+      if (!confirmAppLoaded()) {
+        return;
+      }
+
+      // assume default pending state
+      dispatch({
+        type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
+        id: productId,
+        isPending: true,
+        isSelectUpdated: true,
+        pending: [{ format: data?.[POST_TYPES.FORMAT] }]
+      });
+
+      // assume default pending notification
       addNotification({
         swatchId: 'swatch-exports-individual-status',
         variant: NotificationVariant.info,
@@ -64,21 +75,15 @@ const useExport = ({
         })
       });
 
-      dispatch({
-        type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
-        id,
-        isPending: true,
-        isSelectUpdated: true,
-        pending: [{ format: data?.[POST_TYPES.FORMAT] }]
-      });
-
       try {
-        const { value } = await dispatch(createAliasExport(id, data));
-        const { completed = [], isCompleted, isFailed, pending = [], failed = [] } = value?.data?.data || {};
-
-        if (!confirmAppLoaded()) {
-          return;
-        }
+        const { value } = await dispatch(createAliasExport(productId, data));
+        const {
+          completed = [],
+          isCompleted,
+          isFailed,
+          pending = [],
+          failed = []
+        } = value?.data?.data?.products?.[productId] || {};
 
         // Display completed or failed notifications
         if (isCompleted || isFailed) {
@@ -128,7 +133,7 @@ const useExport = ({
         dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
       }
     },
-    [addNotification, confirmAppLoaded, createAliasExport, dispatch, productId, t]
+    [addNotification, confirmAppLoaded, createAliasExport, dispatch, t]
   );
 };
 
@@ -158,15 +163,19 @@ const useExistingExportsConfirmation = ({
 
   return useCallback(
     async (confirmation, allResults) => {
-      removeNotification('swatch-exports-status');
+      if (!confirmAppLoaded()) {
+        return;
+      }
 
+      // clean up unused exports
       if (confirmation === 'no') {
         dispatch(deleteAliasExistingExports(allResults));
         return;
       }
 
+      // assume default pending notification
       addNotification({
-        swatchId: 'swatch-exports-existing-confirmation',
+        swatchId: 'swatch-exports-status',
         variant: NotificationVariant.info,
         title: t('curiosity-toolbar.notifications', {
           context: ['export', 'pending', 'titleGlobal'],
@@ -177,9 +186,9 @@ const useExistingExportsConfirmation = ({
       try {
         const { value } = await dispatch(getAliasExistingExports(allResults));
 
-        if (confirmAppLoaded() && value?.data?.data?.isAnything) {
+        if (value?.data?.data?.isAnything) {
           addNotification({
-            swatchId: 'swatch-exports-existing-confirmation',
+            swatchId: 'swatch-exports-status',
             variant: NotificationVariant.success,
             title: t('curiosity-toolbar.notifications', {
               context: ['export', 'completed', 'titleGlobal'],
@@ -194,7 +203,7 @@ const useExistingExportsConfirmation = ({
         }
       } catch (error) {
         addNotification({
-          swatchId: 'swatch-exports-existing-confirmation',
+          swatchId: 'swatch-exports-status',
           variant: NotificationVariant.warning,
           title: t('curiosity-toolbar.notifications', {
             context: ['export', 'error', 'title'],

@@ -1,6 +1,5 @@
 import {
   useExport,
-  useExportConfirmation,
   useExportStatus,
   useExistingExports,
   useExistingExportsConfirmation
@@ -31,45 +30,150 @@ describe('ToolbarFieldExport Component', () => {
     jest.clearAllMocks();
   });
 
-  it('should expose an export polling status confirmation', async () => {
-    const { result: statusConfirmation, unmount } = await renderHook(() =>
-      useExportConfirmation({
+  it.each([
+    {
+      description: 'app not loaded',
+      id: 'loremIpsum',
+      params: {
+        useAppLoad: () => () => false,
+        useProduct: () => ({
+          productId: 'loremIpsum'
+        })
+      },
+      data: {}
+    },
+    {
+      description: 'app loaded, no data',
+      id: 'loremIpsum',
+      params: {
         useAppLoad: () => () => true,
-        useProduct: () => ({ productId: 'loremIpsum' })
-      })
-    );
-
-    statusConfirmation({
+        useProduct: () => ({
+          productId: 'loremIpsum'
+        })
+      },
+      data: {}
+    },
+    {
+      description: 'app loaded, different product',
+      id: 'loremIpsum',
+      params: {
+        useAppLoad: () => () => true,
+        useProduct: () => ({
+          productId: 'loremIpsum'
+        })
+      },
       data: {
-        data: {
-          completed: [{ id: 'helloWorld', fileName: 'helloWorldFileName' }],
-          isAnything: true,
-          isCompleted: false,
-          isPending: true,
-          pending: [{ id: 'dolorSit', fileName: 'dolorSitFileName' }],
-          products: {
-            loremIpsum: {
-              completed: [{ id: 'helloWorld', fileName: 'helloWorldFileName' }],
-              isCompleted: false,
-              isPending: true,
-              pending: [{ id: 'dolorSit', fileName: 'dolorSitFileName' }]
-            }
+        products: {
+          dolorSit: {
+            isAnything: true
           }
         }
       }
-    });
+    },
+    {
+      description: 'pending notification',
+      id: 'loremIpsum',
+      params: {
+        useAppLoad: () => () => true,
+        useProduct: () => ({
+          productId: 'loremIpsum'
+        })
+      },
+      data: {
+        products: {
+          loremIpsum: {
+            isAnything: true
+          }
+        }
+      }
+    },
+    {
+      description: 'completed notification',
+      id: 'loremIpsum',
+      params: {
+        useAppLoad: () => () => true,
+        useProduct: () => ({
+          productId: 'loremIpsum'
+        })
+      },
+      data: {
+        products: {
+          loremIpsum: {
+            completed: [{ id: 'dolorSit', fileName: 'dolorSitFileName' }],
+            failed: [],
+            isAnything: true,
+            isCompleted: true,
+            isFailed: false,
+            isPending: false,
+            pending: []
+          }
+        }
+      }
+    },
+    {
+      description: 'failed notification',
+      id: 'loremIpsum',
+      params: {
+        useAppLoad: () => () => true,
+        useProduct: () => ({
+          productId: 'loremIpsum'
+        })
+      },
+      data: {
+        products: {
+          loremIpsum: {
+            completed: [],
+            failed: [{ id: 'dolorSit', fileName: 'dolorSitFileName' }],
+            isAnything: true,
+            isCompleted: false,
+            isFailed: true,
+            isPending: false,
+            pending: []
+          }
+        }
+      }
+    },
+    {
+      description: 'multi-status no notification',
+      id: 'loremIpsum',
+      params: {
+        useAppLoad: () => () => true,
+        useProduct: () => ({
+          productId: 'loremIpsum'
+        })
+      },
+      data: {
+        products: {
+          loremIpsum: {
+            completed: [{ id: 'loremIpsum', fileName: 'loremIpsumFileName' }],
+            failed: [{ id: 'dolorSit', fileName: 'dolorSitFileName' }],
+            isAnything: true,
+            isCompleted: false,
+            isFailed: false,
+            isPending: true,
+            pending: [{ id: 'helloWorld', fileName: 'helloWorldFileName' }]
+          }
+        }
+      }
+    }
+  ])('should allow and export, and expose polling status confirmation, $description', async ({ id, data, params }) => {
+    const mockNotification = jest.fn();
+    const { result: createExport, unmount } = await renderHook(() =>
+      useExport({
+        createExport: mockService,
+        useNotifications: () => ({
+          addNotification: mockNotification
+        }),
+        ...params
+      })
+    );
 
+    createExport(id, { data: { data } });
     await unmount();
-    expect(mockDispatch.mock.calls).toMatchSnapshot('statusConfirmation');
-  });
-
-  it('should allow export service calls', async () => {
-    const { result: createExport, unmount } = await renderHook(() => useExport({ createExport: mockService }));
-    createExport('mock-product-id', { data: { lorem: 'ipsum' } });
-
-    await unmount();
-    expect(mockService).toHaveBeenCalledTimes(1);
-    expect(mockDispatch.mock.results).toMatchSnapshot('createExport');
+    expect({
+      notification: mockNotification.mock.calls,
+      dispatch: mockDispatch.mock.results
+    }).toMatchSnapshot();
   });
 
   it('should allow export service calls on existing exports', async () => {
