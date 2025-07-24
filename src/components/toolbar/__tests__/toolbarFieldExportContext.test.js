@@ -156,11 +156,13 @@ describe('ToolbarFieldExport Component', () => {
         }
       }
     }
-  ])('should allow and export, and expose polling status confirmation, $description', async ({ id, data, params }) => {
+  ])('should allow and export, and expose polling status confirmation, $description', async ({ id, params, data }) => {
     const mockNotification = jest.fn();
+    const getService = jest.fn().mockReturnValue((data && { value: { data: { data } } }) || undefined);
+
     const { result: createExport, unmount } = await renderHook(() =>
       useExport({
-        createExport: mockService,
+        createExport: getService,
         useNotifications: () => ({
           addNotification: mockNotification
         }),
@@ -168,27 +170,93 @@ describe('ToolbarFieldExport Component', () => {
       })
     );
 
-    createExport(id, { data: { data } });
+    createExport(id);
     await unmount();
+
     expect({
+      getService: getService.mock.calls,
       notification: mockNotification.mock.calls,
       dispatch: mockDispatch.mock.results
     }).toMatchSnapshot();
   });
 
-  it('should allow service calls on user confirmation', async () => {
-    const { result: onConfirmation, unmount } = await renderHook(() =>
-      useExistingExportsConfirmation({
-        deleteExistingExports: mockService,
-        getExistingExports: mockService,
+  it.each([
+    {
+      description: 'app not loaded',
+      confirmation: 'yes',
+      exportResults: ['lorem', 'ipsum'],
+      params: {
+        useAppLoad: () => () => false
+      }
+    },
+    {
+      description: 'confirmation is no',
+      confirmation: 'no',
+      exportResults: ['dolor', 'sit'],
+      params: {
         useAppLoad: () => () => true
-      })
-    );
-    onConfirmation('no', ['dolor', 'sit']);
-    onConfirmation('yes', ['lorem', 'ipsum', 'dolor', 'sit']);
-    await unmount();
-    expect(mockService.mock.calls).toMatchSnapshot('confirmation');
-  });
+      }
+    },
+    {
+      description: 'confirmation is yes with empty results',
+      confirmation: 'yes',
+      exportResults: [],
+      params: {
+        useAppLoad: () => () => true
+      }
+    },
+    {
+      description: 'confirmation is yes with results',
+      confirmation: 'yes',
+      exportResults: ['lorem', 'ipsum', 'dolor', 'sit'],
+      params: {
+        useAppLoad: () => () => true
+      },
+      data: {
+        isAnything: true
+      }
+    },
+    {
+      description: 'confirmation is yes with no data in response',
+      confirmation: 'yes',
+      exportResults: ['lorem', 'ipsum'],
+      params: {
+        useAppLoad: () => () => true
+      },
+      data: {
+        isAnything: false
+      }
+    }
+  ])(
+    'should allow service calls on user confirmation, $description',
+    async ({ confirmation, exportResults, params, data }) => {
+      const mockNotification = jest.fn();
+      const getService = jest.fn().mockReturnValue((data && { value: { data: { data } } }) || undefined);
+      const deleteService = jest.fn();
+
+      const { result: onConfirmation, unmount } = await renderHook(() =>
+        useExistingExportsConfirmation({
+          deleteExistingExports: deleteService,
+          getExistingExports: getService,
+          useNotifications: () => ({
+            addNotification: mockNotification,
+            removeNotification: mockNotification
+          }),
+          ...params
+        })
+      );
+
+      onConfirmation(confirmation, exportResults);
+      await unmount();
+
+      expect({
+        getService: getService.mock.calls,
+        deleteService: deleteService.mock.calls,
+        notification: mockNotification.mock.calls,
+        dispatch: mockDispatch.mock.results
+      }).toMatchSnapshot();
+    }
+  );
 
   it('should allow export service calls on existing exports', async () => {
     const mockNotification = jest.fn();

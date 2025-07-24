@@ -18,7 +18,7 @@ import { helpers } from '../../common';
 /**
  * Cache store for confirming if the existing exports checked fired.
  *
- * If the page/UI is not refreshed the cache will reset after 5 minutes and allow subsequent checks.
+ * If the page/UI is not refreshed, the cache will reset after 5 minutes and allow future checks.
  *
  * @type {object}
  */
@@ -76,14 +76,14 @@ const useExport = ({
       });
 
       try {
-        const { value } = await dispatch(createAliasExport(productId, data));
+        const response = await dispatch(createAliasExport(productId, data));
         const {
           completed = [],
           isCompleted,
           isFailed,
           pending = [],
           failed = []
-        } = value?.data?.data?.products?.[productId] || {};
+        } = response?.value?.data?.data?.products?.[productId] || {};
 
         // Display completed or failed notifications
         if (isCompleted || isFailed) {
@@ -109,7 +109,7 @@ const useExport = ({
           });
         }
 
-        // Dispatch to update product specific dropdown display options for export loading/pending status
+        // Dispatch to reset product-specific dropdown display options for export loading/pending status
         dispatch([
           {
             type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
@@ -184,9 +184,9 @@ const useExistingExportsConfirmation = ({
       });
 
       try {
-        const { value } = await dispatch(getAliasExistingExports(allResults));
+        const response = await dispatch(getAliasExistingExports(allResults));
 
-        if (value?.data?.data?.isAnything) {
+        if (response?.value?.data?.data?.isAnything) {
           addNotification({
             swatchId: 'swatch-exports-status',
             variant: NotificationVariant.success,
