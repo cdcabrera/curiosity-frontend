@@ -176,6 +176,20 @@ describe('ToolbarFieldExport Component', () => {
     }).toMatchSnapshot();
   });
 
+  it('should allow service calls on user confirmation', async () => {
+    const { result: onConfirmation, unmount } = await renderHook(() =>
+      useExistingExportsConfirmation({
+        deleteExistingExports: mockService,
+        getExistingExports: mockService,
+        useAppLoad: () => () => true
+      })
+    );
+    onConfirmation('no', ['dolor', 'sit']);
+    onConfirmation('yes', ['lorem', 'ipsum', 'dolor', 'sit']);
+    await unmount();
+    expect(mockService.mock.calls).toMatchSnapshot('confirmation');
+  });
+
   it('should allow export service calls on existing exports', async () => {
     const mockNotification = jest.fn();
 
@@ -209,20 +223,6 @@ describe('ToolbarFieldExport Component', () => {
 
     await unmount();
     expect(mockNotification.mock.calls).toMatchSnapshot('existingExports');
-  });
-
-  it('should allow service calls on user confirmation', async () => {
-    const { result: onConfirmation, unmount } = await renderHook(() =>
-      useExistingExportsConfirmation({
-        deleteExistingExports: mockService,
-        getExistingExports: mockService,
-        useAppLoad: () => () => true
-      })
-    );
-    onConfirmation('no', ['dolor', 'sit']);
-    onConfirmation('yes', ['lorem', 'ipsum', 'dolor', 'sit']);
-    await unmount();
-    expect(mockService.mock.calls).toMatchSnapshot('confirmation');
   });
 
   it.each([
