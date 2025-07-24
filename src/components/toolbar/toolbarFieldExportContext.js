@@ -158,7 +158,8 @@ const useExistingExportsConfirmation = ({
       removeNotification('swatch-exports-status');
 
       if (confirmation === 'no') {
-        return dispatch(deleteAliasExistingExports(allResults));
+        dispatch(deleteAliasExistingExports(allResults));
+        return;
       }
 
       addNotification({
