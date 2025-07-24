@@ -64,76 +64,75 @@ const useExport = ({
         })
       });
 
-      dispatch([
-        {
-          type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
-          id,
-          isPending: true,
-          isSelectUpdated: true,
-          pending: [{ format: data?.[POST_TYPES.FORMAT] }]
-        },
-        createAliasExport(id, data).then(
-          ({ data: response } = {}) => {
-            const { completed = [], isCompleted, isFailed, pending = [], failed = [] } = response?.data || {};
+      dispatch({
+        type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
+        id,
+        isPending: true,
+        isSelectUpdated: true,
+        pending: [{ format: data?.[POST_TYPES.FORMAT] }]
+      });
 
-            if (!confirmAppLoaded()) {
-              return;
-            }
+      dispatch(createAliasExport(id, data)).then(
+        ({ value } = {}) => {
+          const { completed = [], isCompleted, isFailed, pending = [], failed = [] } = value?.data?.data || {};
 
-            // Display completed or failed notifications
-            if (isCompleted || isFailed) {
-              const exportVariant = (isFailed && NotificationVariant.danger) || NotificationVariant.success;
-              const exportStatus = (isFailed && 'failed') || 'completed';
-              const exportFile = (isFailed && failed?.[0]?.fileName) || completed?.[0]?.fileName;
+          if (!confirmAppLoaded()) {
+            return;
+          }
 
-              addNotification({
-                swatchId: 'swatch-exports-individual-status',
-                variant: exportVariant,
-                title: t('curiosity-toolbar.notifications', {
-                  context: ['export', exportStatus, 'title'],
-                  testId: `exportNotification-individual-${exportStatus}`
-                }),
-                description: t(
-                  'curiosity-toolbar.notifications',
-                  {
-                    context: ['export', exportStatus, 'description'],
-                    fileName: exportFile
-                  },
-                  [
-                    <Button
-                      isInline
-                      component="a"
-                      variant="link"
-                      target="_blank"
-                      href={helpers.UI_LINK_PLATFORM_STATUS}
-                    />
-                  ]
-                )
-              });
-            }
+          // Display completed or failed notifications
+          if (isCompleted || isFailed) {
+            const exportVariant = (isFailed && NotificationVariant.danger) || NotificationVariant.success;
+            const exportStatus = (isFailed && 'failed') || 'completed';
+            const exportFile = (isFailed && failed?.[0]?.fileName) || completed?.[0]?.fileName;
 
-            // Dispatch to update product specific dropdown display options for export loading/pending status
-            dispatch([
-              {
-                type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
-                id: productId,
-                pending
-              }
-            ]);
-          },
-          () =>
             addNotification({
-              variant: NotificationVariant.warning,
+              swatchId: 'swatch-exports-individual-status',
+              variant: exportVariant,
               title: t('curiosity-toolbar.notifications', {
-                context: ['export', 'error', 'title'],
-                testId: 'exportNotification-individual-error'
+                context: ['export', exportStatus, 'title'],
+                testId: `exportNotification-individual-${exportStatus}`
               }),
-              description: t('curiosity-toolbar.notifications', {
-                context: ['export', 'error', 'description']
-              })
+              description: t(
+                'curiosity-toolbar.notifications',
+                {
+                  context: ['export', exportStatus, 'description'],
+                  fileName: exportFile
+                },
+                [
+                  <Button
+                    isInline
+                    component="a"
+                    variant="link"
+                    target="_blank"
+                    href={helpers.UI_LINK_PLATFORM_STATUS}
+                  />
+                ]
+              )
+            });
+          }
+
+          // Dispatch to update product specific dropdown display options for export loading/pending status
+          dispatch([
+            {
+              type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
+              id: productId,
+              pending
+            }
+          ]);
+        },
+        () =>
+          addNotification({
+            variant: NotificationVariant.warning,
+            title: t('curiosity-toolbar.notifications', {
+              context: ['export', 'error', 'title'],
+              testId: 'exportNotification-individual-error'
+            }),
+            description: t('curiosity-toolbar.notifications', {
+              context: ['export', 'error', 'description']
             })
-        )
-      ]);
+          })
+      );
     },
     [addNotification, confirmAppLoaded, createAliasExport, dispatch, productId, t]
   );

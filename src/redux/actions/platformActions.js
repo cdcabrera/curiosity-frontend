@@ -36,17 +36,6 @@ const authorizeUser =
  * @param {object} callbacks Apply notification callbacks with options
  * @returns {Function}
  */
-const getExistingExportsCurrent =
-  (existingExports, callbacks = {}) =>
-  dispatch =>
-    dispatch({
-      type: platformTypes.GET_PLATFORM_EXPORT_EXISTING,
-      payload: platformServices.getExistingExports(existingExports),
-      meta: {
-        ...callbacks
-      }
-    });
-
 const getExistingExports =
   (existingExports, callbacks = {}) =>
   dispatch =>
@@ -104,14 +93,16 @@ const getExistingExportsStatus = callbacks => dispatch =>
 const createExport =
   (id, data = {}, options = {}, callbacks = {}) =>
   dispatch =>
-    dispatch({
-      type: platformTypes.SET_PLATFORM_EXPORT_CREATE,
-      payload: platformServices.postExport(data, options),
-      meta: {
-        id,
-        ...callbacks
-      }
-    });
+    Promise.resolve(
+      dispatch({
+        type: platformTypes.SET_PLATFORM_EXPORT_CREATE,
+        payload: platformServices.postExport(data, options),
+        meta: {
+          id,
+          ...callbacks
+        }
+      })
+    );
 
 const platformActions = {
   authorizeUser,
