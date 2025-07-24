@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useEffectOnce } from 'react-use';
+import { useMount, useUnmount } from 'react-use';
 import { Button } from '@patternfly/react-core';
 import { LRUCache } from 'lru-cache';
 import { reduxActions, reduxTypes, storeHooks } from '../../redux';
@@ -68,9 +68,7 @@ const useExport = ({
           data,
           {},
           {
-            pendingCallback: (...args) => {
-              console.log('>>>>>>>>>>>>>>>>>>>>>>> single pending callback', args);
-
+            pendingCallback: () =>
               addNotification({
                 swatchId: 'swatch-exports-individual-status',
                 variant: NotificationVariant.info,
@@ -78,10 +76,8 @@ const useExport = ({
                   context: ['export', 'pending', 'title'],
                   testId: 'exportNotification-individual-pending'
                 })
-              });
-            },
-            rejectCallback: (...args) => {
-              console.log('>>>>>>>>>>>>>>>>>>>>>>> single reject callback', args);
+              }),
+            rejectCallback: () =>
               addNotification({
                 variant: NotificationVariant.warning,
                 title: t('curiosity-toolbar.notifications', {
@@ -91,11 +87,9 @@ const useExport = ({
                 description: t('curiosity-toolbar.notifications', {
                   context: ['export', 'error', 'description']
                 })
-              });
-            },
-            resolveCallback: ({ payload } = {}) => {
-              console.log('>>>>>>>>>>>>>>>>>>>>>>> single resolve callback', payload);
-              const { completed = [], isCompleted, isFailed, pending = [], failed = [] } = payload?.data?.data || {};
+              }),
+            resolveCallback: ({ data: response } = {}) => {
+              const { completed = [], isCompleted, isFailed, pending = [], failed = [] } = response?.data || {};
 
               if (!confirmAppLoaded()) {
                 return;
@@ -183,8 +177,7 @@ const useExistingExportsConfirmation = ({
       }
 
       return getAliasExistingExports(allResults, {
-        pendingCallback: (...args) => {
-          console.log('>>>>>>>>>>>>>>>>>>>>>>> pending callback', args);
+        pendingCallback: () =>
           addNotification({
             swatchId: 'swatch-exports-existing-confirmation',
             variant: NotificationVariant.info,
@@ -192,10 +185,8 @@ const useExistingExportsConfirmation = ({
               context: ['export', 'pending', 'titleGlobal'],
               testId: 'exportNotification-existing-pending'
             })
-          });
-        },
-        rejectCallback: (...args) => {
-          console.log('>>>>>>>>>>>>>>>>>>>>>>> reject callback', args);
+          }),
+        rejectCallback: () =>
           addNotification({
             variant: NotificationVariant.warning,
             title: t('curiosity-toolbar.notifications', {
@@ -205,11 +196,9 @@ const useExistingExportsConfirmation = ({
             description: t('curiosity-toolbar.notifications', {
               context: ['export', 'error', 'description']
             })
-          });
-        },
-        resolveCallback: ({ payload } = {}) => {
-          console.log('>>>>>>>>>>>>>>>>>>>>>>> resolve callback', payload);
-          if (confirmAppLoaded() && payload?.data?.data?.isAnything) {
+          }),
+        resolveCallback: ({ data: response } = {}) => {
+          if (confirmAppLoaded() && response?.data?.isAnything) {
             addNotification({
               swatchId: 'swatch-exports-existing-confirmation',
               variant: NotificationVariant.success,
@@ -263,29 +252,27 @@ const useExistingExports = ({
   const dispatch = useAliasDispatch();
   const { addNotification, removeNotification, hasNotification } = useAliasNotifications();
   const onConfirmation = useAliasExistingExportsConfirmation();
-  const { data, fulfilled } = useAliasSelectorsResponse(({ app }) => app?.exportsExisting);
+  const { data } = useAliasSelectorsResponse(({ app }) => app?.exportsExisting);
   const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
   const hasCache = cache.get('isExistingExports');
 
-  useEffectOnce(() => {
+  useMount(() => {
     if (!hasCache) {
       dispatch(getAliasExistingExportsStatus());
     }
+  });
 
-    return () => {
-      removeNotification('swatch-exports-status');
-      // dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
-    };
+  useUnmount(() => {
+    removeNotification('swatch-exports-status');
   });
 
   useEffect(() => {
     const isAnythingAvailable = isAnythingCompleted || isAnythingPending || false;
     const totalResults = completed.length + pending.length;
-    // Confirm existing toast IDs for "toast pending/success" OR "existing toast message".
     const isExistingNotifications =
       hasNotification('swatch-exports-individual-status') || hasNotification('swatch-exports-status');
 
-    if (!hasCache && isAnythingAvailable && totalResults && !isExistingNotifications) {
+    if (!hasCache && !isExistingNotifications && isAnythingAvailable && totalResults) {
       cache.set('isExistingExports', true);
 
       addNotification({
@@ -332,18 +319,17 @@ const useExistingExports = ({
         autoDismiss: false,
         dismissable: false
       });
-      // dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     addNotification,
     completed,
-    fulfilled,
+    hasCache,
     hasNotification,
     isAnythingCompleted,
     isAnythingPending,
     onConfirmation,
     pending,
-    removeNotification,
     t
   ]);
 };

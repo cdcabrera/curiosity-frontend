@@ -162,13 +162,6 @@ const createPromise = ({
           : {})
       });
 
-      const handlePending = param => {
-        if (META?.pendingCallback && typeof META.pendingCallback === 'function') {
-          // dispatch(META.pendingCallback(param));
-          dispatch({ type: `PENDING_CALLBACK`, payload: META.pendingCallback() });
-        }
-      };
-
       const handleReject = reason => {
         const rejectedAction = getAction(reason, true);
 
@@ -177,13 +170,6 @@ const createPromise = ({
         }
 
         dispatch(rejectedAction);
-
-        /*
-        if (META?.rejectCallback && typeof META.rejectCallback === 'function') {
-          // dispatch(META.rejectCallback(reason));
-          dispatch({ type: `${rejectedAction.type}_CALLBACK`, payload: META.resolveCallback(reason) });
-        }
-        */
 
         if (isCatchRejection === false) {
           throw reason;
@@ -198,12 +184,6 @@ const createPromise = ({
         }
 
         dispatch(resolvedAction);
-
-        /*
-        if (META?.resolveCallback && typeof META.resolveCallback === 'function') {
-          dispatch({ type: `${resolvedAction.type}_CALLBACK`, payload: META.resolveCallback(value) });
-        }
-         */
 
         return { value, action: resolvedAction };
       };
