@@ -55,6 +55,15 @@ const useExport = ({
 
   return useCallback(
     (id, data) => {
+      addNotification({
+        swatchId: 'swatch-exports-individual-status',
+        variant: NotificationVariant.info,
+        title: t('curiosity-toolbar.notifications', {
+          context: ['export', 'pending', 'title'],
+          testId: 'exportNotification-individual-pending'
+        })
+      });
+
       dispatch([
         {
           type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
@@ -63,80 +72,66 @@ const useExport = ({
           isSelectUpdated: true,
           pending: [{ format: data?.[POST_TYPES.FORMAT] }]
         },
-        createAliasExport(
-          id,
-          data,
-          {},
-          {
-            pendingCallback: () =>
+        createAliasExport(id, data).then(
+          ({ data: response } = {}) => {
+            const { completed = [], isCompleted, isFailed, pending = [], failed = [] } = response?.data || {};
+
+            if (!confirmAppLoaded()) {
+              return;
+            }
+
+            // Display completed or failed notifications
+            if (isCompleted || isFailed) {
+              const exportVariant = (isFailed && NotificationVariant.danger) || NotificationVariant.success;
+              const exportStatus = (isFailed && 'failed') || 'completed';
+              const exportFile = (isFailed && failed?.[0]?.fileName) || completed?.[0]?.fileName;
+
               addNotification({
                 swatchId: 'swatch-exports-individual-status',
-                variant: NotificationVariant.info,
+                variant: exportVariant,
                 title: t('curiosity-toolbar.notifications', {
-                  context: ['export', 'pending', 'title'],
-                  testId: 'exportNotification-individual-pending'
-                })
-              }),
-            rejectCallback: () =>
-              addNotification({
-                variant: NotificationVariant.warning,
-                title: t('curiosity-toolbar.notifications', {
-                  context: ['export', 'error', 'title'],
-                  testId: 'exportNotification-individual-error'
+                  context: ['export', exportStatus, 'title'],
+                  testId: `exportNotification-individual-${exportStatus}`
                 }),
-                description: t('curiosity-toolbar.notifications', {
-                  context: ['export', 'error', 'description']
-                })
-              }),
-            resolveCallback: ({ data: response } = {}) => {
-              const { completed = [], isCompleted, isFailed, pending = [], failed = [] } = response?.data || {};
-
-              if (!confirmAppLoaded()) {
-                return;
-              }
-
-              // Display completed or failed notifications
-              if (isCompleted || isFailed) {
-                const exportVariant = (isFailed && NotificationVariant.danger) || NotificationVariant.success;
-                const exportStatus = (isFailed && 'failed') || 'completed';
-                const exportFile = (isFailed && failed?.[0]?.fileName) || completed?.[0]?.fileName;
-
-                addNotification({
-                  swatchId: 'swatch-exports-individual-status',
-                  variant: exportVariant,
-                  title: t('curiosity-toolbar.notifications', {
-                    context: ['export', exportStatus, 'title'],
-                    testId: `exportNotification-individual-${exportStatus}`
-                  }),
-                  description: t(
-                    'curiosity-toolbar.notifications',
-                    {
-                      context: ['export', exportStatus, 'description'],
-                      fileName: exportFile
-                    },
-                    [
-                      <Button
-                        isInline
-                        component="a"
-                        variant="link"
-                        target="_blank"
-                        href={helpers.UI_LINK_PLATFORM_STATUS}
-                      />
-                    ]
-                  )
-                });
-              }
-
-              // Dispatch to update product specific dropdown display options for export loading/pending status
-              dispatch([
-                {
-                  type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
-                  id: productId,
-                  pending
-                }
-              ]);
+                description: t(
+                  'curiosity-toolbar.notifications',
+                  {
+                    context: ['export', exportStatus, 'description'],
+                    fileName: exportFile
+                  },
+                  [
+                    <Button
+                      isInline
+                      component="a"
+                      variant="link"
+                      target="_blank"
+                      href={helpers.UI_LINK_PLATFORM_STATUS}
+                    />
+                  ]
+                )
+              });
             }
-          }
+
+            // Dispatch to update product specific dropdown display options for export loading/pending status
+            dispatch([
+              {
+                type: reduxTypes.platform.SET_PLATFORM_EXPORT_STATUS,
+                id: productId,
+                pending
+              }
+            ]);
+          },
+          () =>
+            addNotification({
+              variant: NotificationVariant.warning,
+              title: t('curiosity-toolbar.notifications', {
+                context: ['export', 'error', 'title'],
+                testId: 'exportNotification-individual-error'
+              }),
+              description: t('curiosity-toolbar.notifications', {
+                context: ['export', 'error', 'description']
+              })
+            })
         )
       ]);
     },
@@ -176,29 +171,19 @@ const useExistingExportsConfirmation = ({
         return dispatch(deleteAliasExistingExports(allResults));
       }
 
-      return getAliasExistingExports(allResults, {
-        pendingCallback: () =>
-          addNotification({
-            swatchId: 'swatch-exports-existing-confirmation',
-            variant: NotificationVariant.info,
-            title: t('curiosity-toolbar.notifications', {
-              context: ['export', 'pending', 'titleGlobal'],
-              testId: 'exportNotification-existing-pending'
-            })
-          }),
-        rejectCallback: () =>
-          addNotification({
-            variant: NotificationVariant.warning,
-            title: t('curiosity-toolbar.notifications', {
-              context: ['export', 'error', 'title'],
-              testId: 'exportNotification-existing-error'
-            }),
-            description: t('curiosity-toolbar.notifications', {
-              context: ['export', 'error', 'description']
-            })
-          }),
-        resolveCallback: ({ data: response } = {}) => {
-          if (confirmAppLoaded() && response?.data?.isAnything) {
+      addNotification({
+        swatchId: 'swatch-exports-existing-confirmation',
+        variant: NotificationVariant.info,
+        title: t('curiosity-toolbar.notifications', {
+          context: ['export', 'pending', 'titleGlobal'],
+          testId: 'exportNotification-existing-pending'
+        })
+      });
+
+      return dispatch(getAliasExistingExports(allResults)).then(
+        ({ value } = {}) => {
+          console.log('>>>>>>>> response', value);
+          if (confirmAppLoaded() && value?.data?.data?.isAnything) {
             addNotification({
               swatchId: 'swatch-exports-existing-confirmation',
               variant: NotificationVariant.success,
@@ -213,8 +198,19 @@ const useExistingExportsConfirmation = ({
               })
             });
           }
-        }
-      })(dispatch);
+        },
+        () =>
+          addNotification({
+            variant: NotificationVariant.warning,
+            title: t('curiosity-toolbar.notifications', {
+              context: ['export', 'error', 'title'],
+              testId: 'exportNotification-existing-error'
+            }),
+            description: t('curiosity-toolbar.notifications', {
+              context: ['export', 'error', 'description']
+            })
+          })
+      );
     },
     [
       addNotification,

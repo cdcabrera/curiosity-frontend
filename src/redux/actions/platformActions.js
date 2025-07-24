@@ -36,7 +36,7 @@ const authorizeUser =
  * @param {object} callbacks Apply notification callbacks with options
  * @returns {Function}
  */
-const getExistingExports =
+const getExistingExportsCurrent =
   (existingExports, callbacks = {}) =>
   dispatch =>
     dispatch({
@@ -46,6 +46,19 @@ const getExistingExports =
         ...callbacks
       }
     });
+
+const getExistingExports =
+  (existingExports, callbacks = {}) =>
+  dispatch =>
+    Promise.resolve(
+      dispatch({
+        type: platformTypes.GET_PLATFORM_EXPORT_EXISTING,
+        payload: platformServices.getExistingExports(existingExports),
+        meta: {
+          ...callbacks
+        }
+      })
+    );
 
 /**
  * Delete all existing exports. Includes toast notifications through the callbacks parameter
