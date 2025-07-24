@@ -159,7 +159,7 @@ const useExistingExportsConfirmation = ({
 } = {}) => {
   const dispatch = useAliasDispatch();
   const confirmAppLoaded = useAliasAppLoad();
-  const { addNotification, removeNotification } = useAliasNotifications();
+  const { addNotification } = useAliasNotifications();
 
   return useCallback(
     async (confirmation, allResults) => {
@@ -217,15 +217,7 @@ const useExistingExportsConfirmation = ({
         dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
       }
     },
-    [
-      addNotification,
-      confirmAppLoaded,
-      dispatch,
-      deleteAliasExistingExports,
-      getAliasExistingExports,
-      removeNotification,
-      t
-    ]
+    [addNotification, confirmAppLoaded, dispatch, deleteAliasExistingExports, getAliasExistingExports, t]
   );
 };
 
