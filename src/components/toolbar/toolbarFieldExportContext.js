@@ -69,6 +69,8 @@ const useExport = ({
           {},
           {
             pendingCallback: (...args) => {
+              console.log('>>>>>>>>>>>>>>>>>>>>>>> single pending callback', args);
+
               addNotification({
                 swatchId: 'swatch-exports-individual-status',
                 variant: NotificationVariant.info,
@@ -78,7 +80,8 @@ const useExport = ({
                 })
               });
             },
-            rejectCallback: () =>
+            rejectCallback: (...args) => {
+              console.log('>>>>>>>>>>>>>>>>>>>>>>> single reject callback', args);
               addNotification({
                 variant: NotificationVariant.warning,
                 title: t('curiosity-toolbar.notifications', {
@@ -88,8 +91,10 @@ const useExport = ({
                 description: t('curiosity-toolbar.notifications', {
                   context: ['export', 'error', 'description']
                 })
-              }),
+              });
+            },
             resolveCallback: ({ payload } = {}) => {
+              console.log('>>>>>>>>>>>>>>>>>>>>>>> single resolve callback', payload);
               const { completed = [], isCompleted, isFailed, pending = [], failed = [] } = payload?.data?.data || {};
 
               if (!confirmAppLoaded()) {
@@ -178,7 +183,8 @@ const useExistingExportsConfirmation = ({
       }
 
       return getAliasExistingExports(allResults, {
-        pendingCallback: () =>
+        pendingCallback: (...args) => {
+          console.log('>>>>>>>>>>>>>>>>>>>>>>> pending callback', args);
           addNotification({
             swatchId: 'swatch-exports-existing-confirmation',
             variant: NotificationVariant.info,
@@ -186,8 +192,10 @@ const useExistingExportsConfirmation = ({
               context: ['export', 'pending', 'titleGlobal'],
               testId: 'exportNotification-existing-pending'
             })
-          }),
-        rejectCallback: () =>
+          });
+        },
+        rejectCallback: (...args) => {
+          console.log('>>>>>>>>>>>>>>>>>>>>>>> reject callback', args);
           addNotification({
             variant: NotificationVariant.warning,
             title: t('curiosity-toolbar.notifications', {
@@ -197,8 +205,10 @@ const useExistingExportsConfirmation = ({
             description: t('curiosity-toolbar.notifications', {
               context: ['export', 'error', 'description']
             })
-          }),
+          });
+        },
         resolveCallback: ({ payload } = {}) => {
+          console.log('>>>>>>>>>>>>>>>>>>>>>>> resolve callback', payload);
           if (confirmAppLoaded() && payload?.data?.data?.isAnything) {
             addNotification({
               swatchId: 'swatch-exports-existing-confirmation',
@@ -255,15 +265,16 @@ const useExistingExports = ({
   const onConfirmation = useAliasExistingExportsConfirmation();
   const { data, fulfilled } = useAliasSelectorsResponse(({ app }) => app?.exportsExisting);
   const { completed = [], isAnythingPending, isAnythingCompleted, pending = [] } = data?.[0]?.data || {};
+  const hasCache = cache.get('isExistingExports');
 
   useEffectOnce(() => {
-    if (!cache.get('isExistingExports')) {
+    if (!hasCache) {
       dispatch(getAliasExistingExportsStatus());
     }
 
     return () => {
       removeNotification('swatch-exports-status');
-      dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
+      // dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
     };
   });
 
@@ -274,8 +285,9 @@ const useExistingExports = ({
     const isExistingNotifications =
       hasNotification('swatch-exports-individual-status') || hasNotification('swatch-exports-status');
 
-    if (isAnythingAvailable && totalResults && !isExistingNotifications) {
+    if (!hasCache && isAnythingAvailable && totalResults && !isExistingNotifications) {
       cache.set('isExistingExports', true);
+
       addNotification({
         swatchId: 'swatch-exports-status',
         title: t('curiosity-toolbar.notifications', {
@@ -320,12 +332,11 @@ const useExistingExports = ({
         autoDismiss: false,
         dismissable: false
       });
-      dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
+      // dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
     }
   }, [
     addNotification,
     completed,
-    dispatch,
     fulfilled,
     hasNotification,
     isAnythingCompleted,
