@@ -20,7 +20,6 @@ const initialState = {
   auth: {},
   billingAccounts: {},
   errors: {},
-  export: {},
   exports: {},
   exportsExisting: {},
   locale: {},
@@ -106,10 +105,6 @@ const appReducer = (state = initialState, action) => {
         [
           { ref: 'locale', type: appTypes.USER_LOCALE },
           { ref: 'optin', type: [appTypes.DELETE_USER_OPTIN, appTypes.GET_USER_OPTIN, appTypes.UPDATE_USER_OPTIN] },
-          {
-            ref: 'export',
-            type: [platformTypes.SET_PLATFORM_EXPORT_CREATE, platformTypes.GET_PLATFORM_EXPORT_EXISTING]
-          },
           { ref: 'exportsExisting', type: platformTypes.SET_PLATFORM_EXPORT_EXISTING_STATUS },
           { ref: 'auth', type: platformTypes.PLATFORM_USER_AUTH },
           { ref: 'billingAccounts', type: rhsmTypes.GET_BILLING_ACCOUNTS_RHSM }

@@ -114,6 +114,7 @@ const useExport = ({
         ]);
       } catch (error) {
         addNotification({
+          swatchId: 'swatch-exports-individual-status',
           variant: NotificationVariant.warning,
           title: t('curiosity-toolbar.notifications', {
             context: ['export', 'error', 'title'],
@@ -123,6 +124,8 @@ const useExport = ({
             context: ['export', 'error', 'description']
           })
         });
+
+        dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
       }
     },
     [addNotification, confirmAppLoaded, createAliasExport, dispatch, productId, t]
@@ -173,7 +176,7 @@ const useExistingExportsConfirmation = ({
 
       try {
         const { value } = await dispatch(getAliasExistingExports(allResults));
-        console.log('>>>>>>>> response', value);
+
         if (confirmAppLoaded() && value?.data?.data?.isAnything) {
           addNotification({
             swatchId: 'swatch-exports-existing-confirmation',
@@ -191,6 +194,7 @@ const useExistingExportsConfirmation = ({
         }
       } catch (error) {
         addNotification({
+          swatchId: 'swatch-exports-existing-confirmation',
           variant: NotificationVariant.warning,
           title: t('curiosity-toolbar.notifications', {
             context: ['export', 'error', 'title'],
@@ -200,6 +204,8 @@ const useExistingExportsConfirmation = ({
             context: ['export', 'error', 'description']
           })
         });
+
+        dispatch([{ type: reduxTypes.platform.SET_PLATFORM_EXPORT_RESET }]);
       }
     },
     [
