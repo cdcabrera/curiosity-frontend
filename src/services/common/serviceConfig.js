@@ -113,6 +113,7 @@ const axiosServiceCall = async (
 
   // if cached response return
   if (updatedConfig.cacheResponse === true) {
+    console.log('>>>> CONFIRM CACHE ISN"T FIREING', updatedConfig);
     const cachedResponse = responseCache.get(cacheId);
 
     if (cachedResponse) {
