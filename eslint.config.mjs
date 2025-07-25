@@ -17,11 +17,15 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import airbnbConfig from './config/eslint.config.airbnb.mjs';
 
-// Note: Using eslint-plugin-json for JSON linting
-// This plugin uses a processor to parse JSON files and report errors
+/*
+ * Note: Using eslint-plugin-json for JSON linting
+ * This plugin uses a processor to parse JSON files and report errors
+ */
 
-// Note: The comment length plugin is now directly included in the main configuration
-// and doesn't need a separate variable
+/*
+ * Note: The comment length plugin is now directly included in the main configuration
+ * and doesn't need a separate variable
+ */
 
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
