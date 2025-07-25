@@ -34,10 +34,10 @@ const productConfigs = (() => {
      */
     if (process.env.REACT_APP_ENV === 'test' && require) {
       return [
-        ...require('fs') // eslint-disable-line no-unsafe-optional-chaining, global-require
+        ...require('fs') // eslint-disable-line no-unsafe-optional-chaining, n/global-require
           ?.readdirSync('./src/config')
           ?.filter(file => /product\.[a-z]+\.js/i.test(file))
-          ?.map(file => require(`./${file}`)) // eslint-disable-line global-require, import/no-dynamic-require
+          ?.map(file => require(`./${file}`)) // eslint-disable-line n/global-require, import/no-dynamic-require
       ];
     }
 
