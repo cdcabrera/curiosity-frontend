@@ -11,35 +11,27 @@ import nodePlugin from 'eslint-plugin-n';
 import importPlugin from 'eslint-plugin-import';
 import eslintPluginJs from '@eslint/js';
 // Not using JSON plugin since we're excluding JSON files from linting
-// import eslintPluginJson from '@eslint/json';
+// import jsonPlugin from '@eslint/json';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import airbnbConfig from './config/eslint.config.airbnb.mjs';
 
 // Note: We're excluding JSON files from linting entirely instead of trying to configure them
-// This is a pragmatic solution after multiple attempts to configure JSON linting
-
-/*
-export default [
-  includeIgnoreFile(join(process.cwd(), '.gitignore')),
-  json
-];
-*/
+// This is a pragmatic solution after multiple attempts to configure JSON linting with the @eslint/json plugin
+// The plugin appears to have compatibility issues with the current project setup
 
 // Note: The comment length plugin is now directly included in the main configuration
 // and doesn't need a separate variable
 
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
+
   // Exclude JSON files from linting entirely
   {
     ignores: ['**/*.json']
   },
   stylisticJsPlugin.configs.all,
-  // eslintPluginJson.configs.recommended,
-  // commentLengthPlugin.configs['flat/recommended'],
-  // commentLength,
   jestPlugin.configs['flat/recommended'],
   jsdocPlugin.configs['flat/recommended'],
   jsxA11yPlugin.flatConfigs.recommended,
