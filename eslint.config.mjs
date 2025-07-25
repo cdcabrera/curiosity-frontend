@@ -10,27 +10,21 @@ import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import nodePlugin from 'eslint-plugin-n';
 import importPlugin from 'eslint-plugin-import';
 import eslintPluginJs from '@eslint/js';
-// Not using JSON plugin since we're excluding JSON files from linting
-// import jsonPlugin from '@eslint/json';
+// Using eslint-plugin-json for JSON linting
+import jsonPlugin from 'eslint-plugin-json';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import airbnbConfig from './config/eslint.config.airbnb.mjs';
 
-// Note: We're excluding JSON files from linting entirely instead of trying to configure them
-// This is a pragmatic solution after multiple attempts to configure JSON linting with the @eslint/json plugin
-// The plugin appears to have compatibility issues with the current project setup
+// Note: Using eslint-plugin-json for JSON linting
+// This plugin uses a processor to parse JSON files and report errors
 
 // Note: The comment length plugin is now directly included in the main configuration
 // and doesn't need a separate variable
 
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
-
-  // Exclude JSON files from linting entirely
-  {
-    ignores: ['**/*.json']
-  },
   stylisticJsPlugin.configs.all,
   jestPlugin.configs['flat/recommended'],
   jsdocPlugin.configs['flat/recommended'],
@@ -42,20 +36,8 @@ export default [
   reactHooksPlugin.configs['recommended-latest'],
   ...airbnbConfig,
   prettierPlugin,
-  // {
-  //  files: ['public/** /*.json', 'src/** /*.json'],
-  //  plugins: {
-  //    json: eslintPluginJson
-  //  }
-  // },
-  // {
-  //  files: ['public/**/*.json', 'src/**/*.json'],
-  //  ...eslintPluginJson.configs.recommended
-  // },
-  // {
-  // files: ['public/**/*.js', 'src/**/*.js'],
-  // ...commentLengthPlugin.configs['flat/recommended'].rules
-  // },
+  // JSON configuration
+  jsonPlugin.configs.recommended,
   {
     plugins: {
       'comment-length': commentLengthPlugin
