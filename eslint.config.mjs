@@ -10,22 +10,11 @@ import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import nodePlugin from 'eslint-plugin-n';
 import importPlugin from 'eslint-plugin-import';
 import eslintPluginJs from '@eslint/js';
-// Using eslint-plugin-json for JSON linting
 import jsonPlugin from 'eslint-plugin-json';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import airbnbConfig from './config/eslint.config.airbnb.mjs';
-
-/*
- * Note: Using eslint-plugin-json for JSON linting
- * This plugin uses a processor to parse JSON files and report errors
- */
-
-/*
- * Note: The comment length plugin is now directly included in the main configuration
- * and doesn't need a separate variable
- */
 
 export default [
   includeIgnoreFile(join(process.cwd(), '.gitignore')),
@@ -40,14 +29,11 @@ export default [
   reactHooksPlugin.configs['recommended-latest'],
   ...airbnbConfig,
   prettierPlugin,
-  // JSON configuration
   jsonPlugin.configs.recommended,
   {
     plugins: {
       'comment-length': commentLengthPlugin
     },
-    // JSON files are handled by the json configuration
-    // ignores: ['**/*.json'],
     languageOptions: {
       parserOptions: {
         ecmaVersion: 2022,
