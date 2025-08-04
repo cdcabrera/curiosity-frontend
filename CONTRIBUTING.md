@@ -681,7 +681,7 @@ To update snapshots from the terminal run
 <details>
 <summary><h3 style="display: inline-block">Guidelines</h3></summary>
 
-If you're using an AI assistant to help with development in this repository, please direct it to review the `GUIDELINES.md` file first to ensure it follows the project's conventions and best practices.
+If you're using an AI assistant to help with development in this repository, please prompt it to `> review the repo guidelines` first to ensure it follows the project's conventions and best practices.
 
 #### User Section
 
@@ -689,15 +689,11 @@ Current agent interaction can be triggered with the chat command
 
 - **`review the repo guidelines`** - Your agent should attempt to scan common files like `README.md` and `CONTRIBUTING.md`
 
-You can then leverage the agent, through chat, to help you do common tasks like add a product configuration:
-
-- **`/workflow product`** - Typing this in agent chat should trigger adding a product configuration through a question/answer sequence.
-
 ##### Customizing developer experience
 
-As developers, we often have our own flavor of working, and now that includes with AI agents. To that point we've added agent guidance
+As developers, we often have our own flavor of working, and now that includes working with AI agents. To that point we've added agent guidance
 to allow customization through a gitignored directory `./.agent` in the root of the project. If you, as a developer, come across
 refinements that are unique to you, feel free to ask the agent to save guidance there. And if you think it's something that can be refined
-for all developers, you're encouraged to contribute it back.
+for all developers, you're encouraged to contribute it back towards the [guidelines directory](./guidelines).
 
 </details>

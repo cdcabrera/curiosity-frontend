@@ -74,9 +74,10 @@ Agents must analyze these files when asked for guidance:
 
 The guidelines system should be processed in this order, with specialized guidelines taking precedence for their specific domains, and local guidelines overriding general guidelines when present.
 
-**Next Step:**
-5. **review guidance under the `./.agent/**/*.md` directory.** If the `./.agent` directory does not exist, create it. The user may ask the agent about the guidance located here.
+**Next Steps:**
+5. **Review guidance under the `./.agent/**/*.md` directory.** If the `./.agent` directory exists, the user may ask the agent about the guidance located here.
+6. **If the `./.agent` directory does not exist, ask the user if they want to create it.** Agents should explain how it's going to be used.
 
 **Final Steps:**
-6. **Ask the user if they want to index this repo and create a `code-summary.md` summary of agent notes and user summary under the `.agent/` directory and explain what it is.** This file should be used as an indexed repo resource for agents with a user-friendly summary.
+7. **Ask the user if they want to index this repo and create a `code-summary.md` summary of agent notes and user summary under the `.agent/` directory and explain what it is.** This file should be used as an indexed repo resource for agents with a user-friendly summary.
 -->

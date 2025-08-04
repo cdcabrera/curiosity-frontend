@@ -21,7 +21,8 @@ The agent guidelines in this directory provide structured approaches for common 
 Activating agent-based workflows and automation has been centered around the use of keyword prompts.
 
 ##### Available Prompts
-- **Setup a product configuration** - `/workflow product`
+
+TBD.
 
 #### Code Standards
 
@@ -48,15 +49,7 @@ Process guidelines in the order listed below, with specialized guidelines taking
 
 ### Available Guidelines
 
-#### Product Configuration
-- **File**: `adding-product-configs.md`
-- **Version**: 1.0.0
-- **Priority**: 3 (High)
-- **Applies To**: `*.js`, `config/*.js`, `*.json`
-- **Contexts**: `development`, `product-config`
-- **Key Concepts**: `payg`, `pay-as-you-go`, `hourly`, `on-demand`, `annual`, `product`, `product-config`
-- **Trigger Prefixes**: `/workflow product`
-- **Description**: Comprehensive guide for adding PAYG, on-demand, and annual product variants with interactive sequential question process, implementation patterns, and validation steps
+TBD.
 
 ### Core Agent Behavior Standards
 
