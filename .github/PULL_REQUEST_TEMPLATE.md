@@ -5,7 +5,7 @@
 <!-- ### Notes -->
 <!--
 - Any issues that aren't resolved by this merge request, or things of note? 
-- Did you use an AI Agent to help with this work? By contributing, AI-assisted, or generated, work, you accept liability for work that infringes or uses copyrighted material outside the related license. Please follow ./CONTRIBUTING.md guidelines (see bottom of the file). 
+- Did you use an AI Agent to help with this work? By contributing AI-assisted or AI-generated work, you accept liability for work that infringes or uses copyrighted material outside the scope of the related license. Please follow ./CONTRIBUTING.md guidelines (see bottom of the file). 
 -->
 <!--
 - This is bot-created work, I am but a passenger on this wild-ride. AI agent tooling and model leveraged are:

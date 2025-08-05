@@ -710,6 +710,6 @@ To help us minimally keep track of assisted contributions and pure generated wor
 | Partial Bot   | Just use the `bot-assisted` PR/MR label.                                                                                                                                                                                     |
 | Full Bot      | Use the `bot-created` PR/MR label. And make sure your PR/MR contains notes about the tooling used. The work will be blocked if this information is not included, vague, or appears to be coming from an unknown bot-account. |
 
-> By contributing, AI-assisted, or generated, work, you accept liability for work that infringes or uses copyrighted material outside the related license.  
+> By contributing AI-assisted or AI-generated work, you accept liability for work that infringes or uses copyrighted material outside the scope of the related license.  
 
 </details>
