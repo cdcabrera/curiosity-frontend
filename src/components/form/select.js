@@ -165,32 +165,35 @@ updateSelectedOptions.memo = helpers.memo(updateSelectedOptions, { cacheLimit: 2
  * @param {SelectVariant|string} params.variant
  * @returns {{isSelected:boolean}|undefined|Array<{isSelected:boolean}>|Array}
  */
-const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVariant.single } = {}) => {
-  const updatedOptions = options.map(option => {
+const updateOptionsSelectedOptions = ({ options, selectedOptions = [], variant = SelectVariant.single } = {}) => {
+  const memoOptions = _cloneDeep(updateOptions.memo(options));
+  const memoSelectedOptions = updateSelectedOptions.memo(selectedOptions);
+
+  const updatedOptions = memoOptions.map(option => {
     const { isSelected, title, value, ...meta } = option;
     let updateIsSelected = isSelected;
 
-    if (updateIsSelected === true && !selectedOptions.length) {
+    if (updateIsSelected === true && !memoSelectedOptions.length) {
       return option;
     }
 
     if (_isPlainObject(value)) {
-      updateIsSelected = _findIndex(selectedOptions, value) > -1;
+      updateIsSelected = _findIndex(memoSelectedOptions, value) > -1;
 
       if (!isSelected) {
         updateIsSelected =
-          selectedOptions.find(activeOption => Object.values(value).includes(activeOption)) !== undefined;
+          memoSelectedOptions.find(activeOption => Object.values(value).includes(activeOption)) !== undefined;
       }
     } else {
-      updateIsSelected = selectedOptions.includes(value);
+      updateIsSelected = memoSelectedOptions.includes(value);
     }
 
     if (!updateIsSelected && _isPlainObject(meta)) {
-      updateIsSelected = selectedOptions.find(activeOption => Object.values(meta).includes(activeOption)) !== undefined;
+      updateIsSelected = memoSelectedOptions.find(activeOption => Object.values(meta).includes(activeOption)) !== undefined;
     }
 
     if (!updateIsSelected) {
-      updateIsSelected = selectedOptions.includes(title);
+      updateIsSelected = memoSelectedOptions.includes(title);
     }
 
     return {
@@ -206,9 +209,9 @@ const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVar
 };
 
 /**
- * A memoized response for the updateSelectedProp function. Assigned to a property for testing function.
+ * A memoized response for the updateOptionsSelectedOptions function. Assigned to a property for testing function.
  */
-updateSelectedProp.memo = helpers.memo(updateSelectedProp, { cacheLimit: 25 });
+updateOptionsSelectedOptions.memo = helpers.memo(updateOptionsSelectedOptions, { cacheLimit: 25 });
 
 /**
  * Expand returned event for select responses.
@@ -259,6 +262,7 @@ const setSelectElements = variant => ({
  */
 setSelectElements.memo = helpers.memo(setSelectElements);
 
+/*
 const setInitialOptions = ({ options, selectedOptions, variant } = {}) => {
   const { options: intialOptions, selected } = updateSelectedProp.memo({
     options: _cloneDeep(updateOptions.memo(options)),
@@ -275,6 +279,7 @@ const setInitialOptions = ({ options, selectedOptions, variant } = {}) => {
 };
 
 setInitialOptions.memo = helpers.memo(setInitialOptions, { cacheLimit: 25 });
+ */
 
 /**
  * Hook for handling option and selected option updates.
@@ -287,11 +292,19 @@ setInitialOptions.memo = helpers.memo(setInitialOptions, { cacheLimit: 25 });
  * @returns {{options: Array, selectedOption: undefined, onSelect: Function}}
  */
 const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant } = {}) => {
+  const { options: initialOptions, selected: initialSelectedOption } = updateOptionsSelectedOptions.memo({
+    options: baseOptions,
+    selectedOptions,
+    variant
+  });
+
+  /*
   const { options: initialOptions, selected: initialSelectedOption } = setInitialOptions.memo({
     options: baseOptions,
     selectedOptions,
     variant
   });
+  */
 
   const [selectedOption, setSelectedOption] = React.useState();
   const [options, setOptions] = useState(initialOptions);
@@ -559,7 +572,7 @@ export {
   setSelectElements,
   updateDataAttributes,
   updateOptions,
-  updateSelectedProp,
+  updateOptionsSelectedOptions,
   updateSelectedOptions,
   useOnSelect
 };
