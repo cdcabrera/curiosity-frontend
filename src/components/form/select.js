@@ -189,7 +189,8 @@ const updateOptionsSelectedOptions = ({ options, selectedOptions = [], variant =
     }
 
     if (!updateIsSelected && _isPlainObject(meta)) {
-      updateIsSelected = memoSelectedOptions.find(activeOption => Object.values(meta).includes(activeOption)) !== undefined;
+      updateIsSelected =
+        memoSelectedOptions.find(activeOption => Object.values(meta).includes(activeOption)) !== undefined;
     }
 
     if (!updateIsSelected) {
@@ -214,7 +215,7 @@ const updateOptionsSelectedOptions = ({ options, selectedOptions = [], variant =
 updateOptionsSelectedOptions.memo = helpers.memo(updateOptionsSelectedOptions, { cacheLimit: 25 });
 
 /**
- * Expand returned event for select responses.
+ * Expand the returned event for select responses.
  *
  * @param {object} params
  * @param {object} params.event
@@ -262,25 +263,6 @@ const setSelectElements = variant => ({
  */
 setSelectElements.memo = helpers.memo(setSelectElements);
 
-/*
-const setInitialOptions = ({ options, selectedOptions, variant } = {}) => {
-  const { options: intialOptions, selected } = updateSelectedProp.memo({
-    options: _cloneDeep(updateOptions.memo(options)),
-    selectedOptions: updateSelectedOptions.memo(selectedOptions),
-    variant
-  });
-
-  console.log('>>>> SEL HOOK 002', options);
-
-  return {
-    options: intialOptions,
-    selected
-  };
-};
-
-setInitialOptions.memo = helpers.memo(setInitialOptions, { cacheLimit: 25 });
- */
-
 /**
  * Hook for handling option and selected option updates.
  *
@@ -292,64 +274,22 @@ setInitialOptions.memo = helpers.memo(setInitialOptions, { cacheLimit: 25 });
  * @returns {{options: Array, selectedOption: undefined, onSelect: Function}}
  */
 const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant } = {}) => {
+  // True memo. Update and "re-update", base/initial arrays/objects only when necessary
   const { options: initialOptions, selected: initialSelectedOption } = updateOptionsSelectedOptions.memo({
     options: baseOptions,
     selectedOptions,
     variant
   });
 
-  /*
-  const { options: initialOptions, selected: initialSelectedOption } = setInitialOptions.memo({
-    options: baseOptions,
-    selectedOptions,
-    variant
-  });
-  */
-
   const [selectedOption, setSelectedOption] = React.useState();
   const [options, setOptions] = useState(initialOptions);
 
   useEffect(() => {
-    console.log('>>> REFIRE INITIAL OPTION SELECTED', initialOptions, initialSelectedOption);
     setOptions(initialOptions);
     setSelectedOption(initialSelectedOption);
   }, [initialOptions, initialSelectedOption]);
 
-  // Update, and allow "re-updating", base/initial options
-  /*
-  useDeepCompareEffect(() => {
-    const updatedOptions = _cloneDeep(updateOptions.memo(baseOptions));
-    const updatedSelected = updateSelectedProp.memo({
-      options: updatedOptions,
-      selectedOptions: updateSelectedOptions.memo(selectedOptions),
-      variant
-    });
-
-    console.log('>>>> SEL HOOK', updatedSelected, updatedOptions);
-
-    setOptions(updatedOptions);
-    setSelectedOption(updatedSelected);
-  }, [baseOptions, selectedOptions]);
-   */
-  /*
-   *useEffect(() => {
-   *  console.log('>>>> SEL HOOK 001A', baseOptions, baseOptions === ogBase);
-   *  console.log('>>>> SEL HOOK 001B', selectedOptions, selectedOptions === ogBaseSelected);
-   *  const updatedOptions = _cloneDeep(updateOptions.memo(baseOptions));
-   *  const updatedSelected = updateSelectedProp.memo({
-   *    options: updatedOptions,
-   *    selectedOptions: updateSelectedOptions.memo(selectedOptions),
-   *    variant
-   *  });
-   *
-   *  console.log('>>>> SEL HOOK 002', updatedSelected, updatedOptions);
-   *
-   *  setOptions(() => updatedOptions);
-   *  setSelectedOption(updatedSelected);
-   *}, [selectedOptions]);
-   */
-
-  // Update local state with user selected options
+  // Update the local state with user-selected options
   const onSelectCallback = useCallback(
     (event, key) => {
       const updatedOptions = _cloneDeep(options);
@@ -388,7 +328,6 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
     [onSelect, variant, options]
   );
 
-  console.log('>>>> SEL HOOK 003', selectedOption, options);
   return {
     selectedOption,
     options,
@@ -474,7 +413,10 @@ const Select = ({
       setIsExpanded(false);
     }
     if (!isReadOnly) {
-      // Remove "timeStamp". Assumption is its intended to help cycle updates. Causes issues with mock events in testing
+      /*
+       * Remove "timeStamp", the assumption is it's intended to help cycle updates.
+       * Causes issues with mock events in testing
+       */
       onSelect({ ...event, timeStamp: undefined }, value);
     }
   };
@@ -518,8 +460,6 @@ const Select = ({
     ),
     ...props
   };
-
-  console.log('SEL 004 options >>>>>>>>>>>>>>>>>>>>>>>>>>>>', options);
 
   // Note: applying isExpanded to the options map helps remove animation flicker
   return (

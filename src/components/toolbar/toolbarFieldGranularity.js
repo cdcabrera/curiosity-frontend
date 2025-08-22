@@ -21,31 +21,6 @@ import { translate } from '../i18n/i18n';
  *
  * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
  */
-/*
-const useToolbarFieldOptions = ({
-  options = Object.values(FIELD_TYPES),
-  t = translate,
-  useProductGraphTallyQuery: useAliasProductGraphTallyQuery = useProductGraphTallyQuery
-} = {}) => {
-  // const { [RHSM_API_QUERY_SET_TYPES.GRANULARITY]: granularity } = useAliasProductGraphTallyQuery();
-
-  return useMemo(
-    () =>
-      options.map(type => ({
-        title: t('curiosity-toolbar.label', { context: ['granularity', type] }),
-        value: type,
-        isSelected: false
-      })),
-    [options, t]
-  );
-};
-*/
-/**
- * Select field options.
- *
- * @type {Array<{title: React.ReactNode, value: string, isSelected: boolean}>}
- */
-
 const toolbarFieldOptions = Object.values(FIELD_TYPES).map(type => ({
   title: translate('curiosity-toolbar.label', { context: ['granularity', type] }),
   value: type,
@@ -117,27 +92,10 @@ const ToolbarFieldGranularity = ({
   position = SelectPosition.left,
   t = translate,
   useOnSelect: useAliasOnSelect = useOnSelect,
-  useProductGraphTallyQuery: useAliasProductGraphTallyQuery = useProductGraphTallyQuery,
-  // useToolbarFieldOptions: useAliasToolbarFieldOptions = useToolbarFieldOptions,
-  useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
-  useProduct: useAliasProduct = useProduct
+  useProductGraphTallyQuery: useAliasProductGraphTallyQuery = useProductGraphTallyQuery
 }) => {
   const { [RHSM_API_QUERY_SET_TYPES.GRANULARITY]: updatedValue } = useAliasProductGraphTallyQuery();
-  // const options = useAliasToolbarFieldOptions();
   const onSelect = useAliasOnSelect();
-  const dispatch = useAliasDispatch();
-  const { productId } = useAliasProduct();
-
-  window.setTimeout(() => {
-    dispatch({
-      type: reduxTypes.query.SET_QUERY_GRAPH,
-      viewId: productId,
-      filter: RHSM_API_QUERY_SET_TYPES.GRANULARITY,
-      value: FIELD_TYPES.WEEKLY
-    });
-  }, 4000);
-
-  console.log('>>>> GRANULARITY', updatedValue);
 
   return (
     <Select
