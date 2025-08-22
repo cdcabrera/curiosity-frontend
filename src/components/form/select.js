@@ -13,7 +13,7 @@ import {
 import _cloneDeep from 'lodash/cloneDeep';
 import _isPlainObject from 'lodash/isPlainObject';
 import _findIndex from 'lodash/findIndex';
-import { useDeepCompareEffect, useMount, useShallowCompareEffect } from 'react-use';
+import { useMount } from 'react-use';
 import { createMockEvent } from './formHelpers';
 import { helpers } from '../../common';
 
@@ -165,43 +165,39 @@ updateSelectedOptions.memo = helpers.memo(updateSelectedOptions, { cacheLimit: 2
  * @param {SelectVariant|string} params.variant
  * @returns {{isSelected:boolean}|undefined|Array<{isSelected:boolean}>|Array}
  */
-const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVariant.single } = {}) =>{
-  const updatedOptions = options
-    .map(option => {
-      const { isSelected, title, value, ...meta } = option;
-      let updateIsSelected = isSelected;
+const updateSelectedProp = ({ options, selectedOptions = [], variant = SelectVariant.single } = {}) => {
+  const updatedOptions = options.map(option => {
+    const { isSelected, title, value, ...meta } = option;
+    let updateIsSelected = isSelected;
 
-      if (updateIsSelected === true && !selectedOptions.length) {
-        return option;
-      }
+    if (updateIsSelected === true && !selectedOptions.length) {
+      return option;
+    }
 
-      if (_isPlainObject(value)) {
-        updateIsSelected = _findIndex(selectedOptions, value) > -1;
+    if (_isPlainObject(value)) {
+      updateIsSelected = _findIndex(selectedOptions, value) > -1;
 
-        if (!isSelected) {
-          updateIsSelected =
-            selectedOptions.find(activeOption => Object.values(value).includes(activeOption)) !== undefined;
-        }
-      } else {
-        updateIsSelected = selectedOptions.includes(value);
-      }
-
-      if (!updateIsSelected && _isPlainObject(meta)) {
+      if (!isSelected) {
         updateIsSelected =
-          selectedOptions.find(activeOption => Object.values(meta).includes(activeOption)) !== undefined;
+          selectedOptions.find(activeOption => Object.values(value).includes(activeOption)) !== undefined;
       }
+    } else {
+      updateIsSelected = selectedOptions.includes(value);
+    }
 
-      if (!updateIsSelected) {
-        updateIsSelected = selectedOptions.includes(title);
-      }
+    if (!updateIsSelected && _isPlainObject(meta)) {
+      updateIsSelected = selectedOptions.find(activeOption => Object.values(meta).includes(activeOption)) !== undefined;
+    }
 
-      console.log('>>>>> SEL', selectedOptions, options, updateIsSelected);
+    if (!updateIsSelected) {
+      updateIsSelected = selectedOptions.includes(title);
+    }
 
-      return {
-        ...option,
-        isSelected: updateIsSelected
-      };
-    });
+    return {
+      ...option,
+      isSelected: updateIsSelected
+    };
+  });
 
   return {
     options: updatedOptions,
@@ -291,7 +287,6 @@ setInitialOptions.memo = helpers.memo(setInitialOptions, { cacheLimit: 25 });
  * @returns {{options: Array, selectedOption: undefined, onSelect: Function}}
  */
 const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant } = {}) => {
-
   const { options: initialOptions, selected: initialSelectedOption } = setInitialOptions.memo({
     options: baseOptions,
     selectedOptions,
@@ -302,9 +297,10 @@ const useOnSelect = ({ options: baseOptions, onSelect, selectedOptions, variant 
   const [options, setOptions] = useState(initialOptions);
 
   useEffect(() => {
-    console.log('>>> REFIRE INITIAL OPTION SELECTED');
+    console.log('>>> REFIRE INITIAL OPTION SELECTED', initialOptions, initialSelectedOption);
+    setOptions(initialOptions);
     setSelectedOption(initialSelectedOption);
-  }, [initialSelectedOption]);
+  }, [initialOptions, initialSelectedOption]);
 
   // Update, and allow "re-updating", base/initial options
   /*
@@ -509,6 +505,8 @@ const Select = ({
     ),
     ...props
   };
+
+  console.log('SEL 004 options >>>>>>>>>>>>>>>>>>>>>>>>>>>>', options);
 
   // Note: applying isExpanded to the options map helps remove animation flicker
   return (
