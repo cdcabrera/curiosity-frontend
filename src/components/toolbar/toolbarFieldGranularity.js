@@ -111,4 +111,4 @@ const ToolbarFieldGranularity = ({
   );
 };
 
-export { ToolbarFieldGranularity as default, ToolbarFieldGranularity, useOnSelect, toolbarFieldOptions };
+export { ToolbarFieldGranularity as default, ToolbarFieldGranularity, toolbarFieldOptions, useOnSelect };
