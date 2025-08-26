@@ -113,7 +113,7 @@ const ToolbarFieldGroupVariant = ({
   useToolbarFieldOptions: useAliasToolbarFieldOptions = useToolbarFieldOptions
 }) => {
   const { productGroup } = useAliasProduct();
-  const updatedValue = useAliasSelector(({ view }) => view?.product?.variant?.[productGroup], null);
+  const updatedValue = useAliasSelector(({ view }) => view?.product?.variant?.[productGroup]);
   const onSelect = useAliasOnSelect();
   const options = useAliasToolbarFieldOptions();
 
