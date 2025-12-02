@@ -38,8 +38,10 @@ jobs:
           AUDIT_OUTPUT=$(npm audit --audit-level=high 2>&1)
           AUDIT_EXIT_CODE=$?
 
+          echo "NPM Audit Exit Code: $AUDIT_EXIT_CODE"
+
           if [ $AUDIT_EXIT_CODE -ne 0 ]; then
-            echo "::warning title=NPM Audit Found Vulnerabilities::Review the audit report below."
+            echo "::warning title=NPM Audit Found Vulnerabilities::Review the audit report."
             echo "$AUDIT_OUTPUT"
           else
             echo "NPM audit passed."
