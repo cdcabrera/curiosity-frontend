@@ -34,19 +34,13 @@ jobs:
         if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
         run: npm ci
       - name: Audit packages
-        run: |
-          AUDIT_OUTPUT=$(npm audit --audit-level=high 2>&1)
-          AUDIT_EXIT_CODE=$?
-
-          echo "NPM Audit Exit Code: $AUDIT_EXIT_CODE"
-
-          if [ $AUDIT_EXIT_CODE -ne 0 ]; then
-            echo "::warning title=NPM Audit Found Vulnerabilities::Review the audit report."
-            echo "$AUDIT_OUTPUT"
-          else
-            echo "NPM audit passed."
-          fi
+        id: audit_fail_step
+        run: npm audit --audit-level=high
         continue-on-error: true
+      - name: Check for vulnerabilities
+        if: ${{ failure() && steps.audit_fail_step.outcome == 'failure' }}
+        run: |
+          echo "::warning title=NPM Audit Found Vulnerabilities::Review the audit report."
       - name: Lint and test
         run: npm test
       - name: Code coverage
