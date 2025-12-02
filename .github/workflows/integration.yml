@@ -36,17 +36,11 @@ jobs:
       - name: Audit packages
         id: audit
         run: |
-          echo "report_output<<EOF" >> $GITHUB_OUTPUT
+          echo 'AUDIT_REPORT<<EOF' >> $GITHUB_OUTPUT
           npm audit --audit-level=high | grep -E '[1-9]+ vulnerabilities' >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+          echo "::warning title=NPM Audit Report::$AUDIT_REPORT"
         continue-on-error: true
-      - name: Audit report
-        if: ${{ steps.audit.outcome == 'failure' }}
-        run: |
-          echo "::warning title=NPM Audit Found Vulnerabilities::Review the audit report."
-          echo "--- Report Details ---"
-          # Access the full report content in logs:
-          echo "${{ steps.audit.outputs.report_output }}"
       - name: Lint and test
         run: npm test
       - name: Code coverage
