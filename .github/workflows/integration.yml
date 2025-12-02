@@ -35,7 +35,7 @@ jobs:
         run: npm ci
       - name: Audit packages
         run: |
-          AUDIT_OUTPUT=$(npm audit --audit-level=high 2>&1 || true)
+          AUDIT_OUTPUT=$(npm audit --audit-level=high 2>&1)
           AUDIT_EXIT_CODE=$?
 
           if [ $AUDIT_EXIT_CODE -ne 0 ]; then
