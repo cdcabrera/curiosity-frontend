@@ -34,7 +34,7 @@ jobs:
         if: ${{ steps.modules-cache.outputs.cache-hit != 'true' }}
         run: npm ci
       - name: Audit packages
-        id: audit_fail_step
+        id: audit
         run: |
           npm audit --audit-level=high 2>&1 | tee npm_audit_output.txt
           echo "report_output<<EOF" >> $GITHUB_OUTPUT
