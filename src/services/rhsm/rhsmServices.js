@@ -65,6 +65,7 @@ const getApiVersion = (options = {}) => {
 
 /**
  * @apiMock {DelayResponse} 100
+ * @apiMock {force} 403
  * @api {get} /api/rhsm-subscriptions/v1/instances/billing_account_ids Get instances account data
  * @apiDescription Get account data.
  *
@@ -241,7 +242,7 @@ const getBillingAccounts = async (id, params = {}, options = {}) => {
     cache = true,
     cancel = true,
     cancelId,
-    schema,
+    schema = [undefined, rhsmSchemas.errors],
     transform = [rhsmTransformers.billingAccounts.memo]
   } = options;
   return axiosServiceCall({
