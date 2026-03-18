@@ -104,15 +104,12 @@ describe('ProductViewOnloadContext', () => {
       }
     }
   ])('should apply a hook for usage banner alerts, $description', async ({ data }) => {
-    const mockSetBannerMessagesHook = jest.fn();
-
-    await renderHook(() =>
+    const { result } = await renderHook(() =>
       useUsageBanner({
-        useSetBannerMessages: () => mockSetBannerMessagesHook,
         useSelector: () => ({ data })
       })
     );
-    expect(mockSetBannerMessagesHook.mock.calls.pop()).toMatchSnapshot();
+    expect(result).toMatchSnapshot();
   });
 
   it.each([
@@ -174,17 +171,14 @@ describe('ProductViewOnloadContext', () => {
     bannersConfig.length = 0;
     bannersConfig.push(...banners);
 
-    const mockSetBannerMessagesHook = jest.fn();
-
-    await renderHook(() =>
+    const { result } = await renderHook(() =>
       useConfigBanners({
         useProduct: () => ({ productId }),
-        useSetBannerMessages: () => mockSetBannerMessagesHook,
         useSelector: () => ({})
       })
     );
 
-    expect(mockSetBannerMessagesHook).toHaveBeenCalledTimes(expectedCalls);
-    expect(mockSetBannerMessagesHook.mock.calls).toMatchSnapshot();
+    expect(result.length).toBe(expectedCalls);
+    expect(result).toMatchSnapshot();
   });
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardBody } from '@patternfly/react-core';
 import { BinocularsIcon } from '@patternfly/react-icons';
 import { useProductOnload, useUsageBanner, useConfigBanners } from './productViewOnloadContext';
+import { useSetBannerMessages } from '../bannerMessages/bannerMessages';
 import { ErrorMessage } from '../errorMessage/errorMessage';
 import { MessageView } from '../messageView/messageView';
 import { translate } from '../i18n/i18n';
@@ -21,6 +22,7 @@ import { translate } from '../i18n/i18n';
  * @param {useProductOnload} [props.useProductOnload=useProductOnload]
  * @param {useUsageBanner} [props.useUsageBanner=useUsageBanner]
  * @param {useConfigBanners} [props.useConfigBanners=useConfigBanners]
+ * @param {useSetBannerMessages} [props.useSetBannerMessages=useSetBannerMessages]
  * @returns {JSX.Element}
  */
 const ProductViewOnload = ({
@@ -28,11 +30,20 @@ const ProductViewOnload = ({
   t = translate,
   useProductOnload: useAliasProductOnload = useProductOnload,
   useUsageBanner: useAliasUsageBanner = useUsageBanner,
-  useConfigBanners: useAliasConfigBanners = useConfigBanners
+  useConfigBanners: useAliasConfigBanners = useConfigBanners,
+  useSetBannerMessages: useAliasSetBannerMessages = useSetBannerMessages
 }) => {
   const { isReady, error, message, productId, status, statusList } = useAliasProductOnload();
-  useAliasUsageBanner();
-  useAliasConfigBanners();
+  const usageBanner = useAliasUsageBanner();
+  const configBanners = useAliasConfigBanners();
+  const setBannerMessages = useAliasSetBannerMessages();
+
+  React.useEffect(() => {
+    if (isReady) {
+      const banners = [usageBanner, ...configBanners].filter(Boolean);
+      setBannerMessages(banners);
+    }
+  }, [isReady, usageBanner, configBanners, setBannerMessages]);
 
   return (
     (error && (

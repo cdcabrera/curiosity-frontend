@@ -25,4 +25,16 @@ describe('ProductViewOnload Component', () => {
     const component = await shallowComponent(<ProductViewOnload {...props}>lorem ipsum</ProductViewOnload>);
     expect(component).toMatchSnapshot('pending');
   });
+
+  it('should call setBannerMessages with all active banners', async () => {
+    const mockSetBannerMessages = jest.fn();
+    const props = {
+      useProductOnload: () => ({ isReady: true }),
+      useUsageBanner: () => ({ id: 'usage-banner' }),
+      useConfigBanners: () => [{ id: 'config-banner' }],
+      useSetBannerMessages: () => mockSetBannerMessages
+    };
+    await shallowComponent(<ProductViewOnload {...props}>lorem ipsum</ProductViewOnload>);
+    expect(mockSetBannerMessages).toHaveBeenCalledWith([{ id: 'usage-banner' }, { id: 'config-banner' }]);
+  });
 });

@@ -361,7 +361,7 @@ exports[`I18n Component should generate a predictable locale key output snapshot
       },
       {
         "key": "curiosity-banner.usage",
-        "match": "t( 'curiosity-banner.usage', { context: ['modal', 'description'], count: numberAccounts }, [ <Button data-test="bannerUsageLearnMoreLink" isInline component="a" variant="link" icon={<ExternalLinkAltIcon />} iconPosition="right" target="_blank" href={helpers.UI_LINK_USAGE_SUBSCRIPTIONS} /> ] )",
+        "match": "t( 'curiosity-banner.usage', { context: ['modal', 'description'], count: numberAccounts }, [ <Button key="usage-learn-more" data-test="bannerUsageLearnMoreLink" isInline component="a" variant="link" icon={<ExternalLinkAltIcon />} iconPosition="right" target="_blank" href={helpers.UI_LINK_USAGE_SUBSCRIPTIONS} /> ] )",
       },
       {
         "key": "curiosity-banner.usage",

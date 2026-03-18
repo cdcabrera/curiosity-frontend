@@ -68,20 +68,18 @@ const useProductOnload = ({
  * @param {translate} [options.t=translate]
  * @param {useProduct} [options.useProduct=useProduct]
  * @param {storeHooks.reactRedux.useSelector} [options.useSelector=storeHooks.reactRedux.useSelector]
- * @param {useSetBannerMessages} [options.useSetBannerMessages=useSetBannerMessages]
+ * @returns {object|null}
  */
 const useUsageBanner = ({
   t = translate,
   useProduct: useAliasProduct = useProduct,
-  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector,
-  useSetBannerMessages: useAliasSetBannerMessages = useSetBannerMessages
+  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector
 } = {}) => {
-  const setBannerMessages = useAliasSetBannerMessages();
   const { productId } = useAliasProduct();
   const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
   const isUsageError = data?.isUsageError || false;
 
-  useEffect(() => {
+  return React.useMemo(() => {
     if (isUsageError === true) {
       const { firstProvider, firstProviderAccount, uniqueAccountsProvidersList = [] } = data?.usageMetrics || {};
 
@@ -105,6 +103,7 @@ const useUsageBanner = ({
               },
               [
                 <Button
+                  key="usage-learn-more"
                   data-test="bannerUsageLearnMoreLink"
                   isInline
                   component="a"
@@ -127,7 +126,7 @@ const useUsageBanner = ({
         </label>
       );
 
-      setBannerMessages({
+      return {
         variant: AlertVariant.warning,
         dataTest: 'bannerUsage',
         id: 'usage-warning',
@@ -171,12 +170,13 @@ const useUsageBanner = ({
             }),
             account: firstProviderAccount
           },
-          [<strong />]
+          [<strong key="usage-strong" />]
         )
-      });
+      };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUsageError]);
+
+    return null;
+  }, [data, isUsageError, productId, t]);
 };
 
 /**
@@ -185,18 +185,18 @@ const useUsageBanner = ({
  * @param {object} options
  * @param {useProduct} [options.useProduct=useProduct]
  * @param {storeHooks.reactRedux.useSelector} [options.useSelector=storeHooks.reactRedux.useSelector]
- * @param {useSetBannerMessages} [options.useSetBannerMessages=useSetBannerMessages]
+ * @returns {Array}
  */
 const useConfigBanners = ({
   useProduct: useAliasProduct = useProduct,
-  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector,
-  useSetBannerMessages: useAliasSetBannerMessages = useSetBannerMessages
+  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector
 } = {}) => {
-  const setBannerMessages = useAliasSetBannerMessages();
   const { productId } = useAliasProduct();
   const state = useAliasSelector(({ messages, ...rest }) => rest, {}, { equality: storeHooks.reactRedux.deepEqual });
 
-  useEffect(() => {
+  return React.useMemo(() => {
+    const banners = [];
+
     bannersConfig.forEach(banner => {
       const { id, title, message, variant, dataTest, productIds, condition, actions } = banner;
 
@@ -204,7 +204,7 @@ const useConfigBanners = ({
       const isConditionMet = !condition || condition({ state, productId });
 
       if (isAssociated && isConditionMet) {
-        setBannerMessages({
+        banners.push({
           id: `${productId}-${id}`,
           title: typeof title === 'function' ? title({ productId }) : title,
           message: typeof message === 'function' ? message({ productId }) : message,
@@ -231,7 +231,8 @@ const useConfigBanners = ({
         });
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    return banners;
   }, [productId, state]);
 };
 
