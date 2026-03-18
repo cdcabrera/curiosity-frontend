@@ -117,7 +117,7 @@ const recordAction = (action, { id, limit, ...config }) => {
         ...config,
         actions: items
       },
-      (key, value) => (typeof value === "function" || value?.$$typeof) ? undefined : value
+      (key, value) => (typeof value === 'function' || value?.$$typeof ? undefined : value)
     )
   );
 };

@@ -22,19 +22,19 @@ describe('MessagesReducer', () => {
     });
   });
 
-  it("should handle SET_BANNER_MESSAGES with append", () => {
+  it('should handle SET_BANNER_MESSAGES with append', () => {
     const initialState = {
       bannerMessages: {
-        test_id: [{ id: "old" }]
+        test_id: [{ id: 'old' }]
       }
     };
     const action = {
       type: types.SET_BANNER_MESSAGES,
-      viewId: "test_id",
-      bannerMessages: [{ id: "new" }],
+      viewId: 'test_id',
+      bannerMessages: [{ id: 'new' }],
       append: true
     };
     const result = messagesReducer(initialState, action);
-    expect(result.bannerMessages.test_id).toEqual([{ id: "old" }, { id: "new" }]);
+    expect(result.bannerMessages.test_id).toEqual([{ id: 'old' }, { id: 'new' }]);
   });
 });

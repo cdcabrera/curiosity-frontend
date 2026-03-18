@@ -74,7 +74,7 @@ const useRemoveBannerMessages = ({
  */
 const useSetBannerMessages = ({
   useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
-  useProduct: useAliasProduct = useProduct,
+  useProduct: useAliasProduct = useProduct
 } = {}) => {
   const dispatch = useAliasDispatch();
   const { productId } = useAliasProduct();

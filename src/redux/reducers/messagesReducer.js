@@ -41,7 +41,7 @@ const messagesReducer = (state = initialState, action) => {
       }
 
       return reduxHelpers.setStateProp(
-        "bannerMessages",
+        'bannerMessages',
         {
           [viewId]: bannerMessages
         },
