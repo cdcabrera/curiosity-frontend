@@ -26,12 +26,6 @@ describe('BannerMessagesContext', () => {
       useSetBannerMessages({
         useDispatch: () => mockDispatch,
         useProduct: () => ({ productId: 'dolorSit' }),
-        useBannerMessages: () => [
-          {
-            id: 'lorem',
-            title: 'ipsum'
-          }
-        ]
       })
     );
 
