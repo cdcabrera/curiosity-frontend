@@ -54,10 +54,10 @@ const banners = [
         title: () => translate('curiosity-banner.notifications_action_setup'),
         href: 'https://console.redhat.com/settings/notifications/user-preferences?bundle=subscription-services&app=subscriptions',
         variant: 'link',
-        isExternal: true
+        isExternal: false
       },
       {
-        title: () => translate('curiosity-banner.learn_more'),
+        title: () => translate('curiosity-banner.action_learn_more'),
         href: 'https://docs.redhat.com/en/documentation/subscription_central/1-latest/html-single/getting_started_with_the_subscriptions_service/index#proc-notifications-subscription-usage',
         variant: 'link',
         isExternal: true

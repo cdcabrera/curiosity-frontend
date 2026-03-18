@@ -220,6 +220,9 @@ const useConfigBanners = ({
                     component={action.href ? 'a' : 'button'}
                     href={action.href}
                     onClick={action.onClick}
+                    icon={action.isExternal ? <ExternalLinkAltIcon /> : undefined}
+                    iconPosition="right"
+                    isExternal={action.isExternal}
                     target={action.isExternal ? '_blank' : undefined}
                   >
                     {typeof action.title === 'function' ? action.title({ productId }) : action.title}
