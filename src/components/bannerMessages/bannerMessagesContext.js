@@ -51,24 +51,34 @@ const BannerMessagesProvider = ({ children }) => {
     setBannerMessagesState(prev => {
       const current = prev[productId] || [];
       const incoming = (Array.isArray(messages) ? messages : [messages])
-        .map(v => {
-          if (v?.id || v?.title || v?.message) {
-            return { ...v, id: v?.id || v?.title || v?.message };
+        .map(value => {
+          if (value?.id || value?.title || value?.message) {
+            return {
+              ...value,
+              id: value?.id || value?.title || value?.message
+            };
           }
-          if (typeof v === 'string' || typeof v === 'number') {
-            return { id: v, title: v };
+
+          if (typeof value === 'string' || typeof value === 'number') {
+            return {
+              id: value,
+              title: value
+            };
           }
+
           return undefined;
         })
-        .filter(v => v?.id !== undefined && Object.keys(v).length > 1);
+        .filter(value => value?.id !== undefined && Object.keys(value).length > 1);
 
       const updatedMessages = [...current];
-      incoming.forEach(msg => {
-        const index = updatedMessages.findIndex(m => m.id === msg.id);
+
+      incoming.forEach(message => {
+        const index = updatedMessages.findIndex(msg => msg.id === message.id);
+
         if (index > -1) {
-          updatedMessages[index] = msg;
+          updatedMessages[index] = message;
         } else {
-          updatedMessages.push(msg);
+          updatedMessages.push(message);
         }
       });
 
@@ -92,10 +102,15 @@ const BannerMessagesProvider = ({ children }) => {
 
     setBannerMessagesState(prev => ({
       ...prev,
-      [productId]: (prev[productId] || []).filter(m => m.id !== idTitle && m.title !== idTitle)
+      [productId]: (prev[productId] || []).filter(message => message.id !== idTitle && message.title !== idTitle)
     }));
   }, []);
 
+  /**
+   * Expose banner messages context methods
+   *
+   * @type {{bannerMessages: {}, setBannerMessages: Function, removeBannerMessages: Function}}
+   */
   const value = useMemo(
     () => ({
       bannerMessages,
@@ -122,6 +137,7 @@ const useBannerMessages = ({
 } = {}) => {
   const { productId } = useAliasProduct();
   const { bannerMessages } = useAliasBannerMessagesContext();
+
   return useMemo(() => bannerMessages?.[productId] || [], [bannerMessages, productId]);
 };
 
@@ -139,6 +155,7 @@ const useRemoveBannerMessages = ({
 } = {}) => {
   const { productId } = useAliasProduct();
   const { removeBannerMessages } = useAliasBannerMessagesContext();
+
   return useCallback(idTitle => removeBannerMessages(productId, idTitle), [productId, removeBannerMessages]);
 };
 
@@ -156,6 +173,7 @@ const useSetBannerMessages = ({
 } = {}) => {
   const { productId } = useAliasProduct();
   const { setBannerMessages } = useAliasBannerMessagesContext();
+
   return useCallback(messages => setBannerMessages(productId, messages), [productId, setBannerMessages]);
 };
 
