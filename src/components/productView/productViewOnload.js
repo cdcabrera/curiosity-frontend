@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardBody } from '@patternfly/react-core';
 import { BinocularsIcon } from '@patternfly/react-icons';
 import { useProductOnload, useUsageBanner, useConfigBanners } from './productViewOnloadContext';
@@ -38,7 +38,7 @@ const ProductViewOnload = ({
   const configBanners = useAliasConfigBanners();
   const setBannerMessages = useAliasSetBannerMessages();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isReady) {
       const banners = [usageBanner, ...configBanners].filter(Boolean);
       setBannerMessages(banners);

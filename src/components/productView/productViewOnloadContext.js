@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { AlertVariant, AlertActionLink, Button } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { useProduct, useProductBillingAccountsQuery, useProductViewContext } from './productViewContext';
-import { BannerMessagesModal, useSetBannerMessages } from '../bannerMessages/bannerMessages';
+import { BannerMessagesModal } from '../bannerMessages/bannerMessages';
 import { reduxActions, storeHooks } from '../../redux';
 import { bannersConfig } from '../../config';
 import { rhsmConstants } from '../../services/rhsm/rhsmConstants';
@@ -79,7 +79,7 @@ const useUsageBanner = ({
   const { data = {} } = useAliasSelector(({ app }) => app.billingAccounts?.[productId], {});
   const isUsageError = data?.isUsageError || false;
 
-  return React.useMemo(() => {
+  return useMemo(() => {
     if (isUsageError === true) {
       const { firstProvider, firstProviderAccount, uniqueAccountsProvidersList = [] } = data?.usageMetrics || {};
 
@@ -170,7 +170,7 @@ const useUsageBanner = ({
             }),
             account: firstProviderAccount
           },
-          [<strong key="usage-strong" />]
+          [<strong />]
         )
       };
     }
@@ -194,7 +194,7 @@ const useConfigBanners = ({
   const { productId } = useAliasProduct();
   const state = useAliasSelector(({ messages, ...rest }) => rest, {}, { equality: storeHooks.reactRedux.deepEqual });
 
-  return React.useMemo(() => {
+  return useMemo(() => {
     const banners = [];
 
     bannersConfig.forEach(banner => {
