@@ -184,24 +184,21 @@ const useUsageBanner = ({
  *
  * @param {object} options
  * @param {useProduct} [options.useProduct=useProduct]
- * @param {storeHooks.reactRedux.useSelector} [options.useSelector=storeHooks.reactRedux.useSelector]
  * @param {useSetBannerMessages} [options.useSetBannerMessages=useSetBannerMessages]
  */
 const useConfigBanners = ({
   useProduct: useAliasProduct = useProduct,
-  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector,
   useSetBannerMessages: useAliasSetBannerMessages = useSetBannerMessages
 } = {}) => {
   const setBannerMessages = useAliasSetBannerMessages();
   const { productId } = useAliasProduct();
-  const state = useAliasSelector(({ messages, ...rest }) => rest, {}, { equality: storeHooks.reactRedux.deepEqual });
 
   useEffect(() => {
     bannersConfig.forEach(banner => {
       const { id, title, message, variant, dataTest, productIds, condition, actions } = banner;
 
       const isAssociated = !productIds || productIds.includes(productId);
-      const isConditionMet = !condition || condition({ state, productId });
+      const isConditionMet = !condition || condition({ productId });
 
       if (isAssociated && isConditionMet) {
         setBannerMessages({
@@ -222,7 +219,6 @@ const useConfigBanners = ({
                     onClick={action.onClick}
                     icon={action.isExternal ? <ExternalLinkAltIcon /> : undefined}
                     iconPosition="right"
-                    isExternal={action.isExternal}
                     target={action.isExternal ? '_blank' : undefined}
                   >
                     {typeof action.title === 'function' ? action.title({ productId }) : action.title}
@@ -235,7 +231,7 @@ const useConfigBanners = ({
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productId, state]);
+  }, [productId]);
 };
 
 const context = {

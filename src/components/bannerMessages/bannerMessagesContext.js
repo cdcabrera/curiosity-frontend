@@ -60,7 +60,7 @@ const useRemoveBannerMessages = ({
         });
       }
     },
-    [dispatch, productId]
+    [bannerMessages, dispatch, productId]
   );
 };
 
