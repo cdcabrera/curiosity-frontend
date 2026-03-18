@@ -196,14 +196,7 @@ const useConfigBanners = ({
 } = {}) => {
   const setBannerMessages = useAliasSetBannerMessages();
   const { productId } = useAliasProduct();
-  const state = useAliasSelector(
-    s => {
-      const { messages, ...rest } = s;
-      return rest;
-    },
-    {},
-    { equality: storeHooks.reactRedux.deepEqual }
-  );
+  const state = useAliasSelector(({ messages, ...rest }) => rest, {}, { equality: storeHooks.reactRedux.deepEqual });
 
   useEffect(() => {
     bannersConfig.forEach(banner => {
@@ -219,22 +212,24 @@ const useConfigBanners = ({
           message: t(message, { product: productId }),
           variant: variant || AlertVariant.info,
           dataTest,
-          actionLinks: (actions?.length && (
-            <React.Fragment>
-              {actions.map((action, index) => (
-                <AlertActionLink
-                  key={`${productId}-${id}-action-${index}`}
-                  data-test={`${dataTest}-action-${index}`}
-                  component={action.href ? 'a' : 'button'}
-                  href={action.href}
-                  onClick={action.onClick}
-                  target={action.isExternal ? '_blank' : undefined}
-                >
-                  {t(action.title)}
-                </AlertActionLink>
-              ))}
-            </React.Fragment>
-          )) || undefined
+          actionLinks:
+            (actions?.length && (
+              <React.Fragment>
+                {actions.map((action, index) => (
+                  <AlertActionLink
+                    key={helpers.generateHash(`${productId}-${id}-action-${index}`)}
+                    data-test={`${dataTest}-action-${index}`}
+                    component={action.href ? 'a' : 'button'}
+                    href={action.href}
+                    onClick={action.onClick}
+                    target={action.isExternal ? '_blank' : undefined}
+                  >
+                    {t(action.title)}
+                  </AlertActionLink>
+                ))}
+              </React.Fragment>
+            )) ||
+            undefined
         });
       }
     });
