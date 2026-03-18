@@ -170,27 +170,21 @@ describe('ProductViewOnloadContext', () => {
       productId: 'lorem',
       expectedCalls: 0
     }
-  ])(
-    'should apply a hook for configured banners, $description',
-    async ({ banners, productId, expectedCalls }) => {
-      bannersConfig.length = 0;
-      bannersConfig.push(...banners);
+  ])('should apply a hook for configured banners, $description', async ({ banners, productId, expectedCalls }) => {
+    bannersConfig.length = 0;
+    bannersConfig.push(...banners);
 
-      const mockSetBannerMessagesHook = jest.fn();
+    const mockSetBannerMessagesHook = jest.fn();
 
-      await renderHook(() =>
-        useConfigBanners({
-          useProduct: () => ({ productId }),
-          useSetBannerMessages: () => mockSetBannerMessagesHook,
-          useSelector: () => ({})
-        })
-      );
+    await renderHook(() =>
+      useConfigBanners({
+        useProduct: () => ({ productId }),
+        useSetBannerMessages: () => mockSetBannerMessagesHook,
+        useSelector: () => ({})
+      })
+    );
 
-      expect(mockSetBannerMessagesHook).toHaveBeenCalledTimes(expectedCalls);
-
-      if (expectedCalls > 0) {
-        expect(mockSetBannerMessagesHook.mock.calls[0][0]).toMatchSnapshot();
-      }
-    }
-  );
+    expect(mockSetBannerMessagesHook).toHaveBeenCalledTimes(expectedCalls);
+    expect(mockSetBannerMessagesHook.mock.calls).toMatchSnapshot();
+  });
 });
