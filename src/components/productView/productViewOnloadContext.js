@@ -183,13 +183,11 @@ const useUsageBanner = ({
  * Apply configurable banners per product variant
  *
  * @param {object} options
- * @param {translate} [options.t=translate]
  * @param {useProduct} [options.useProduct=useProduct]
  * @param {storeHooks.reactRedux.useSelector} [options.useSelector=storeHooks.reactRedux.useSelector]
  * @param {useSetBannerMessages} [options.useSetBannerMessages=useSetBannerMessages]
  */
 const useConfigBanners = ({
-  t = translate,
   useProduct: useAliasProduct = useProduct,
   useSelector: useAliasSelector = storeHooks.reactRedux.useSelector,
   useSetBannerMessages: useAliasSetBannerMessages = useSetBannerMessages
@@ -208,8 +206,8 @@ const useConfigBanners = ({
       if (isAssociated && isConditionMet) {
         setBannerMessages({
           id: `${productId}-${id}`,
-          title: t(title, { product: productId }),
-          message: t(message, { product: productId }),
+          title: typeof title === 'function' ? title({ productId }) : title,
+          message: typeof message === 'function' ? message({ productId }) : message,
           variant: variant || AlertVariant.info,
           dataTest,
           actionLinks:
@@ -224,7 +222,7 @@ const useConfigBanners = ({
                     onClick={action.onClick}
                     target={action.isExternal ? '_blank' : undefined}
                   >
-                    {t(action.title)}
+                    {typeof action.title === 'function' ? action.title({ productId }) : action.title}
                   </AlertActionLink>
                 ))}
               </React.Fragment>
