@@ -3,6 +3,7 @@ import { useMount } from 'react-use';
 import { reduxActions, storeHooks } from './redux';
 import { I18n } from './components/i18n/i18n';
 import { Notifications } from './components/notifications/notifications';
+import { BannerMessagesProvider } from './components/bannerMessages/bannerMessagesContext';
 import { Authentication } from './components/authentication/authentication';
 import { Loader } from './components/loader/loader';
 const ProductView = React.lazy(() => import('./components/productView/productView'));
@@ -40,11 +41,13 @@ const App = ({
   return (
     <I18n locale={locale}>
       <Notifications>
-        <Authentication>
-          <React.Suspense fallback={<Loader variant="title" />}>
-            <ProductView />
-          </React.Suspense>
-        </Authentication>
+        <BannerMessagesProvider>
+          <Authentication>
+            <React.Suspense fallback={<Loader variant="title" />}>
+              <ProductView />
+            </React.Suspense>
+          </Authentication>
+        </BannerMessagesProvider>
       </Notifications>
     </I18n>
   );

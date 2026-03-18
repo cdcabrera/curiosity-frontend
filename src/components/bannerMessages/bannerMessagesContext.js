@@ -1,139 +1,178 @@
-import { useCallback } from 'react';
-import { reduxTypes, storeHooks } from '../../redux';
+import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { useProduct } from '../productView/productViewContext';
 import { helpers } from '../../common/helpers';
 
 /**
- * @memberof BannerMessages
+ * @memberof Components
  * @module BannerMessagesContext
  */
 
 /**
- * Retrieve, set and remove application banner messages from state.
+ * Banner messages context.
+ *
+ * @type {React.Context<{}>}
+ */
+const DEFAULT_CONTEXT = {
+  bannerMessages: {},
+  setBannerMessages: helpers.noop,
+  removeBannerMessages: helpers.noop
+};
+
+const BannerMessagesContext = React.createContext(DEFAULT_CONTEXT);
+
+/**
+ * Get an updated banner messages context.
+ *
+ * @returns {React.Context<{}>}
+ */
+const useBannerMessagesContext = () => useContext(BannerMessagesContext);
+
+/**
+ * Banner messages provider.
+ *
+ * @param {object} props
+ * @param {React.ReactNode} props.children
+ * @returns {JSX.Element}
+ */
+const BannerMessagesProvider = ({ children }) => {
+  const [bannerMessages, setBannerMessagesState] = useState({});
+
+  /**
+   * Set banner messages for a specific product ID.
+   *
+   * @param {string} productId
+   * @param {Array|object} messages
+   */
+  const setBannerMessages = useCallback((productId, messages) => {
+    if (!productId) {
+      return;
+    }
+
+    setBannerMessagesState(prev => {
+      const current = prev[productId] || [];
+      const incoming = (Array.isArray(messages) ? messages : [messages])
+        .map(v => {
+          if (v?.id || v?.title || v?.message) {
+            return { ...v, id: v?.id || v?.title || v?.message };
+          }
+          if (typeof v === 'string' || typeof v === 'number') {
+            return { id: v, title: v };
+          }
+          return undefined;
+        })
+        .filter(v => v?.id !== undefined && Object.keys(v).length > 1);
+
+      const updatedMessages = [...current];
+      incoming.forEach(msg => {
+        const index = updatedMessages.findIndex(m => m.id === msg.id);
+        if (index > -1) {
+          updatedMessages[index] = msg;
+        } else {
+          updatedMessages.push(msg);
+        }
+      });
+
+      return {
+        ...prev,
+        [productId]: updatedMessages
+      };
+    });
+  }, []);
+
+  /**
+   * Remove banner messages for a specific product ID.
+   *
+   * @param {string} productId
+   * @param {string} idTitle
+   */
+  const removeBannerMessages = useCallback((productId, idTitle) => {
+    if (!productId) {
+      return;
+    }
+
+    setBannerMessagesState(prev => ({
+      ...prev,
+      [productId]: (prev[productId] || []).filter(m => m.id !== idTitle && m.title !== idTitle)
+    }));
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      bannerMessages,
+      setBannerMessages,
+      removeBannerMessages
+    }),
+    [bannerMessages, setBannerMessages, removeBannerMessages]
+  );
+
+  return <BannerMessagesContext.Provider value={value}>{children}</BannerMessagesContext.Provider>;
+};
+
+/**
+ * Hook to retrieve banner messages for the current product.
  *
  * @param {object} options
- * @param {Function} options.useProduct
- * @param {Function} options.useSelector
- * @returns {{ bannerMessages: Array, setBannerMessages: Function, removeBannerMessages: Function }}
+ * @param {useProduct} [options.useProduct=useProduct]
+ * @param {useBannerMessagesContext} [options.useBannerMessagesContext=useBannerMessagesContext]
+ * @returns {Array}
  */
 const useBannerMessages = ({
   useProduct: useAliasProduct = useProduct,
-  useSelector: useAliasSelector = storeHooks.reactRedux.useSelector
+  useBannerMessagesContext: useAliasBannerMessagesContext = useBannerMessagesContext
 } = {}) => {
   const { productId } = useAliasProduct();
-  return useAliasSelector(({ messages }) => messages?.bannerMessages?.[productId], []);
+  const { bannerMessages } = useAliasBannerMessagesContext();
+  return useMemo(() => bannerMessages?.[productId] || [], [bannerMessages, productId]);
 };
 
 /**
- * Provide a callback for removing application banner messages from state.
+ * Hook to remove banner messages for the current product.
  *
  * @param {object} options
- * @param {Function} options.useDispatch
- * @param {Function} options.useProduct
- * @param {Function} options.useBannerMessages
+ * @param {useProduct} [options.useProduct=useProduct]
+ * @param {useBannerMessagesContext} [options.useBannerMessagesContext=useBannerMessagesContext]
  * @returns {Function}
  */
 const useRemoveBannerMessages = ({
-  useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
   useProduct: useAliasProduct = useProduct,
-  useBannerMessages: useAliasBannerMessages = useBannerMessages
+  useBannerMessagesContext: useAliasBannerMessagesContext = useBannerMessagesContext
 } = {}) => {
-  const dispatch = useAliasDispatch();
   const { productId } = useAliasProduct();
-  const bannerMessages = useAliasBannerMessages();
-
-  /**
-   * Remove a banner message from state.
-   *
-   * @callback removeBannerMessages
-   * @param {string} idTitle
-   */
-  return useCallback(
-    idTitle => {
-      if (productId && Array.isArray(bannerMessages) && bannerMessages.length) {
-        const filteredMessages = bannerMessages.filter(({ id, title }) => id !== idTitle && title !== idTitle);
-
-        dispatch({
-          type: reduxTypes.message.SET_BANNER_MESSAGES,
-          viewId: productId,
-          bannerMessages: filteredMessages || []
-        });
-      }
-    },
-    [bannerMessages, dispatch, productId]
-  );
+  const { removeBannerMessages } = useAliasBannerMessagesContext();
+  return useCallback(idTitle => removeBannerMessages(productId, idTitle), [productId, removeBannerMessages]);
 };
 
 /**
- * Provide a callback for setting application banner messages from state.
+ * Hook to set banner messages for the current product.
  *
  * @param {object} options
- * @param {Function} options.useDispatch
- * @param {Function} options.useProduct
- * @param {Function} options.useBannerMessages
+ * @param {useProduct} [options.useProduct=useProduct]
+ * @param {useBannerMessagesContext} [options.useBannerMessagesContext=useBannerMessagesContext]
  * @returns {Function}
  */
 const useSetBannerMessages = ({
-  useDispatch: useAliasDispatch = storeHooks.reactRedux.useDispatch,
   useProduct: useAliasProduct = useProduct,
-  useBannerMessages: useAliasBannerMessages = useBannerMessages
+  useBannerMessagesContext: useAliasBannerMessagesContext = useBannerMessagesContext
 } = {}) => {
-  const dispatch = useAliasDispatch();
   const { productId } = useAliasProduct();
-  const bannerMessages = useAliasBannerMessages();
-
-  /**
-   * Set application messages for banner display
-   *
-   * @callback setBannerMessages
-   * @param {Array|{ id: string, message: string, title: string, variant: string }} messages
-   */
-  return useCallback(
-    messages => {
-      if (productId) {
-        const updatedMessages = ((Array.isArray(messages) && messages) || [messages])
-          .map(value => {
-            if (value?.id || value?.title || value?.message) {
-              return {
-                ...value,
-                id: value?.id || value?.title || value?.message
-              };
-            }
-
-            if (typeof value === 'string' || typeof value === 'number') {
-              return {
-                id: value,
-                title: value
-              };
-            }
-
-            return undefined;
-          })
-          .filter(value => value?.id !== undefined && Object.keys(value).length > 1);
-
-        const updatedBannerMessages = bannerMessages?.filter(
-          ({ id: existingId }) => !updatedMessages.some(({ id: newId }) => newId === existingId)
-        );
-
-        dispatch({
-          type: reduxTypes.message.SET_BANNER_MESSAGES,
-          viewId: productId,
-          bannerMessages: [...updatedBannerMessages, ...updatedMessages]
-        });
-      } else if (helpers.DEV_MODE) {
-        console.warn(
-          'Banner messages currently require the use of "product id". Product context is unavailable, try moving your banner message "set" lower in the component order.'
-        );
-      }
-    },
-    [bannerMessages, dispatch, productId]
-  );
+  const { setBannerMessages } = useAliasBannerMessagesContext();
+  return useCallback(messages => setBannerMessages(productId, messages), [productId, setBannerMessages]);
 };
 
 const context = {
+  BannerMessagesContext,
+  BannerMessagesProvider,
   useBannerMessages,
   useRemoveBannerMessages,
   useSetBannerMessages
 };
 
-export { context as default, context, useBannerMessages, useRemoveBannerMessages, useSetBannerMessages };
+export {
+  context as default,
+  context,
+  BannerMessagesContext,
+  BannerMessagesProvider,
+  useBannerMessages,
+  useRemoveBannerMessages,
+  useSetBannerMessages
+};

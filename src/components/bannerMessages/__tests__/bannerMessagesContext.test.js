@@ -1,66 +1,113 @@
-import { context, useBannerMessages, useRemoveBannerMessages, useSetBannerMessages } from '../bannerMessagesContext';
+import React from 'react';
+import {
+  context,
+  BannerMessagesProvider,
+  useBannerMessages,
+  useRemoveBannerMessages,
+  useSetBannerMessages
+} from '../bannerMessagesContext';
 
 describe('BannerMessagesContext', () => {
   it('should return specific properties', () => {
     expect(context).toMatchSnapshot('specific properties');
   });
 
-  it('should apply a hook for retrieving messages data from a selector', async () => {
-    const { result } = await renderHook(() =>
-      useBannerMessages({
-        useSelector: () => [
+  it('should apply a hook for retrieving messages data', async () => {
+    const mockContextValue = {
+      bannerMessages: {
+        dolorSit: [
           {
             id: 'lorem',
             title: 'ipsum'
           }
         ]
+      }
+    };
+
+    const { result } = await renderHook(() =>
+      useBannerMessages({
+        useProduct: () => ({ productId: 'dolorSit' }),
+        useBannerMessagesContext: () => mockContextValue
       })
     );
 
     expect(result).toMatchSnapshot('banner messages');
   });
 
-  it('should apply a hook for retrieving messages data from a selector and apply new messages', async () => {
-    const mockDispatch = jest.fn();
+  it.each([
+    {
+      description: 'set banner messages',
+      useHook: useSetBannerMessages,
+      method: 'setBannerMessages',
+      input: [
+        undefined,
+        'new message',
+        { title: 'lorem', message: 'duplicate id' },
+        { id: 'id only' },
+        { message: 'message only' }
+      ]
+    },
+    {
+      description: 'remove banner messages',
+      useHook: useRemoveBannerMessages,
+      method: 'removeBannerMessages',
+      input: 'ipsum'
+    }
+  ])('should apply hooks for $description', async ({ useHook, method, input }) => {
+    const mockMethod = jest.fn();
+    const mockContextValue = {
+      [method]: mockMethod
+    };
+
     const { result } = await renderHook(() =>
-      useSetBannerMessages({
-        useDispatch: () => mockDispatch,
+      useHook({
         useProduct: () => ({ productId: 'dolorSit' }),
-        useBannerMessages: () => [
-          {
-            id: 'lorem',
-            title: 'ipsum'
-          }
-        ]
+        useBannerMessagesContext: () => mockContextValue
       })
     );
 
-    result([
-      undefined,
-      'new message',
-      { title: 'lorem', message: 'duplicate id' },
-      { id: 'id only' },
-      { message: 'message only' }
-    ]);
-    expect(mockDispatch.mock.calls).toMatchSnapshot('dispatch');
+    result(input);
+    expect(mockMethod).toHaveBeenCalled();
+    expect(mockMethod.mock.calls).toMatchSnapshot(method);
   });
 
-  it('should apply a hook for retrieving messages data from a selector and remove messages', async () => {
-    const mockDispatch = jest.fn();
-    const { result } = await renderHook(() =>
-      useRemoveBannerMessages({
-        useDispatch: () => mockDispatch,
-        useProduct: () => ({ productId: 'dolorSit' }),
-        useBannerMessages: () => [
-          {
-            id: 'lorem',
-            title: 'ipsum'
-          }
-        ]
-      })
+  it('should handle state updates through the provider', async () => {
+    let capturedResult;
+    const TestComponent = () => {
+      const messages = useBannerMessages({ useProduct: () => ({ productId: 'lorem' }) });
+      const setMessages = useSetBannerMessages({ useProduct: () => ({ productId: 'lorem' }) });
+      const removeMessages = useRemoveBannerMessages({ useProduct: () => ({ productId: 'lorem' }) });
+      capturedResult = { messages, setMessages, removeMessages };
+      return null;
+    };
+
+    const rendered = renderComponent(
+      <BannerMessagesProvider>
+        <TestComponent />
+      </BannerMessagesProvider>
     );
 
-    result('ipsum');
-    expect(mockDispatch.mock.calls).toMatchSnapshot('dispatch');
+    expect(capturedResult.messages).toEqual([]);
+
+    await rendered.act(async () => {
+      capturedResult.setMessages({ id: 'test', title: 'test message' });
+    });
+
+    expect(capturedResult.messages).toEqual([{ id: 'test', title: 'test message' }]);
+
+    await rendered.act(async () => {
+      capturedResult.setMessages({ id: 'test2', title: 'test message 2' });
+    });
+
+    expect(capturedResult.messages).toEqual([
+      { id: 'test', title: 'test message' },
+      { id: 'test2', title: 'test message 2' }
+    ]);
+
+    await rendered.act(async () => {
+      capturedResult.removeMessages('test');
+    });
+
+    expect(capturedResult.messages).toEqual([{ id: 'test2', title: 'test message 2' }]);
   });
 });
