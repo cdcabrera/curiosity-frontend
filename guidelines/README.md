@@ -30,7 +30,7 @@ Skills live under **`guidelines/skills/`**. Each skill should be a folder with `
 | [product-configuration](./skills/product-configuration/SKILL.md) | New or updated subscription product variant; `rhsmConstants`, `src/config` product modules, locales |
 | [release-and-deploy](./skills/release-and-deploy/SKILL.md) | Stage vs prod, `main`/`stable`, app-interface, tags, release checklist |
 | [dependency-updates](./skills/dependency-updates/SKILL.md) | NPM bumps, `build:deps` / `build:deps-core`, Renovate-style updates |
-| [git-history-and-patterns](./skills/git-history-and-patterns/SKILL.md) | Precedent, blame, “how was X done before”, migration examples |
+| [repo-history-reports](./skills/repo-history-reports/SKILL.md) | Time-bounded commit reports (corpus, churn, PatternFly, custom grep); see `scripts/git-report.sh` |
 | [maintain-documentation](./skills/maintain-documentation/SKILL.md) | JSDoc, `src/` tier-one READMEs, `build:docs`, doc/spell lint |
 | [curiosity-architecture-patterns](./skills/curiosity-architecture-patterns/SKILL.md) | New/refactored UI, Redux wiring, eslint, mirroring feature structure |
 
@@ -46,7 +46,8 @@ Treat these user phrases as signals to open the listed docs (and related source)
 | **Product / subscription UI change** | [product-configuration skill](./skills/product-configuration/SKILL.md), [agent_coding](./agent_coding.md), `src/config/`, `src/services/rhsm/` |
 | **Release, stage, prod, stable, app-interface** | [release-and-deploy skill](./skills/release-and-deploy/SKILL.md), [CONTRIBUTING.md](../CONTRIBUTING.md) |
 | **Dependencies, Renovate, npm update** | [dependency-updates skill](./skills/dependency-updates/SKILL.md) |
-| **Git history, precedent, blame** | [git-history-and-patterns skill](./skills/git-history-and-patterns/SKILL.md) |
+| **Git history, reports, commit stats, PatternFly commits** | [repo-history-reports skill](./skills/repo-history-reports/SKILL.md), `bash scripts/git-report.sh --help` |
+| **Blame, path history, “how was X implemented”** | `git log`, `git blame`, [report-recipes](./skills/repo-history-reports/report-recipes.md) |
 | **JSDoc, src README, build:docs, doc lint** | [maintain-documentation skill](./skills/maintain-documentation/SKILL.md) |
 | **Architecture, Redux, component layout, eslint / style** | [curiosity-architecture-patterns skill](./skills/curiosity-architecture-patterns/SKILL.md), [agent_coding](./agent_coding.md) |
 | **Tests or CI failure** | [agent_testing](./agent_testing.md), [CONTRIBUTING.md](../CONTRIBUTING.md#testing) |
