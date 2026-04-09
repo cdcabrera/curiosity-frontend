@@ -2,51 +2,61 @@
 
 ## Overview
 
-Agent-specific guidelines for the Curiosity Frontend project, optimized for machine processing.
+**This directory is for autonomous agents only.** Humans should start from [README.md](../README.md) (quick context) and [CONTRIBUTING.md](../CONTRIBUTING.md) (maintainer processes, including a short [AI Agent](../CONTRIBUTING.md#ai-agent) section).
 
-## File Naming Convention
+Content here is optimized for machine use: concise rules, pointers to real paths and scripts, and minimal duplication of `CONTRIBUTING.md`.
 
-- `agent_*`: Guidance for autonomous agents
+## File naming
 
-## Guidelines Index
+- **`agent_*`**.md** — Always-on agent rules (behaviors, coding, testing).
+- **`skills/<skill-name>/SKILL.md`** — Task-specific workflows; add an index row below when you create a skill.
 
-### Agent Guidelines
+## Guidelines index
 
-- [Agent Behaviors](./agent_behaviors.md) - Comprehensive guide to agent behaviors, workflows, and standards
-- [Agent Coding](./agent_coding.md) - Coding standards
-- [Agent Testing](./agent_testing.md) - Testing procedures
+### Agent guidelines
+
+| Document | Purpose |
+|----------|---------|
+| [agent_behaviors.md](./agent_behaviors.md) | How to operate: doc order, questions, evidence, validation, `.agent/` boundaries |
+| [agent_coding.md](./agent_coding.md) | Stack, imports, components, Redux (`storeHooks`), layout, i18n, lint |
+| [agent_testing.md](./agent_testing.md) | Test layout, npm commands, snapshots, definition of done |
 
 ### Skills
 
-- [Add docs links](./skills/add-docs-links/SKILL.md) - Add documentation links to `src/docs.json` in a structured way (format, duplicate check, URL confirmation, tests)
+Skills live under **`guidelines/skills/`**. Each skill should be a folder with `SKILL.md` (and optional `reference.md`). Root symlinks **`.agents`** and **`.claude`** point at `guidelines/skills/` for tool discovery.
 
-**Note:** `guidelines/skills/` is the canonical location for skills. Root symlinks `.agents` and `.claude` point here so agents can discover them (Cursor, Claude). The `.agent/` directory (no “s”) is reserved for each developer’s local work and is off limits—do not use it for shared skills or guidelines.
+Add a row here when a skill is committed:
 
-## User Guide
+| Skill | When to use |
+|-------|-------------|
+| *(none yet)* | — |
 
-### Available Trigger Phrases
+**Note:** The **`.agent/`** directory (no “s”) is gitignored and reserved for per-developer agent state. Do not put shared skills or canonical guidelines only under `.agent/`.
 
-Agents should use these phrases as signals to consult specific documentation and source code:
+## Trigger phrases
 
-| Task / Intent                       | Reference Document                                                                                                                                     |
-|:------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **"review the repo guidelines"**    | Scan markdown files and guidelines directory. See [AI agent context](../CONTRIBUTING.md#ai-agent).                                                     |
+Treat these user phrases as signals to open the listed docs (and related source):
 
-## Guidelines Processing Order
+| Task / intent | Reference |
+|---------------|-----------|
+| **"review the repo guidelines"** | [README.md](../README.md) agent block, this file, other `guidelines/*.md`, [CONTRIBUTING.md](../CONTRIBUTING.md#ai-agent) |
+| **Product / subscription UI change** | [agent_coding](./agent_coding.md), `src/config/`, `src/services/rhsm/`, [CONTRIBUTING.md](../CONTRIBUTING.md) |
+| **Tests or CI failure** | [agent_testing](./agent_testing.md), [CONTRIBUTING.md](../CONTRIBUTING.md#testing) |
+| **How should you behave / what order to read** | [agent_behaviors](./agent_behaviors.md) |
 
-1. **Guidelines Directory** (all files in the `guidelines/` directory)
-2. **Local guidelines** (`.agent/` directory) — reserved for each user’s agent interaction; gitignored and off limits for shared repo assets. Do not create or reference shared skills or guidelines in `.agent/`.
+## Processing order
 
-## Maintaining This Directory
+1. All committed files under **`guidelines/`** (index first, then specialized docs and skills as needed).
+2. **`.agent/**`** only if the user points you there—local, non-canonical; never substitute it for updating `guidelines/` when rules should be shared.
 
-### File Maintenance Principles
-- Update index files (e.g., `guidelines/README.md`) immediately when adding or removing content.
-- Reference and index guidelines. Don't duplicate content.
-- Update references when adding new files.
-- Keep descriptions concise and focused.
+## Maintaining this directory
 
-### Adding New Guidelines
-1. Add entry to "Guidelines Index" section
-2. Include essential metadata
-3. Provide brief description
-4. Update processing order if needed
+- Update **this README** when you add or remove `agent_*.md` files or skills.
+- **Reference** `CONTRIBUTING.md` and `README.md`; do not copy long procedural sections here.
+- Keep trigger and index tables accurate.
+
+### Adding a skill
+
+1. Create `guidelines/skills/<name>/SKILL.md` (YAML frontmatter + workflow recommended).
+2. Add a row under **Skills** above.
+3. Add a trigger row if the skill has a clear user phrase.
