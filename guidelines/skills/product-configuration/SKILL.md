@@ -8,15 +8,14 @@ description: Adds or updates subscription product variants (PAYG, on-demand, ann
 ## Preconditions
 
 - Follow [agent_behaviors.md](../../agent_behaviors.md) and [agent_coding.md](../../agent_coding.md). Repo rules override generic PatternFly or external examples.
-- Use **current** code and **git history** for precedents; do not trust example commit hashes from old docs without verifying with `git log` / `git show`.
 
 ## Workflow
 
 1. **Classify** the variant with the user (annual RHEL add-on vs OpenShift PAYG vs RHEL PAYG vs on-demand, etc.). If the app does not support the case (e.g. duplicate OpenShift annual), **stop** and explain—see [reference.md](reference.md#stop-conditions).
 2. **Gather** required fields using the **sequential** question list in [reference.md](reference.md#interactive-questions)—one question at a time, no invented IDs or metrics.
-3. **Find precedents**: `git log --oneline -- src/services/rhsm/rhsmConstants.js` and similar paths for the closest existing variant; mirror structure.
-4. **Apply** the checklist for that path in [reference.md](reference.md#implementation-checklists).
-5. **Validate**: `npm run test:lintfix` (or `npm run test:lint`), `npm run test:ci`; update snapshots only when changes are intentional (see [agent_testing.md](../../agent_testing.md)).
+3. **Review git examples**: Open [reference.md — Git reference commits (examples)](reference.md#git-reference-commits-examples). Pick the **closest** historical commit for your variant class and run `git show <hash>`; confirm the diff still matches today’s patterns (files may have moved or been refactored). Supplement with `git log --oneline -- src/services/rhsm/rhsmConstants.js` and `src/config/` for **newer** precedents if needed.
+4. **Apply** the matching checklist in the same reference section (RHEL annual, OpenShift PAYG, or RHEL PAYG).
+5. **Validate**: `npm run test:lintfix` (or `npm run test:lint`), `npm run test:ci`; update snapshots only when changes are intentional (see [agent_testing.md](../../agent_testing.md)). Optional: [Quick validation commands](reference.md#quick-validation-commands).
 6. **Handoff**: List anything only a human can verify (APIs, entitlements, stage). Ask whether the user confirms success before treating the task as closed.
 
 ## Do not
@@ -26,4 +25,4 @@ description: Adds or updates subscription product variants (PAYG, on-demand, ann
 
 ## Additional detail
 
-- Question scripts, localization shape, and per-path checklists: [reference.md](reference.md)
+- Git **example hashes**, full question script, localization, naming, capacity/graph pitfalls, validation commands: [reference.md](reference.md)
