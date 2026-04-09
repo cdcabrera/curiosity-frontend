@@ -8,7 +8,7 @@ Content here is optimized for machine use: concise rules, pointers to real paths
 
 ## File naming
 
-- **`agent_*`**.md** — Always-on agent rules (behaviors, coding, testing).
+- **`agent_*.md`** — Always-on agent rules (behaviors, coding, testing).
 - **`skills/<skill-name>/SKILL.md`** — Task-specific workflows; add an index row below when you create a skill.
 
 ## Guidelines index
@@ -25,11 +25,13 @@ Content here is optimized for machine use: concise rules, pointers to real paths
 
 Skills live under **`guidelines/skills/`**. Each skill should be a folder with `SKILL.md` (and optional `reference.md`). Root symlinks **`.agents`** and **`.claude`** point at `guidelines/skills/` for tool discovery.
 
-Add a row here when a skill is committed:
-
 | Skill | When to use |
 |-------|-------------|
-| *(none yet)* | — |
+| [product-configuration](./skills/product-configuration/SKILL.md) | New or updated subscription product variant; `rhsmConstants`, `src/config` product modules, locales |
+| [release-and-deploy](./skills/release-and-deploy/SKILL.md) | Stage vs prod, `main`/`stable`, app-interface, tags, release checklist |
+| [dependency-updates](./skills/dependency-updates/SKILL.md) | NPM bumps, `build:deps` / `build:deps-core`, Renovate-style updates |
+| [git-history-and-patterns](./skills/git-history-and-patterns/SKILL.md) | Precedent, blame, “how was X done before”, migration examples |
+| [maintain-documentation](./skills/maintain-documentation/SKILL.md) | JSDoc, `src/` tier-one READMEs, `build:docs`, doc/spell lint |
 
 **Note:** The **`.agent/`** directory (no “s”) is gitignored and reserved for per-developer agent state. Do not put shared skills or canonical guidelines only under `.agent/`.
 
@@ -40,7 +42,11 @@ Treat these user phrases as signals to open the listed docs (and related source)
 | Task / intent | Reference |
 |---------------|-----------|
 | **"review the repo guidelines"** | [README.md](../README.md) agent block, this file, other `guidelines/*.md`, [CONTRIBUTING.md](../CONTRIBUTING.md#ai-agent) |
-| **Product / subscription UI change** | [agent_coding](./agent_coding.md), `src/config/`, `src/services/rhsm/`, [CONTRIBUTING.md](../CONTRIBUTING.md) |
+| **Product / subscription UI change** | [product-configuration skill](./skills/product-configuration/SKILL.md), [agent_coding](./agent_coding.md), `src/config/`, `src/services/rhsm/` |
+| **Release, stage, prod, stable, app-interface** | [release-and-deploy skill](./skills/release-and-deploy/SKILL.md), [CONTRIBUTING.md](../CONTRIBUTING.md) |
+| **Dependencies, Renovate, npm update** | [dependency-updates skill](./skills/dependency-updates/SKILL.md) |
+| **Git history, precedent, blame** | [git-history-and-patterns skill](./skills/git-history-and-patterns/SKILL.md) |
+| **JSDoc, src README, build:docs, doc lint** | [maintain-documentation skill](./skills/maintain-documentation/SKILL.md) |
 | **Tests or CI failure** | [agent_testing](./agent_testing.md), [CONTRIBUTING.md](../CONTRIBUTING.md#testing) |
 | **How should you behave / what order to read** | [agent_behaviors](./agent_behaviors.md) |
 
