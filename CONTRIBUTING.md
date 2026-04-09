@@ -689,12 +689,12 @@ Current agent interaction can be triggered with the chat command
 
 - **`review the repo guidelines`** - Your agent should attempt to scan common files like `README.md` and `CONTRIBUTING.md`
 
+- For detailed information on agent interaction, see [guidelines/README.md](./guidelines/README.md).
+
 ##### Customizing developer experience
 
-As developers, we often have our own flavor of working, and now that includes working with AI agents. To that point we've added agent guidance
-to allow customization through a gitignored directory `./.agent` in the root of the project. If you, as a developer, come across
-refinements that are unique to you, feel free to ask the agent to save guidance there. And if you think it's something that can be refined
-for all developers, you're encouraged to contribute it back towards the [guidelines directory](./guidelines).
+As developers, we often have our own preferred workflows, and that includes working with AI agents. To that point, we've added agent guidance
+to allow customization for your work environment through a tool-agnostic git-ignored directory `./.agent` in the root of the project.
 
 ##### Noting AI Agent contributions
 
