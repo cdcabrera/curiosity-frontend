@@ -694,7 +694,7 @@ Current agent interaction can be triggered with the chat command
 ##### Customizing developer experience
 
 As developers, we often have our own preferred workflows, and that includes working with AI agents. To that point, we've added agent guidance
-to allow customization for your work environment through a tool-agnostic git-ignored directory `./.agent` in the root of the project.
+to allow customization for your work environment through a tool-agnostic **git-ignored** directory **`./.agent`** in the root of the project. That directory is **not tracked by git**: contents stay **on your machine** and are **not** shared with other contributors when they clone or pull the repository (unless you copy files elsewhere deliberately). Canonical, team-shared agent material belongs under [`guidelines/`](./guidelines/README.md).
 
 ##### Noting AI Agent contributions
 
