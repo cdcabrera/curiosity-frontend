@@ -32,6 +32,7 @@ Skills live under **`guidelines/skills/`**. Each skill should be a folder with `
 | [dependency-updates](./skills/dependency-updates/SKILL.md) | NPM bumps, `build:deps` / `build:deps-core`, Renovate-style updates |
 | [git-history-and-patterns](./skills/git-history-and-patterns/SKILL.md) | Precedent, blame, “how was X done before”, migration examples |
 | [maintain-documentation](./skills/maintain-documentation/SKILL.md) | JSDoc, `src/` tier-one READMEs, `build:docs`, doc/spell lint |
+| [curiosity-architecture-patterns](./skills/curiosity-architecture-patterns/SKILL.md) | New/refactored UI, Redux wiring, eslint, mirroring feature structure |
 
 **Note:** The **`.agent/`** directory (no “s”) is gitignored and reserved for per-developer agent state. Do not put shared skills or canonical guidelines only under `.agent/`.
 
@@ -47,6 +48,7 @@ Treat these user phrases as signals to open the listed docs (and related source)
 | **Dependencies, Renovate, npm update** | [dependency-updates skill](./skills/dependency-updates/SKILL.md) |
 | **Git history, precedent, blame** | [git-history-and-patterns skill](./skills/git-history-and-patterns/SKILL.md) |
 | **JSDoc, src README, build:docs, doc lint** | [maintain-documentation skill](./skills/maintain-documentation/SKILL.md) |
+| **Architecture, Redux, component layout, eslint / style** | [curiosity-architecture-patterns skill](./skills/curiosity-architecture-patterns/SKILL.md), [agent_coding](./agent_coding.md) |
 | **Tests or CI failure** | [agent_testing](./agent_testing.md), [CONTRIBUTING.md](../CONTRIBUTING.md#testing) |
 | **How should you behave / what order to read** | [agent_behaviors](./agent_behaviors.md) |
 
