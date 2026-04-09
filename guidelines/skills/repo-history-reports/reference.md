@@ -34,8 +34,8 @@ Scopes often mirror areas: `config`, `graphCard`, `locale`, `build`, `deps`, `de
 To save a snapshot for agents or humans:
 
 ```bash
-bash scripts/git-report.sh --as-of v4.19.0 --report corpus --format json > .agent/history-corpus-v4.19.0.json
-bash scripts/git-report.sh --as-of v4.19.0 --report churn > .agent/history-churn-v4.19.0.md
+bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of v4.19.0 --report corpus --format json > .agent/history-corpus-v4.19.0.json
+bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of v4.19.0 --report churn > .agent/history-churn-v4.19.0.md
 ```
 
 (Use `.agent/` only if team policy allows; otherwise commit under `docs/` or attach to release artifacts.)

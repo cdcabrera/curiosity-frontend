@@ -51,7 +51,7 @@
     "ci:unit-tests": "run-s test",
     "dev:chrome": "bash ./scripts/dev.chrome.sh -b prod-stable",
     "docs:md": "node ./scripts/readme.docs.js",
-    "report:git": "bash ./scripts/git-report.sh",
+    "report:git": "bash ./guidelines/skills/repo-history-reports/scripts/git-report.sh",
     "release": "changelog --link-url https://github.com/RedHatInsights/curiosity-frontend.git",
     "release:rc": "npm run release -- --dry-run",
     "start": "export MOCK_PORT=${MOCK_PORT:-3030}; run-p -l api:dev start:standalone",

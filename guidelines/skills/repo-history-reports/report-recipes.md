@@ -11,16 +11,16 @@ Parameters map cleanly to a future tool: `as_of`, `report`, `filter`, `limit`.
 
 ## recipe: `corpus`
 
-- **Script:** `bash scripts/git-report.sh --as-of "$as_of" --report corpus`
+- **Script:** `bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of "$as_of" --report corpus`
 - **JSON:** add `--format json`
 
 ## recipe: `churn`
 
-- **Script:** `bash scripts/git-report.sh --as-of "$as_of" --report churn`
+- **Script:** `bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of "$as_of" --report churn`
 
 ## recipe: `patternfly`
 
-- **Script:** `bash scripts/git-report.sh --as-of "$as_of" --report patternfly`
+- **Script:** `bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of "$as_of" --report patternfly`
 - **Pickaxe (lockfile):**  
   `git log "$as_of" -S'@patternfly' --oneline -- package.json package-lock.json | head -n "$limit"`
 

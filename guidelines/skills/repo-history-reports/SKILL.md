@@ -17,10 +17,11 @@ Act as a **report generator** over the **commit-message corpus**, anchored at **
 
 ## Preferred: helper script
 
-From repo root:
+From repo root (script ships with this skill):
 
 ```bash
-bash scripts/git-report.sh --as-of <REV> --report <name> [--format md|json]
+bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of <REV> --report <name> [--format md|json]
+# or: npm run report:git -- --as-of HEAD --report corpus
 ```
 
 | `--report` | Output |
