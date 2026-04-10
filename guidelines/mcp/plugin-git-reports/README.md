@@ -45,9 +45,18 @@ npx -y @patternfly/patternfly-mcp@latest \
 
 | Argument | Required | Notes |
 |----------|----------|--------|
-| `report` | yes | `corpus` \| `churn` \| `patternfly` \| `subjects` |
+| `report` | yes | `corpus` \| `churn` \| `patternfly` \| `subjects` \| `examples` |
 | `asOf` | no | default `HEAD` (passed to `git-report.sh --as-of`) |
-| `format` | no | `md` (default) or `json` (**corpus only**) |
+| `format` | no | `md` (default) or `json` (**corpus** and **examples**) |
+| `since`, `until` | no | `report=examples` only — passed to `git log` |
+| `limit` | no | `report=examples` only — default 15, max 100 |
+| `commitType` | no | `report=examples` only — conventional type (`fix`, `build`, …) |
+| `scope` | no | `report=examples` only — exact conventional scope |
+| `subjectGlob` | no | `report=examples` only — case-insensitive glob on subject (`*` wildcard) |
+| `paths` | no | `report=examples` only — pathspec strings |
+| `bodyLines` | no | `report=examples` only — max body lines per commit (default 12) |
+
+**`examples`** runs [`scripts/git-report-examples.py`](../../../scripts/git-report-examples.py) and needs **python3** on `PATH`.
 
 ## See also
 

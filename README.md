@@ -73,7 +73,7 @@ Agents must analyze these files when asked for guidance:
 1. **`./README.md`** - Main agent guidance and behavior standards (including agent-only comment block)
 2. **`./guidelines/README.md`** - Core agent guidance and behavior standards
 3. **`./guidelines/**/*.md`** - Specialized workflow and domain-specific instructions (`agent_*.md`, skills under `guidelines/skills/`, etc.)
-4. **`./docs/development.md`** - **Local workflow and tooling:** install/dotenv, local and proxy dev, debugging, JSDoc and tests, Spandx; **optional** PatternFly MCP; **git commit message reports** via **`npm run report:git`** / **`scripts/git-report.sh`** (corpus/churn/patternfly—follow [Git commit message reports](./docs/development.md#git-commit-message-reports) instead of improvising raw `git log` for those questions).
+4. **`./docs/development.md`** - **Local workflow and tooling:** install/dotenv, local and proxy dev, debugging, JSDoc and tests, Spandx; **optional** PatternFly MCP; **git commit message reports** via **`npm run report:git`** / **`scripts/git-report.sh`** (corpus/churn/patternfly/examples—follow [Git commit message reports](./docs/development.md#git-commit-message-reports) instead of improvising raw `git log` for those questions).
 5. **`./.agent/**/*.md`** - gitignored directory: local agent state, scratch notes, and developer-only resources—not shared via git
 
 The guideline system should be processed in this order, with specialized guidelines taking precedence for their specific domains, and local `.agent/` material overriding or extending general guidelines only when the user points you there.

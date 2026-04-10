@@ -44,7 +44,7 @@ Treat these user phrases as signals to open the listed docs (and related source)
 | **Global banner, maintenance message, `banners.js`, `useConfigBanners`** | [configurable-banners skill](./skills/configurable-banners/SKILL.md), [docs/architecture.md](../docs/architecture.md) |
 | **Release, stage, prod, stable, app-interface** | [CONTRIBUTING.md](../CONTRIBUTING.md) (Process) |
 | **Dependencies, Renovate, npm update** | [CONTRIBUTING.md](../CONTRIBUTING.md) (NPM dependency maintenance) |
-| **Git history corpus, churn, PatternFly commits in subjects** | [docs/development.md — Git commit message reports](../docs/development.md#git-commit-message-reports), `npm run report:git -- --help` |
+| **Git history corpus, churn, PatternFly commits, filtered examples** | [docs/development.md — Git commit message reports](../docs/development.md#git-commit-message-reports), `bash scripts/git-report.sh --help` |
 | **Blame, path history, “how was X implemented”** | `git log`, `git blame` |
 | **JSDoc, src README, build:docs, doc lint** | [docs/development.md — Documentation](../docs/development.md#documentation), [CONTRIBUTING.md](../CONTRIBUTING.md) (PR checks) |
 | **Architecture, Redux, component layout, eslint / style** | [docs/architecture.md](../docs/architecture.md), [agent_coding](./agent_coding.md) |

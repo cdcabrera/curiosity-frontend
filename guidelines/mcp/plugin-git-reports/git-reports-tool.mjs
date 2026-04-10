@@ -17,7 +17,8 @@ const GIT_REPORT_SCRIPT = path.join(REPO_ROOT, 'scripts', 'git-report.sh');
 
 const toolDescription = [
   'Run curiosity-frontend time-bounded commit-message reports (corpus stats, fix churn,',
-  'PatternFly-related subjects, subject samples). Wraps scripts/git-report.sh / npm run report:git.',
+  'PatternFly-related subjects, subject samples, filtered commit examples for LLM-style use).',
+  'Wraps scripts/git-report.sh / npm run report:git.',
   'Repo root is resolved from this plugin path (guidelines/mcp/plugin-git-reports).'
 ].join(' ');
 
@@ -30,42 +31,104 @@ const inputSchema = {
     },
     report: {
       type: 'string',
-      enum: ['corpus', 'churn', 'patternfly', 'subjects'],
+      enum: ['corpus', 'churn', 'patternfly', 'subjects', 'examples'],
       description:
-        'corpus: convention counts; churn: fix-oriented heuristics; patternfly: subject grep; subjects: first/latest sample'
+        'corpus: convention counts; churn: fix-oriented heuristics; patternfly: subject grep; subjects: first/latest sample; examples: filtered commits with bodies/stats (JSON or md)'
     },
     format: {
       type: 'string',
       enum: ['md', 'json'],
-      description: 'markdown (default) or json (corpus only)'
+      description: 'markdown (default) or json (supported for corpus and examples)'
+    },
+    since: {
+      type: 'string',
+      description: 'For report=examples: git log --since (optional ISO or relative date).'
+    },
+    until: {
+      type: 'string',
+      description: 'For report=examples: git log --until (optional).'
+    },
+    limit: {
+      type: 'number',
+      description: 'For report=examples: max commits (default 15, max 100).'
+    },
+    commitType: {
+      type: 'string',
+      description: 'For report=examples: conventional commit type prefix, e.g. fix, build, feat.'
+    },
+    scope: {
+      type: 'string',
+      description: 'For report=examples: conventional scope (exact match in the scope list).'
+    },
+    subjectGlob: {
+      type: 'string',
+      description:
+        'For report=examples: case-insensitive glob on the subject line (* wildcard), e.g. *patternfly*'
+    },
+    paths: {
+      type: 'array',
+      items: { type: 'string' },
+      description: 'For report=examples: pathspecs; only commits touching these paths.'
+    },
+    bodyLines: {
+      type: 'number',
+      description: 'For report=examples: max body lines per commit in output (default 12).'
     }
   },
   required: ['report']
 };
 
 /**
- * @param {{ asOf?: string, report: string, format?: string }} args
+ * @param {Record<string, unknown>} args
  * @returns {{ content: Array<{ type: string, text: string }> }}
  */
 function runGitReport(args) {
-  const asOf = args.asOf ?? 'HEAD';
+  const asOf = typeof args.asOf === 'string' ? args.asOf : 'HEAD';
   const { report } = args;
-  const format = args.format ?? 'md';
+  const format = typeof args.format === 'string' ? args.format : 'md';
 
-  if (format === 'json' && report !== 'corpus') {
+  if (format === 'json' && report !== 'corpus' && report !== 'examples') {
     return {
       content: [
         {
           type: 'text',
-          text: 'Invalid: format "json" is only supported when report is "corpus".'
+          text: 'Invalid: format "json" is only supported when report is "corpus" or "examples".'
         }
       ]
     };
   }
 
-  const bashArgs = [GIT_REPORT_SCRIPT, '--as-of', asOf, '--report', report];
-  if (format === 'json') {
-    bashArgs.push('--format', 'json');
+  const bashArgs = [GIT_REPORT_SCRIPT, '--as-of', asOf, '--report', String(report), '--format', format];
+
+  if (report === 'examples') {
+    if (typeof args.since === 'string' && args.since) {
+      bashArgs.push('--since', args.since);
+    }
+    if (typeof args.until === 'string' && args.until) {
+      bashArgs.push('--until', args.until);
+    }
+    if (typeof args.limit === 'number' && Number.isFinite(args.limit)) {
+      bashArgs.push('--limit', String(Math.trunc(args.limit)));
+    }
+    if (typeof args.commitType === 'string' && args.commitType) {
+      bashArgs.push('--type', args.commitType);
+    }
+    if (typeof args.scope === 'string' && args.scope) {
+      bashArgs.push('--scope', args.scope);
+    }
+    if (typeof args.subjectGlob === 'string' && args.subjectGlob) {
+      bashArgs.push('--subject-glob', args.subjectGlob);
+    }
+    if (Array.isArray(args.paths)) {
+      for (const p of args.paths) {
+        if (typeof p === 'string' && p) {
+          bashArgs.push('--path', p);
+        }
+      }
+    }
+    if (typeof args.bodyLines === 'number' && Number.isFinite(args.bodyLines)) {
+      bashArgs.push('--body-lines', String(Math.trunc(args.bodyLines)));
+    }
   }
 
   const result = spawnSync('bash', bashArgs, {

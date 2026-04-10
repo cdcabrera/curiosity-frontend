@@ -9,20 +9,37 @@ set -euo pipefail
 AS_OF="HEAD"
 REPORT=""
 FORMAT="md"
+SINCE=""
+UNTIL=""
+LIMIT=15
+COMMIT_TYPE=""
+SCOPE=""
+SUBJECT_GLOB=""
+BODY_LINES=12
+PATHS=()
 
 usage() {
   cat <<'EOF'
 git-report.sh — time-bounded commit-message reports
 
 Options:
-  --as-of REV   Tip commit for the report (default: HEAD). Accepts SHA, branch, tag.
-  --report NAME One of: corpus, churn, patternfly, subjects, help
-  --format FMT  md (default) or json — only corpus supports json fully; others use md.
+  --as-of REV          Tip commit for the report (default: HEAD). Accepts SHA, branch, tag.
+  --report NAME        corpus | churn | patternfly | subjects | examples | help
+  --format FMT         md (default) or json — corpus and examples support json; others md only.
+  --since DATE         With --report examples: git log --since (optional).
+  --until DATE         With --report examples: git log --until (optional).
+  --limit N            With --report examples: max commits (default 15, max 100).
+  --type TYPE          With --report examples: conventional type, e.g. fix, build, feat.
+  --scope NAME         With --report examples: conventional scope (exact match).
+  --subject-glob PAT   With --report examples: case-insensitive glob on subject (* wildcard).
+  --body-lines N       With --report examples: max body lines per commit (default 12).
+  --path P             With --report examples: pathspec (repeatable).
 
 Examples (from repository root):
   bash scripts/git-report.sh --as-of main --report corpus
   bash scripts/git-report.sh --as-of v4.19.0 --report patternfly
   bash scripts/git-report.sh --as-of HEAD~100 --report churn
+  bash scripts/git-report.sh --report examples --format json --type build --subject-glob '*patternfly*'
 EOF
   exit 0
 }
@@ -32,6 +49,14 @@ while [[ $# -gt 0 ]]; do
     --as-of) AS_OF="${2:-}"; shift 2 ;;
     --report) REPORT="${2:-}"; shift 2 ;;
     --format) FORMAT="${2:-}"; shift 2 ;;
+    --since) SINCE="${2:-}"; shift 2 ;;
+    --until) UNTIL="${2:-}"; shift 2 ;;
+    --limit) LIMIT="${2:-}"; shift 2 ;;
+    --type) COMMIT_TYPE="${2:-}"; shift 2 ;;
+    --scope) SCOPE="${2:-}"; shift 2 ;;
+    --subject-glob) SUBJECT_GLOB="${2:-}"; shift 2 ;;
+    --body-lines) BODY_LINES="${2:-}"; shift 2 ;;
+    --path) PATHS+=("${2:-}"); shift 2 ;;
     -h|--help) usage ;;
     *) echo "Unknown option: $1" >&2; usage ;;
   esac
@@ -45,6 +70,44 @@ cd "$REPO_ROOT"
 
 REV="$(git rev-parse "${AS_OF}^{commit}")"
 REV_DATE="$(git log -1 --format='%aI' "$REV")"
+
+if [[ "$REPORT" == "examples" ]]; then
+  if [[ "$FORMAT" != "md" && "$FORMAT" != "json" ]]; then
+    echo 'Use --format md or json with --report examples' >&2
+    exit 1
+  fi
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo 'python3 is required for --report examples' >&2
+    exit 1
+  fi
+  if ! [[ "$LIMIT" =~ ^[0-9]+$ ]]; then
+    echo '--limit must be a non-negative integer' >&2
+    exit 1
+  fi
+  if ! [[ "$BODY_LINES" =~ ^[0-9]+$ ]]; then
+    echo '--body-lines must be a non-negative integer' >&2
+    exit 1
+  fi
+  PY=(python3 "$REPO_ROOT/scripts/git-report-examples.py"
+    --as-of-commit "$REV"
+    --as-of-date "$REV_DATE"
+    --format "$FORMAT"
+    --limit "$LIMIT"
+    --body-lines "$BODY_LINES")
+  [[ -n "$SINCE" ]] && PY+=(--since "$SINCE")
+  [[ -n "$UNTIL" ]] && PY+=(--until "$UNTIL")
+  [[ -n "$COMMIT_TYPE" ]] && PY+=(--type "$COMMIT_TYPE")
+  [[ -n "$SCOPE" ]] && PY+=(--scope "$SCOPE")
+  [[ -n "$SUBJECT_GLOB" ]] && PY+=(--subject-glob "$SUBJECT_GLOB")
+  if ((${#PATHS[@]} > 0)); then
+    for p in "${PATHS[@]}"; do
+      PY+=(--path "$p")
+    done
+  fi
+  "${PY[@]}"
+  exit 0
+fi
+
 SUBJ_TMP="$(mktemp)"
 trap 'rm -f "$SUBJ_TMP"' EXIT
 
@@ -222,7 +285,7 @@ case "$REPORT" in
     ;;
   *)
     echo "Unknown --report: $REPORT" >&2
-    echo "Use: corpus | churn | patternfly | subjects | help" >&2
+    echo "Use: corpus | churn | patternfly | subjects | examples | help" >&2
     exit 1
     ;;
 esac

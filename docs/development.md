@@ -416,6 +416,8 @@ From the repository root:
 npm run report:git -- --as-of HEAD --report corpus
 # or
 bash scripts/git-report.sh --as-of main --report patternfly
+# filtered commit examples (JSON; needs python3)
+npm run report:git -- --report examples --format json --subject-glob '*patternfly*' --limit 5
 ```
 
 | `--report` | Output |
@@ -424,8 +426,11 @@ bash scripts/git-report.sh --as-of main --report patternfly
 | `churn` | Heuristic recurring fixes: top `fix(` scopes, keyword hits in fix subjects |
 | `patternfly` | Subjects matching `patternfly` or `@patternfly` |
 | `subjects` | First and latest 50 commits (sampling) |
+| `examples` | Filtered commits with subject, body excerpt, `git show --stat` summary, optional heuristics (`scripts/git-report-examples.py`) |
 
-`--format json` is supported for **`corpus`** only.
+`--format json` is supported for **`corpus`** and **`examples`**.
+
+**`examples` filters** (all optional): `--since`, `--until`, `--limit` (default 15, max 100), `--type` (conventional prefix), `--scope` (exact scope match), `--subject-glob` (case-insensitive glob, `*` wildcard), `--path` (repeatable pathspec), `--body-lines` (max body lines per commit). Requires **`python3`** on `PATH`.
 
 **Conventions:** primary form `type(scope): sw-NNNN … (#PR)`; legacy **ent-NNNN**; older **issues/N** in text. **fix(build)** / npm churn is often maintenance, not app defects.
 
