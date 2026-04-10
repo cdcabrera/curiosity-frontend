@@ -16,13 +16,10 @@ const REPO_ROOT = path.resolve(__dirname, '../../..');
 const GIT_REPORT_SCRIPT = path.join(REPO_ROOT, 'scripts', 'git-report.sh');
 
 const toolDescription = [
-  'Curiosity-frontend only: analyzes git commit subjects (not line-level blame) as of asOf (default HEAD).',
-  'Bundled with PatternFly MCP as a plugin but unrelated to PatternFly docs search.',
-  'Reports: corpus (convention stats: types, sw-/ent-/(#PR)); churn (fix heuristics); patternfly (subjects mentioning patternfly or @patternfly);',
-  'subjects (first/latest sample); examples (filtered log + body excerpt + stat + optional pattern hints).',
-  'For examples, combine filters with AND semantics: commitType, scope (exact match to any comma-separated scope in subject), subjectGlob (* wildcards), paths, since/until.',
-  'Raise bodyLines (default 12) when you need fuller bullet bodies. format=json only for corpus or examples.',
-  'Equivalent CLI: npm run report:git / bash scripts/git-report.sh. Conventions: docs/development.md#git-commit-message-reports, CONTRIBUTING.md.'
+  'Curiosity-frontend: git commit-subject reports (not blame), tip at asOf (default HEAD).',
+  'Ships with PatternFly MCP but does not search PatternFly documentation.',
+  'Modes: corpus | churn | patternfly | subjects | examples (filtered commits with body/stat snippets; example filters are ANDed).',
+  'Same behavior as npm run report:git / bash scripts/git-report.sh. See docs/development.md#git-commit-message-reports.'
 ].join(' ');
 
 const inputSchema = {
@@ -36,7 +33,7 @@ const inputSchema = {
       type: 'string',
       enum: ['corpus', 'churn', 'patternfly', 'subjects', 'examples'],
       description:
-        'Which report to run. corpus: type/sw-/PR token counts. churn: top fix scopes + keyword hits. patternfly: commits whose subject mentions patternfly or @patternfly. subjects: bookend sample of history. examples: main tool for filtered commits (use subjectGlob e.g. *sw-*, *pf6*, scope e.g. select, commitType e.g. build).'
+        'corpus: type/tracker token counts. churn: fix scopes + keyword hits. patternfly: subject mentions patternfly or @patternfly. subjects: oldest/newest subject sample. examples: filtered commits; set subjectGlob, commitType, scope, paths, since/until as needed (see each field).'
     },
     format: {
       type: 'string',
