@@ -59,6 +59,7 @@ For in-depth testing guidance review the [contribution guidelines](./CONTRIBUTIN
 Contributing encompasses
 - [Repository coding requirements](./CONTRIBUTING.md) - Includes everything from commit messaging practices and environment setup to unit testing.  
 - [User and AI agent guidance](./guidelines/README.md) - Includes everything from interactive workflows and prompts to general automation
+- [Optional MCP and local agent tooling](./docs/development.md) - PatternFly MCP setup in your editor, tool plugins, and commit report scripts (not required to build the app)
 
 The **`./.agent/`** directory at the repo root is **gitignored**: it is for **local developer and agent use only** (scratch notes, personal resources, generated reports). Nothing under `.agent/` is committed or visible to others through a normal clone. **Shared** agent guidance and skills live under [`guidelines/`](./guidelines/README.md).
 
@@ -72,15 +73,16 @@ Agents must analyze these files when asked for guidance:
 1. **`./README.md`** - Main agent guidance and behavior standards (including agent-only comment block)
 2. **`./guidelines/README.md`** - Core agent guidance and behavior standards
 3. **`./guidelines/**/*.md`** - Specialized workflow and domain-specific instructions (`agent_*.md`, skills under `guidelines/skills/`, etc.)
-4. **`./guidelines/skills/repo-history-reports/SKILL.md`** - **Commit history and reports:** time-bounded analysis of commit messages (corpus stats, fix churn, PatternFly-related commits, custom greps). Follow this skill and run **`guidelines/skills/repo-history-reports/scripts/git-report.sh`** (or `npm run report:git -- …`) instead of improvising raw `git log` for those questions.
-5. **`./.agent/**/*.md`** - gitignored directory: local agent state, scratch notes, and developer-only resources—not shared via git
+4. **`./docs/development.md`** - **Optional MCP / IDE setup:** PatternFly MCP client config (no committed default), `--tool` plugins, and how to run **`npm run report:git`** / **`guidelines/skills/repo-history-reports/scripts/git-report.sh`** for commit reports.
+5. **`./guidelines/skills/repo-history-reports/SKILL.md`** - **Commit history and reports:** time-bounded analysis of commit messages (corpus stats, fix churn, PatternFly-related commits, custom greps). Follow this skill and run **`guidelines/skills/repo-history-reports/scripts/git-report.sh`** (or `npm run report:git -- …`) instead of improvising raw `git log` for those questions.
+6. **`./.agent/**/*.md`** - gitignored directory: local agent state, scratch notes, and developer-only resources—not shared via git
 
 The guideline system should be processed in this order, with specialized guidelines taking precedence for their specific domains, and local `.agent/` material overriding or extending general guidelines only when the user points you there.
 
 **Next Steps:**
-6. **Review guidance under `./.agent/**/*.md` when relevant.** If the `./.agent` directory exists, the user may ask about material there.
-7. **If `./.agent` does not exist and the user wants local agent workspace**, explain that it is gitignored and for personal use only.
+7. **Review guidance under `./.agent/**/*.md` when relevant.** If the `./.agent` directory exists, the user may ask about material there.
+8. **If `./.agent` does not exist and the user wants local agent workspace**, explain that it is gitignored and for personal use only.
 
 **Final Steps:**
-8. **Optional:** Ask whether to create or refresh a `code-summary.md` (or similar) under `.agent/` as a local index—separate from shared `guidelines/` and from **repo-history-reports** output, which should follow the skill above.
+9. **Optional:** Ask whether to create or refresh a `code-summary.md` (or similar) under `.agent/` as a local index—separate from shared `guidelines/` and from **repo-history-reports** output, which should follow the skill above.
 -->

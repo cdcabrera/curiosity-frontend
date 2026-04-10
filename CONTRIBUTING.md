@@ -691,6 +691,8 @@ Current agent interaction can be triggered with the chat command
 
 - For detailed information on agent interaction, see [guidelines/README.md](./guidelines/README.md).
 
+- For **optional** IDE setup (PatternFly MCP, tool plugins, and repo commit-report scripts), see [docs/development.md](./docs/development.md). This repository does not commit a default MCP configuration; configure clients locally to avoid duplicate or conflicting servers across machines.
+
 ##### Customizing developer experience
 
 As developers, we often have our own preferred workflows, and that includes working with AI agents. To that point, we've added agent guidance

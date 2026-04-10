@@ -2,7 +2,7 @@
 
 ## Overview
 
-**This directory is for autonomous agents only.** Humans should start from [README.md](../README.md) (quick context) and [CONTRIBUTING.md](../CONTRIBUTING.md) (maintainer processes, including a short [AI Agent](../CONTRIBUTING.md#ai-agent) section).
+**This directory is for autonomous agents only.** Humans should start from [README.md](../README.md) (quick context) and [CONTRIBUTING.md](../CONTRIBUTING.md) (maintainer processes, including a short [AI Agent](../CONTRIBUTING.md#ai-agent) section). Optional PatternFly MCP and related setup: [docs/development.md](../docs/development.md).
 
 Content here is optimized for machine use: concise rules, pointers to real paths and scripts, and minimal duplication of `CONTRIBUTING.md`.
 
@@ -43,6 +43,7 @@ Treat these user phrases as signals to open the listed docs (and related source)
 | Task / intent | Reference |
 |---------------|-----------|
 | **"review the repo guidelines"** | [README.md](../README.md) agent block, this file, other `guidelines/*.md`, [CONTRIBUTING.md](../CONTRIBUTING.md#ai-agent) |
+| **MCP, Cursor, PatternFly MCP, IDE agent tools** | [docs/development.md](../docs/development.md) |
 | **Product / subscription UI change** | [product-configuration skill](./skills/product-configuration/SKILL.md), [agent_coding](./agent_coding.md), `src/config/`, `src/services/rhsm/` |
 | **Release, stage, prod, stable, app-interface** | [release-and-deploy skill](./skills/release-and-deploy/SKILL.md), [CONTRIBUTING.md](../CONTRIBUTING.md) |
 | **Dependencies, Renovate, npm update** | [dependency-updates skill](./skills/dependency-updates/SKILL.md) |
