@@ -392,7 +392,7 @@ Reload MCP / the window after changes. Pin a version instead of `@latest` if you
 
 The **git commit message reports** MCP tool lives under **[`guidelines/mcp/plugin-git-reports/`](../guidelines/mcp/plugin-git-reports/README.md)**. It registers **`curiosityGitReport`** and delegates to **`scripts/git-report.sh`** (same as **`npm run report:git`**).
 
-Requirements and security notes (Node 22+, `--plugin-isolation`, ESM): **[MCP tool plugins](https://github.com/patternfly/patternfly-mcp/blob/main/docs/development.md#mcp-tool-plugins)**. Run **`npm install`** in this repo so `@patternfly/patternfly-mcp` resolves for the plugin module.
+Requirements and security notes (Node 22+, `--plugin-isolation`, ESM): **[MCP tool plugins](https://github.com/patternfly/patternfly-mcp/blob/main/docs/development.md#mcp-tool-plugins)**. The git-report plugin does **not** import `@patternfly/patternfly-mcp`; it uses the raw creator pattern (like upstream **`tool.echoBasic.js`**), so no extra npm dependency is required in this repo for the plugin file itself.
 
 From the repository root:
 

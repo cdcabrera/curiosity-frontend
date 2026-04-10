@@ -6,7 +6,7 @@ PatternFly MCP **tool plugin** for this repository. It exposes one tool that run
 
 - **Node.js 22+** for PatternFly MCP external `--tool` plugins ([upstream](https://github.com/patternfly/patternfly-mcp/blob/main/docs/development.md#mcp-tool-plugins)).
 - **Bash** and **git** on `PATH`.
-- **`npm install`** in the repo so `@patternfly/patternfly-mcp` resolves for `createMcpTool` (devDependency in root `package.json`).
+- No **`@patternfly/patternfly-mcp`** dependency in this repository: the plugin is a raw tool creator (same idea as upstream e2e **`tool.echoBasic.js`**), so only `npx @patternfly/patternfly-mcp` needs to resolve the server.
 
 ## Load with PatternFly MCP
 

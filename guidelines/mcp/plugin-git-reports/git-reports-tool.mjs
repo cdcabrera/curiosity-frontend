@@ -2,16 +2,46 @@
  * PatternFly MCP tool plugin: curiosity-frontend git commit-message reports.
  * Delegates to scripts/git-report.sh (same as npm run report:git).
  *
+ * Implemented as a raw tool creator (no @patternfly/patternfly-mcp import), matching the
+ * PatternFly MCP e2e fixture pattern (e.g. tool.echoBasic.js).
+ *
  * @see https://github.com/patternfly/patternfly-mcp/blob/main/docs/development.md#mcp-tool-plugins
  */
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { createMcpTool } from '@patternfly/patternfly-mcp';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../../..');
 const GIT_REPORT_SCRIPT = path.join(REPO_ROOT, 'scripts', 'git-report.sh');
+
+const toolDescription = [
+  'Run curiosity-frontend time-bounded commit-message reports (corpus stats, fix churn,',
+  'PatternFly-related subjects, subject samples). Wraps scripts/git-report.sh / npm run report:git.',
+  'Repo root is resolved from this plugin path (guidelines/mcp/plugin-git-reports).'
+].join(' ');
+
+const inputSchema = {
+  type: 'object',
+  properties: {
+    asOf: {
+      type: 'string',
+      description: 'Tip revision for the report (default HEAD). Branch, tag, SHA, or expressions git rev-parse accepts.'
+    },
+    report: {
+      type: 'string',
+      enum: ['corpus', 'churn', 'patternfly', 'subjects'],
+      description:
+        'corpus: convention counts; churn: fix-oriented heuristics; patternfly: subject grep; subjects: first/latest sample'
+    },
+    format: {
+      type: 'string',
+      enum: ['md', 'json'],
+      description: 'markdown (default) or json (corpus only)'
+    }
+  },
+  required: ['report']
+};
 
 /**
  * @param {{ asOf?: string, report: string, format?: string }} args
@@ -71,38 +101,15 @@ function runGitReport(args) {
   };
 }
 
-const toolDescription = [
-  'Run curiosity-frontend time-bounded commit-message reports (corpus stats, fix churn,',
-  'PatternFly-related subjects, subject samples). Wraps scripts/git-report.sh / npm run report:git.',
-  'Repo root is resolved from this plugin path (guidelines/mcp/plugin-git-reports).'
-].join(' ');
-
-export default createMcpTool({
-  name: 'curiosityGitReport',
-  description: toolDescription,
-  inputSchema: {
-    type: 'object',
-    properties: {
-      asOf: {
-        type: 'string',
-        description:
-          'Tip revision for the report (default HEAD). Branch, tag, SHA, or expressions git rev-parse accepts.'
-      },
-      report: {
-        type: 'string',
-        enum: ['corpus', 'churn', 'patternfly', 'subjects'],
-        description:
-          'corpus: convention counts; churn: fix-oriented heuristics; patternfly: subject grep; subjects: first/latest sample'
-      },
-      format: {
-        type: 'string',
-        enum: ['md', 'json'],
-        description: 'markdown (default) or json (corpus only)'
-      }
-    },
-    required: ['report']
+const curiosityGitReportTool = () => [
+  'curiosityGitReport',
+  {
+    description: toolDescription,
+    inputSchema
   },
-  async handler(args) {
-    return runGitReport(args);
-  }
-});
+  async args => runGitReport(args)
+];
+
+curiosityGitReportTool.toolName = 'curiosityGitReport';
+
+export default curiosityGitReportTool;
