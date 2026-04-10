@@ -117,6 +117,7 @@
     "@babel/eslint-parser": "7.28.6",
     "@eslint/compat": "^2.0.3",
     "@eslint/js": "^9.39.4",
+    "@patternfly/patternfly-mcp": "^1.0.0",
     "@redhat-cloud-services/frontend-components-config": "^6.7.54",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.57",
     "@stylistic/eslint-plugin": "^5.10.0",

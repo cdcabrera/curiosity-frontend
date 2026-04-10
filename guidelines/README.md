@@ -10,6 +10,7 @@ Content here is optimized for machine use: concise rules, pointers to real paths
 
 - **`agent_*.md`** — Always-on agent rules (behaviors, coding, testing).
 - **`skills/<skill-name>/SKILL.md`** — Task-specific workflows; add an index row below when you create a skill.
+- **`mcp/plugin-*/`** — PatternFly MCP tool plugins (e.g. [plugin-git-reports](./mcp/plugin-git-reports/README.md)).
 
 ## Guidelines index
 

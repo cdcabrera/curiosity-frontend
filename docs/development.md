@@ -388,52 +388,23 @@ npx -y @patternfly/patternfly-mcp@latest
 
 Reload MCP / the window after changes. Pin a version instead of `@latest` if you want a stable toolchain.
 
-### Temporary tool plugin (until a real repo plugin exists)
+### Git reports MCP tool plugin (repo)
 
-Use this to verify **`--tool`** end-to-end. Requirements and security notes (Node 22+, `--plugin-isolation`, ESM): **[MCP tool plugins](https://github.com/patternfly/patternfly-mcp/blob/main/docs/development.md#mcp-tool-plugins)**.
+The **git commit message reports** MCP tool lives under **[`guidelines/mcp/plugin-git-reports/`](../guidelines/mcp/plugin-git-reports/README.md)**. It registers **`curiosityGitReport`** and delegates to **`scripts/git-report.sh`** (same as **`npm run report:git`**).
 
-1. Create a **local** file (e.g. under **`.agent/`**, which is gitignored), such as `.agent/patternfly-mcp-temp-tool.mjs`.
-2. Paste a minimal plugin (same shape as upstream examples; `createMcpTool` is from `@patternfly/patternfly-mcp`):
+Requirements and security notes (Node 22+, `--plugin-isolation`, ESM): **[MCP tool plugins](https://github.com/patternfly/patternfly-mcp/blob/main/docs/development.md#mcp-tool-plugins)**. Run **`npm install`** in this repo so `@patternfly/patternfly-mcp` resolves for the plugin module.
 
-```javascript
-import { createMcpTool } from '@patternfly/patternfly-mcp';
-
-export default createMcpTool({
-  name: 'curiosityTempPing',
-  description: 'Temporary placeholder tool until a real curiosity-frontend MCP plugin exists.',
-  inputSchema: {
-    type: 'object',
-    properties: { message: { type: 'string' } },
-    required: ['message']
-  },
-  async handler({ message }) {
-    return {
-      content: [{ type: 'text', text: `temp plugin ok: ${message}` }]
-    };
-  }
-});
-```
-
-3. Point the server at it (paths relative to where the client starts the process—usually the repo root):
+From the repository root:
 
 ```bash
-npx -y @patternfly/patternfly-mcp@latest --tool ./.agent/patternfly-mcp-temp-tool.mjs
+npx -y @patternfly/patternfly-mcp@latest \
+  --tool ./guidelines/mcp/plugin-git-reports/git-reports-tool.mjs \
+  --plugin-isolation none
 ```
 
-4. In **`.cursor/mcp.json`**, extend `args` after the package args, for example:
+**`.cursor/mcp.json`** — add the same `--tool` path (and usually `--plugin-isolation` / `none`) to `args` after the package specifier; see the plugin [README](../guidelines/mcp/plugin-git-reports/README.md).
 
-```json
-"args": [
-  "-y",
-  "@patternfly/patternfly-mcp@latest",
-  "--tool",
-  "./.agent/patternfly-mcp-temp-tool.mjs"
-]
-```
-
-If the plugin cannot resolve `@patternfly/patternfly-mcp`, see **Dependency resolution** in the upstream development doc (e.g. local install or layout your client uses).
-
-Replace this temp file with a proper plugin under version control when you add one; remove `--tool` from config if you stop using it.
+For a minimal **hello-world** `--tool` smoke test only, you can still use a local file under **`.agent/`** (gitignored) per upstream examples—do not duplicate report logic there.
 
 ## Git commit message reports
 
@@ -460,11 +431,7 @@ bash scripts/git-report.sh --as-of main --report patternfly
 
 For blame or file history, use `git log`, `git blame`. Extra one-liners: `git log <REV> -i --grep='<token>' --no-merges --format='%h | %aI | %s'` (cap output).
 
-### Future MCP tool (git reports)
-
-**Canonical implementation** stays in **[`scripts/git-report.sh`](../scripts/git-report.sh)**. **`npm run report:git`** is the same script (pass flags after `--`, e.g. `npm run report:git -- --as-of HEAD --report corpus`).
-
-A future **PatternFly MCP** `--tool` plugin should **delegate to one of those entry points** (spawn `npm run report:git` or `bash scripts/git-report.sh` from the repo root with the same arguments)—not reimplement the report logic in the plugin. That keeps humans, CI, agents, and MCP on one code path.
+**Canonical implementation** remains **[`scripts/git-report.sh`](../scripts/git-report.sh)** and **`npm run report:git`**. The MCP plugin above only spawns that script—no duplicated report logic.
 
 ## Related docs
 
