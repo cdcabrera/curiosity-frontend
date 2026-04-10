@@ -4,6 +4,7 @@ Agent-only coding guidance for curiosity-frontend. Maintainer detail lives in [C
 
 ## Stack
 
+- **Repository layout** — See [docs/architecture.md](../docs/architecture.md) for how `src/` areas fit together.
 - **React** — Functional components and hooks. Prefer patterns already used in neighboring files.
 - **PatternFly** — `@patternfly/react-*` and tokens; align with existing components.
 - **Red Hat Insights / FEC** — Build and host constraints per [README.md](../README.md) and `CONTRIBUTING.md`.

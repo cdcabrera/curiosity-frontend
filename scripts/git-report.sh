@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
 # Time-bounded git commit-message reports for curiosity-frontend.
-# Lives with the repo-history-reports skill (agent-oriented).
-# Usage (from repo root): bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of HEAD --report <name> [--format md|json]
+# Usage (from repo root): bash scripts/git-report.sh --as-of HEAD --report <name> [--format md|json]
+# Conventions and recipes: docs/development.md#git-commit-message-reports
 #
 set -euo pipefail
 
@@ -20,9 +20,9 @@ Options:
   --format FMT  md (default) or json — only corpus supports json fully; others use md.
 
 Examples (from repository root):
-  bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of main --report corpus
-  bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of v4.19.0 --report patternfly
-  bash guidelines/skills/repo-history-reports/scripts/git-report.sh --as-of HEAD~100 --report churn
+  bash scripts/git-report.sh --as-of main --report corpus
+  bash scripts/git-report.sh --as-of v4.19.0 --report patternfly
+  bash scripts/git-report.sh --as-of HEAD~100 --report churn
 EOF
   exit 0
 }
@@ -85,7 +85,7 @@ report_corpus_md() {
 | **subjects ending (#PR)** | $pr |
 | **subjects with issues/<n>** | $issues |
 
-## Conventions (see guidelines/skills/repo-history-reports/reference.md)
+## Conventions (see docs/development.md#git-commit-message-reports)
 
 - Primary tracker form: \`type(scope): sw-NNNN … (#PR)\` (SWATCH).
 - Legacy window: **ent-NNNN** (~2021–2022) in subjects.

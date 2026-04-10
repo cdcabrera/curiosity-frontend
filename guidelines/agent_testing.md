@@ -1,6 +1,6 @@
 # Agent Testing
 
-Agent-only testing guidance. Full maintainer documentation is in [CONTRIBUTING.md](../CONTRIBUTING.md#testing); this file lists commands and expectations agents should run and respect.
+Agent-only testing guidance. Full maintainer documentation is in [docs/development.md](../docs/development.md#testing); this file lists commands and expectations agents should run and respect.
 
 ## Principles
 

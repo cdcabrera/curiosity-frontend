@@ -31,7 +31,7 @@ Specialized instructions in `guidelines/` take precedence over general bullets i
 
 ## Validation and handoff
 
-- Run checks appropriate to the change; see [agent_testing](./agent_testing.md) and `CONTRIBUTING.md` (testing, lint, integration).
+- Run checks appropriate to the change; see [agent_testing](./agent_testing.md), [docs/development.md](../docs/development.md#testing), and `CONTRIBUTING.md` (PR/CI context).
 - Summarize what you changed, what you verified, and what **only a human** can do (deploy, external tickets, environment secrets).
 - Do not commit secrets, credentials, or large generated artifacts. Keep transient scratch work under `.agent/` when the user expects local-only artifacts, consistent with `.gitignore`.
 

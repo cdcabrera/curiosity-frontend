@@ -8,7 +8,7 @@ The cspell config file(s) contain spelling configuration and include project spe
 ## Spandx config
 The Spandx config file has multiple team and build dependencies. **Before relocating/moving this file the appropriate teams should be informed.**
 
-[See CONTRIBUTING.md for up-to-date information](../CONTRIBUTING.md#spandx-config)
+[See docs/development.md — Spandx config](../docs/development.md#spandx-config)
 
 ## Testing
 Jest configuration setup and transform scripts.

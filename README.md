@@ -12,7 +12,7 @@ Before developing for Curiosity Frontend
  * Your system needs to be running [NodeJS version 20+ and NPM](https://nodejs.org/)
     * Yarn install is discouraged. There are dependency install issues with Yarn `1.x.x` versions.
 
-For in-depth tooling install guidance see the [contribution guidelines](./CONTRIBUTING.md#install-tooling)
+For in-depth tooling install guidance see [docs/development.md](./docs/development.md#install-tooling)
 
 ### Install
   1. Clone the repository
@@ -41,7 +41,7 @@ This is the base context for running a local UI against a mock API and styling.
      ```
   1. Start developing against files in `./src`. Linting feedback will be automatically enabled through the terminal output
 
-For in-depth local run guidance review the [contribution guidelines](./CONTRIBUTING.md#local-and-proxy-development) 
+For in-depth local run guidance review [docs/development.md](./docs/development.md#local-and-proxy-development) 
 
 ### Unit testing
 Run and update unit tests while developing instead of after-the-fact. In a new terminal instance
@@ -53,7 +53,7 @@ Run and update unit tests while developing instead of after-the-fact. In a new t
   2. Test files can be accessed, and edited, under `__test__` directories parallel to the files you're editing. Test failures for
      recently edited files will be available in the terminal output along with basic testing framework use directions.
 
-For in-depth testing guidance review the [contribution guidelines](./CONTRIBUTING.md#testing) 
+For in-depth testing guidance review [docs/development.md](./docs/development.md#testing) 
 
 ## Contributing
 Contributing encompasses
@@ -73,16 +73,15 @@ Agents must analyze these files when asked for guidance:
 1. **`./README.md`** - Main agent guidance and behavior standards (including agent-only comment block)
 2. **`./guidelines/README.md`** - Core agent guidance and behavior standards
 3. **`./guidelines/**/*.md`** - Specialized workflow and domain-specific instructions (`agent_*.md`, skills under `guidelines/skills/`, etc.)
-4. **`./docs/development.md`** - **Optional MCP / IDE setup:** PatternFly MCP client config (no committed default), `--tool` plugins, and how to run **`npm run report:git`** / **`guidelines/skills/repo-history-reports/scripts/git-report.sh`** for commit reports.
-5. **`./guidelines/skills/repo-history-reports/SKILL.md`** - **Commit history and reports:** time-bounded analysis of commit messages (corpus stats, fix churn, PatternFly-related commits, custom greps). Follow this skill and run **`guidelines/skills/repo-history-reports/scripts/git-report.sh`** (or `npm run report:git -- …`) instead of improvising raw `git log` for those questions.
-6. **`./.agent/**/*.md`** - gitignored directory: local agent state, scratch notes, and developer-only resources—not shared via git
+4. **`./docs/development.md`** - **Local workflow and tooling:** install/dotenv, local and proxy dev, debugging, JSDoc and tests, Spandx; **optional** PatternFly MCP; **git commit message reports** via **`npm run report:git`** / **`scripts/git-report.sh`** (corpus/churn/patternfly—follow [Git commit message reports](./docs/development.md#git-commit-message-reports) instead of improvising raw `git log` for those questions).
+5. **`./.agent/**/*.md`** - gitignored directory: local agent state, scratch notes, and developer-only resources—not shared via git
 
 The guideline system should be processed in this order, with specialized guidelines taking precedence for their specific domains, and local `.agent/` material overriding or extending general guidelines only when the user points you there.
 
 **Next Steps:**
-7. **Review guidance under `./.agent/**/*.md` when relevant.** If the `./.agent` directory exists, the user may ask about material there.
-8. **If `./.agent` does not exist and the user wants local agent workspace**, explain that it is gitignored and for personal use only.
+6. **Review guidance under `./.agent/**/*.md` when relevant.** If the `./.agent` directory exists, the user may ask about material there.
+7. **If `./.agent` does not exist and the user wants local agent workspace**, explain that it is gitignored and for personal use only.
 
 **Final Steps:**
-9. **Optional:** Ask whether to create or refresh a `code-summary.md` (or similar) under `.agent/` as a local index—separate from shared `guidelines/` and from **repo-history-reports** output, which should follow the skill above.
+8. **Optional:** Ask whether to create or refresh a `code-summary.md` (or similar) under `.agent/` as a local index—separate from shared `guidelines/` and from **git report** output saved under `.agent/`, which should follow [docs/development.md](./docs/development.md#git-commit-message-reports).
 -->

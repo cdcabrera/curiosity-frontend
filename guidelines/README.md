@@ -2,7 +2,7 @@
 
 ## Overview
 
-**This directory is for autonomous agents only.** Humans should start from [README.md](../README.md) (quick context) and [CONTRIBUTING.md](../CONTRIBUTING.md) (maintainer processes, including a short [AI Agent](../CONTRIBUTING.md#ai-agent) section). Optional PatternFly MCP and related setup: [docs/development.md](../docs/development.md).
+**This directory is for autonomous agents only.** Humans should start from [README.md](../README.md) (quick context) and [CONTRIBUTING.md](../CONTRIBUTING.md) (maintainer processes, including a short [AI Agent](../CONTRIBUTING.md#ai-agent) section). Local setup, testing, MCP, and git report scripts: [docs/development.md](../docs/development.md). Application shape: [docs/architecture.md](../docs/architecture.md).
 
 Content here is optimized for machine use: concise rules, pointers to real paths and scripts, and minimal duplication of `CONTRIBUTING.md`.
 
@@ -28,11 +28,7 @@ Skills live under **`guidelines/skills/`**. Each skill should be a folder with `
 | Skill | When to use |
 |-------|-------------|
 | [product-configuration](./skills/product-configuration/SKILL.md) | New or updated subscription product variant; `rhsmConstants`, `src/config` product modules, locales |
-| [release-and-deploy](./skills/release-and-deploy/SKILL.md) | Stage vs prod, `main`/`stable`, app-interface, tags, release checklist |
-| [dependency-updates](./skills/dependency-updates/SKILL.md) | NPM bumps, `build:deps` / `build:deps-core`, Renovate-style updates |
-| [repo-history-reports](./skills/repo-history-reports/SKILL.md) | Time-bounded commit reports (corpus, churn, PatternFly); script in [skills/repo-history-reports/scripts/](./skills/repo-history-reports/scripts/git-report.sh) |
-| [maintain-documentation](./skills/maintain-documentation/SKILL.md) | JSDoc, `src/` tier-one READMEs, `build:docs`, doc/spell lint |
-| [curiosity-architecture-patterns](./skills/curiosity-architecture-patterns/SKILL.md) | New/refactored UI, Redux wiring, eslint, mirroring feature structure |
+| [configurable-banners](./skills/configurable-banners/SKILL.md) | Global/config-driven alerts from `src/config/banners.js`, locales, `useConfigBanners`, banner tests |
 
 **Note:** The **`.agent/`** directory (no “s”) is gitignored and reserved for per-developer agent state. Do not put shared skills or canonical guidelines only under `.agent/`.
 
@@ -43,15 +39,16 @@ Treat these user phrases as signals to open the listed docs (and related source)
 | Task / intent | Reference |
 |---------------|-----------|
 | **"review the repo guidelines"** | [README.md](../README.md) agent block, this file, other `guidelines/*.md`, [CONTRIBUTING.md](../CONTRIBUTING.md#ai-agent) |
-| **MCP, Cursor, PatternFly MCP, IDE agent tools** | [docs/development.md](../docs/development.md) |
 | **Product / subscription UI change** | [product-configuration skill](./skills/product-configuration/SKILL.md), [agent_coding](./agent_coding.md), `src/config/`, `src/services/rhsm/` |
-| **Release, stage, prod, stable, app-interface** | [release-and-deploy skill](./skills/release-and-deploy/SKILL.md), [CONTRIBUTING.md](../CONTRIBUTING.md) |
-| **Dependencies, Renovate, npm update** | [dependency-updates skill](./skills/dependency-updates/SKILL.md) |
-| **Git history, reports, commit stats, PatternFly commits** | [repo-history-reports skill](./skills/repo-history-reports/SKILL.md), `npm run report:git -- --help` |
-| **Blame, path history, “how was X implemented”** | `git log`, `git blame`, [report-recipes](./skills/repo-history-reports/report-recipes.md) |
-| **JSDoc, src README, build:docs, doc lint** | [maintain-documentation skill](./skills/maintain-documentation/SKILL.md) |
-| **Architecture, Redux, component layout, eslint / style** | [curiosity-architecture-patterns skill](./skills/curiosity-architecture-patterns/SKILL.md), [agent_coding](./agent_coding.md) |
-| **Tests or CI failure** | [agent_testing](./agent_testing.md), [CONTRIBUTING.md](../CONTRIBUTING.md#testing) |
+| **Global banner, maintenance message, `banners.js`, `useConfigBanners`** | [configurable-banners skill](./skills/configurable-banners/SKILL.md), [docs/architecture.md](../docs/architecture.md) |
+| **Release, stage, prod, stable, app-interface** | [CONTRIBUTING.md](../CONTRIBUTING.md) (Process) |
+| **Dependencies, Renovate, npm update** | [CONTRIBUTING.md](../CONTRIBUTING.md) (NPM dependency maintenance) |
+| **Git history corpus, churn, PatternFly commits in subjects** | [docs/development.md — Git commit message reports](../docs/development.md#git-commit-message-reports), `npm run report:git -- --help` |
+| **Blame, path history, “how was X implemented”** | `git log`, `git blame` |
+| **JSDoc, src README, build:docs, doc lint** | [docs/development.md — Documentation](../docs/development.md#documentation), [CONTRIBUTING.md](../CONTRIBUTING.md) (PR checks) |
+| **Architecture, Redux, component layout, eslint / style** | [docs/architecture.md](../docs/architecture.md), [agent_coding](./agent_coding.md) |
+| **MCP, Cursor, PatternFly MCP, IDE agent tools** | [docs/development.md](../docs/development.md) |
+| **Tests or CI failure** | [agent_testing](./agent_testing.md), [docs/development.md — Testing](../docs/development.md#testing) |
 | **How should you behave / what order to read** | [agent_behaviors](./agent_behaviors.md) |
 
 ## Processing order
@@ -62,7 +59,7 @@ Treat these user phrases as signals to open the listed docs (and related source)
 ## Maintaining this directory
 
 - Update **this README** when you add or remove `agent_*.md` files or skills.
-- **Reference** `CONTRIBUTING.md` and `README.md`; do not copy long procedural sections here.
+- **Reference** `CONTRIBUTING.md`, `docs/`, and `README.md`; do not copy long procedural sections here.
 - Keep trigger and index tables accurate.
 
 ### Adding a skill
