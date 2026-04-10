@@ -1,54 +1,27 @@
 # Agent Coding
 
-Agent-only coding guidance for curiosity-frontend. Maintainer detail lives in [CONTRIBUTING.md](../CONTRIBUTING.md); this file captures expectations agents should apply consistently.
+## Overview
+Coding standards and architectural patterns for curiosity-frontend.
 
-## Stack
+## For Agents
+### Processing Priority
+High - Process when implementing features or refactoring code.
 
-- **Repository layout** — See [docs/architecture.md](../docs/architecture.md) for how `src/` areas fit together.
-- **React** — Functional components and hooks. Prefer patterns already used in neighboring files.
-- **PatternFly** — `@patternfly/react-*` and tokens; align with existing components.
-- **Red Hat Insights / FEC** — Build and host constraints per [README.md](../README.md) and `CONTRIBUTING.md`.
-- **JavaScript and TypeScript** — Match the language of the files you edit; follow existing JSDoc and module style in that directory.
+## 1. Stack and Architecture
+- **React**: Mirror functional component and hook patterns used in neighboring files.
+- **UI**: Use `@patternfly/react-*` and tokens; align with existing shared components.
+- **Types**: Match the existing language (JS or TS) and JSDoc style of the directory.
 
-## Imports
+## 2. Module Organization
+- **Imports**: Group external (PF/React), then internal (`services/`, `redux/`), then relative.
+- **Components**: Follow `src/components/<Name>/` with `__tests__`, `index.js`, and local styles.
+- **Config**: Use `src/config/` for products and `src/services/rhsm/` for constants.
 
-Typical order (match local convention):
+## 3. Redux and State
+- **Custom Surface**: Import **`storeHooks`** from `src/redux`. Use `storeHooks.reactRedux` helpers (e.g., `useDispatch`, `useSelector`).
+- **Patterns**: Use `reduxHelpers` and existing reducer/action patterns. Review `src/redux/index.js` before adding new state.
 
-1. External libraries (e.g. React, PatternFly, lodash).
-2. Internal packages from `redux`, `services`, `common`, `config`, etc.
-3. Relative imports (components, hooks, local utilities).
-
-Use aliases for long constant names when the codebase already does. Avoid unnecessary churn to import ordering beyond project ESLint rules.
-
-## Components
-
-- Prefer **composition** and **single responsibility**; mirror structure of similar features.
-- **Testability** — Use dependency injection via **default parameters** for hooks and functions you need to mock in tests (see existing `useX: useAliasX = useX` patterns in contexts and views).
-- **Callbacks** — Use explicit checks such as `typeof fn === 'function'` before invoking when that matches surrounding code.
-
-## Redux
-
-This project uses a **custom Redux surface** exported from `src/redux`:
-
-- Import **`storeHooks`** from `../../redux` (or the appropriate relative path) and use **`storeHooks.reactRedux`** helpers (e.g. `useDispatch`, `useSelector`, `useSelectorsResponse`) as in neighboring modules.
-- Use **`reduxHelpers`** and existing reducer/action patterns; do not introduce ad hoc global state or bypass established action types without an explicit migration.
-
-When unsure, read **`src/redux/index.js`** and a similar feature’s container/context before adding new Redux usage.
-
-## Layout and naming
-
-- **Components** — `src/components/<ComponentName>/` with `__tests__/`, main module, optional `index.js`, styles as used locally.
-- **Config** — Product and variant configuration under `src/config/`; RHSM constants and API-related constants under `src/services/rhsm/` (e.g. `rhsmConstants.js`) where applicable.
-- **Tests** — Colocate under `__tests__/` next to the code under test; see [agent_testing](./agent_testing.md).
-
-## Localization
-
-- User-visible strings go through the project’s i18n helpers; update **`public/locales/en-US.json`** (and related locale rules) when adding or changing copy. Follow `CONTRIBUTING.md` for locale and spelling checks.
-
-## Git and commits
-
-- Follow [CONTRIBUTING.md](../CONTRIBUTING.md) for conventional commits, scopes, and issue references (e.g. `sw-####`).
-
-## Linting
-
-- Run **`npm run test:lint`** (and **`npm run test:lintfix`** where appropriate for `src`) before considering work complete. Do not disable ESLint rules broadly unless the user explicitly requests it and maintainers agree.
+## 4. Implementation Details
+- **Testability**: Use dependency injection via default parameters (e.g., `useX = defaultX`).
+- **I18n**: User-visible strings must use `public/locales/en-US.json` via i18n helpers.
+- **Linting**: Run `npm run test:lint` and `npm run test:lintfix` before completion.

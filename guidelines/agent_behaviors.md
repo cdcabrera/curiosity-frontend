@@ -1,40 +1,28 @@
 # Agent Behaviors
 
-Agent-only guidance for working in curiosity-frontend. Humans rely primarily on [README.md](../README.md) and [CONTRIBUTING.md](../CONTRIBUTING.md); this file defines how autonomous agents should operate.
+## Overview
+Core behavior standards for autonomous agents in curiosity-frontend.
 
-## Scope
+## For Agents
+### Processing Priority
+Critical - Process this document first when establishing operational context.
 
-These behaviors apply when you assist with code, configuration, tests, or documentation in this repository. They complement—not replace—maintainer process in `CONTRIBUTING.md`.
+## 1. Documentation Order
+1. **[README.md](../README.md)** (Agent-only block).
+2. **[guidelines/README.md](./README.md)** (Index).
+3. **`guidelines/*.md`** (Implementation detail).
+4. **`CONTRIBUTING.md`** (Maintainer processes).
 
-## Documentation order
+## 2. Interaction Standards
+- **Sequential Processing**: Ask **one** focused question at a time and wait for a response.
+- **No Assumptions**: Do not invent product IDs or API behaviors—confirm with the user or existing code/locales.
+- **Stop Conditions**: If a task matches an unsupported condition, stop and explain briefly.
 
-Process guidance in this order unless the user narrows the task:
+## 3. Evidence and Precedent
+- **Code Review**: Inspect similar features under `src/` (config, services, components) before proposing changes.
+- **Git History**: Use `git log` and `git show` to identify current implementation patterns.
 
-1. **[README.md](../README.md)** — Entry point and agent-only HTML comment (review order and `.agent/` notes).
-2. **[guidelines/README.md](./README.md)** — Index of agent docs and skills.
-3. **`guidelines/**/*.md`** — Including [agent_coding](./agent_coding.md) and [agent_testing](./agent_testing.md) for implementation detail.
-4. **`CONTRIBUTING.md`** — Commits, PRs, CI, testing, release context, and the [AI Agent](../CONTRIBUTING.md#ai-agent) section.
-5. **`.agent/**`** — Optional, gitignored, per-developer material only. Do not treat `.agent/` as the canonical place for shared repo rules or committed skills.
-
-Specialized instructions in `guidelines/` take precedence over general bullets in this file for their domain.
-
-## Interaction
-
-- When requirements are unclear, ask **one** focused question at a time and wait for an answer before continuing.
-- Do **not** invent product IDs, metrics, UI copy, or API assumptions—confirm with the user or derive from existing code and locales.
-- If the task matches a documented **unsupported** or **stop** condition (e.g. a product class the app does not model), stop and explain briefly instead of improvising.
-
-## Evidence before large changes
-
-- Inspect **similar features** under `src/` (e.g. `src/config/`, `src/services/rhsm/`, `src/components/`) before adding new variants or patterns.
-- Use **git history** for precedent: `git log`, `git log -- path`, `git show` on relevant paths. Prefer current examples over stale hashes from old docs or chats.
-
-## Validation and handoff
-
-- Run checks appropriate to the change; see [agent_testing](./agent_testing.md), [docs/development.md](../docs/development.md#testing), and `CONTRIBUTING.md` (PR/CI context).
-- Summarize what you changed, what you verified, and what **only a human** can do (deploy, external tickets, environment secrets).
-- Do not commit secrets, credentials, or large generated artifacts. Keep transient scratch work under `.agent/` when the user expects local-only artifacts, consistent with `.gitignore`.
-
-## Triggers
-
-Use [guidelines/README.md](./README.md) **Available Trigger Phrases** for explicit user intents. Extend behavior when new skills are indexed there.
+## 4. Validation and Handoff
+- **Verification**: Run appropriate checks (see [Agent Testing](./agent_testing.md)).
+- **Summarization**: State changes clearly and list human-only tasks (e.g., secrets, deployment).
+- **Boundaries**: Keep transient work under `.agent/`. Never commit secrets or large generated artifacts.

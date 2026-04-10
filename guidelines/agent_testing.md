@@ -1,49 +1,31 @@
 # Agent Testing
 
-Agent-only testing guidance. Full maintainer documentation is in [docs/development.md](../docs/development.md#testing); this file lists commands and expectations agents should run and respect.
+## Overview
+Testing procedures and standards for agents in curiosity-frontend.
 
-## Principles
+## For Agents
+### Processing Priority
+High - Process when writing tests or verifying changes.
 
-- Test **behavior and user-visible outcomes**, not implementation details, unless the project already tests internals in that module.
-- Prefer **React Testing Library** queries that reflect how users interact (roles, labels); use `data-testid` only where the codebase already does for stable selection.
-- Follow **Arrange, Act, Assert** and clear test names.
-- **Mock** external services and network boundaries; inject test doubles via the same dependency-injection patterns used in components (see [agent_coding](./agent_coding.md)).
+## 1. Principles
+- **Focus on Behavior**: Test user-visible outcomes using React Testing Library (roles, labels).
+- **Mocking**: Isolate external services. Use dependency injection for test doubles.
+- **Structure**: Unit tests in `__tests__/` parallel to source; integration tests in `tests/`.
 
-## Where tests live
+## 2. Command Reference
+ Intent | Command                                                                                                                                             |
+:-------|:----------------------------------------------------------------------------------------------------------------------------------------------------|
+ **Develop** | `npm run test:dev` (Watch mode), `npm run build` (Compile and run integration tests), `npm run test:integration-dev` (Watch mode for build compile) |
+ **Pipeline** | `npm test` (Lints, spells, unit tests)                                                                                                              |
+ **CI / Done** | `npm run build`                                                                                                                                     |
+ **Lint** | `npm run test:lint` / `npm run test:lintfix`                                                                                                        |
+ **Spelling** | `npm run test:spell` (locale strings and code), `npm run test:spell-support` (for `docs/` and `guidelines/`)                                        |
 
-- **Unit tests** — Under `__tests__/` directories alongside `src` code (e.g. `src/components/MyComponent/__tests__/`).
-- **Integration tests** — `tests/` at the repository root (`jest ./tests`).
+## 3. Snapshots
+- **Intentionality**: Update snapshots **only** for expected output changes.
+- **Workflow**: Use `npm run test:dev` and press `u` for targeted updates. Inspect all diffs.
 
-## Commands
-
-| Intent | Command |
-|--------|---------|
-| Watch unit tests while developing | `npm run test:dev` |
-| Full unit pipeline (spell, lint, Jest coverage) | `npm test` |
-| CI-style unit run | `npm run test:ci` |
-| Ephemeral / UTC parity for unit tests | `npm run test:ephemeral` |
-| Lint only | `npm run test:lint` |
-| Autofix lint for `src` (JS/JSX/JSON) | `npm run test:lintfix` |
-| Spell check (locales + `src` JS) | `npm run test:spell` |
-| Spell check (`docs/`, `guidelines/`, root/support markdown) | `npm run test:spell-support` |
-| Integration tests | `npm run test:integration` |
-| Integration (ephemeral profile) | `npm run test:integration-ephemeral` |
-| Clear Jest cache | `npm run test:clearCache` |
-| PR-style verification | `npm run verify` |
-
-Spell and lint configurations are defined under `config/`; see `CONTRIBUTING.md` for CI expectations (GitHub Actions, Jenkins). When you edit `docs/` or `guidelines/`, run `npm run test:spell-support` (or `npm run test:dev`, which includes it).
-
-## Snapshots
-
-- Update snapshots **only** when output changes are intentional. Use Jest’s update flow (e.g. `npm run test:dev` and press `u`, or targeted `--updateSnapshot`) scoped to the tests you own.
-- Never bulk-refresh snapshots to silence failures without reviewing each diff.
-
-## Definition of done
-
-Before handing off a change that touches application code:
-
-1. **`npm run test:lint`** passes (and autofix if appropriate).
-2. **`npm test`** or at least **`npm run test:ci`** passes for the affected area when feasible.
-3. Snapshot updates, if any, are reviewed and explained.
-
-For release-sensitive or wide refactors, prefer **`npm run verify`** when the user expects PR parity.
+## 4. Definition of Done
+1. **Linting**: `npm run test:lint` passes.
+2. **Verification**: `npm run test:ci` (or `npm test`) passes for the affected area.
+3. **Handoff**: Summarize verification steps and justify snapshot updates.

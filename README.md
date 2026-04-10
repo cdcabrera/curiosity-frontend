@@ -64,24 +64,18 @@ Contributing encompasses
 The **`./.agent/`** directory at the repo root is **gitignored**: it is for **local developer and agent use only** (scratch notes, personal resources, generated reports). Nothing under `.agent/` is committed or visible to others through a normal clone. **Shared** agent guidance and skills live under [`guidelines/`](./guidelines/README.md).
 
 ## Agent Only
-Agents: This repository contains a hierarchical guideline system. Agents should review agent-only comment blocks.
-
 <!--
-Agents must analyze these files when asked for guidance:
+Agents: Process guidelines in this order unless the task is narrowed:
 
-**Guidelines review order:**
-1. **`./README.md`** - Main agent guidance and behavior standards (including agent-only comment block)
-2. **`./guidelines/README.md`** - Core agent guidance and behavior standards
-3. **`./guidelines/**/*.md`** - Specialized workflow and domain-specific instructions (`agent_*.md`, skills under `guidelines/skills/`, etc.)
-4. **`./docs/development.md`** - **Local workflow and tooling:** install/dotenv, local and proxy dev, debugging, JSDoc and tests, Spandx; **optional** PatternFly MCP; **git commit message reports** via **`npm run report:git`** / **`scripts/git-report.sh`** (corpus/churn/patternfly/examples—follow [Git commit message reports](./docs/development.md#git-commit-message-reports) instead of improvising raw `git log` for those questions).
-5. **`./.agent/**/*.md`** - gitignored directory: local agent state, scratch notes, and developer-only resources—not shared via git
+1. **./README.md** (this block) - Entry point and review order.
+2. **./guidelines/README.md** - Index of agent-only rules and skills.
+3. **./guidelines/*.md** - Domain-specific rules (coding, testing, behaviors).
+4. **./CONTRIBUTING.md** - Maintainer processes and AI policy (#ai-agent).
+5. **./.agent/** - Local, gitignored developer state only.
 
-The guideline system should be processed in this order, with specialized guidelines taking precedence for their specific domains, and local `.agent/` material overriding or extending general guidelines only when the user points you there.
-
-**Next Steps:**
-6. **Review guidance under `./.agent/**/*.md` when relevant.** If the `./.agent` directory exists, the user may ask about material there.
-7. **If `./.agent` does not exist and the user wants local agent workspace**, explain that it is gitignored and for personal use only.
-
-**Final Steps:**
-8. **Optional:** Ask whether to create or refresh a `code-summary.md` (or similar) under `.agent/` as a local index—separate from shared `guidelines/` and from **git report** output saved under `.agent/`, which should follow [docs/development.md](./docs/development.md#git-commit-message-reports).
+**Operational Rules:**
+- Ask one question at a time.
+- Review git history for implementation precedent.
+- Use `npm run test:spell-support` when editing guidelines/docs.
+- Reference `docs/development.md` for local setup and git-report scripts.
 -->
