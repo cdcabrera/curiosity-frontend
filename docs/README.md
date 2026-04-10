@@ -1,13 +1,16 @@
 # Documentation index
 
-Supplemental docs for curiosity-frontend. **Repository process** (Git, PRs, releases, dependency policy) lives in [CONTRIBUTING.md](../CONTRIBUTING.md).
+Welcome to the Curiosity Frontend documentation. This guide is organized by user intent.
 
-| Document | Contents |
-|----------|-----------|
-| [architecture.md](./architecture.md) | Stack, `src/` layout, Redux and config overview, global banners |
-| [development.md](./development.md) | Tooling, dotenv, local/proxy runs, debugging, JSDoc and tests, Spandx, optional PatternFly MCP |
-| [guidelines/mcp/plugin-git-reports/README.md](../guidelines/mcp/plugin-git-reports/README.md) | PatternFly MCP `--tool` for `curiosityGitReport` (wraps `scripts/git-report.sh`) |
+### 🛠️ Developer reference
+- **[Getting started](#getting-started)**:
+- **[Build](#build)**: Reference of build and dotenv options.
+- **[Development methodology](#development-methodology)**:
+- **[Debugging](#debugging)**:
+- **[React components](#react-components)**: Overview of React component methodology.
+- **[Redux and state management](#redux-and-state-management)**: Overview of Redux and state management.
+- **[Services](#services)**: Overview of available services, mocks, and methodology.
+- **[AI tools](#ai-tools)**: Reference of available AI tools and their usage.
 
-Quick links: [install tooling](./development.md#install-tooling) · [local and proxy development](./development.md#local-and-proxy-development) · [testing](./development.md#testing) · [git commit reports](./development.md#git-commit-message-reports) · [AI agent](../CONTRIBUTING.md#ai-agent)
-
-Spell-check this tree and `guidelines/` before opening a PR: `npm run test:spell-support` (see [Documentation](./development.md#documentation) in development.md).
+### 🏗️ Architecture and design
+- **[Application Architecture](./architecture.md)**: Design and core concepts.
