@@ -16,10 +16,10 @@ const REPO_ROOT = path.resolve(__dirname, '../../..');
 const GIT_REPORT_SCRIPT = path.join(REPO_ROOT, 'scripts', 'git-report.sh');
 
 const toolDescription = [
-  'Curiosity-frontend: git commit-subject reports (not blame), tip at asOf (default HEAD).',
-  'Ships with PatternFly MCP but does not search PatternFly documentation.',
+  'Use for curiosity-frontend git history and commit analytics (scopes, paths, subjects, churn)—not for PatternFly component/docs questions (use searchPatternFlyDocs / usePatternFlyDocs).',
+  'Commit-subject reports only (not blame); tip at asOf (default HEAD).',
   'Modes: corpus | churn | patternfly | subjects | examples (filtered commits with body/stat snippets; example filters are ANDed).',
-  'Same behavior as npm run report:git / bash scripts/git-report.sh. See docs/development.md#git-commit-message-reports.'
+  'Same as npm run report:git / bash scripts/git-report.sh. See docs/development.md#git-commit-message-reports.'
 ].join(' ');
 
 const inputSchema = {
