@@ -6,20 +6,39 @@ Interested in contributing to the project? Review the following guidelines and o
 ### Environment setup
 
 #### Tools
-- [Node.js 20+](https://nodejs.org/)
+- [Node.js](https://nodejs.org/en/download/package-manager)
 - NPM (Yarn install is discouraged)
 - Git configured with your GitHub account
 
 #### Project setup
 - Fork and clone the repository
-- Open your terminal in the codebase context and run the following commands:
-   ```bash
-   npm install
-   npm start
-   npm test
-   npm run test:dev
+- Install project dependencies
+   ```sh
+   $ npm install
    ```
-  All tests should pass, and the application should start successfully.
+- Create a local dotenv file in the root of the project called `.env.local` and add the following contents
+   ```
+   REACT_APP_DEBUG_MIDDLEWARE=true
+   REACT_APP_DEBUG_ORG_ADMIN=true
+   REACT_APP_DEBUG_PERMISSION_APP_ONE=subscriptions:*:*
+   REACT_APP_DEBUG_PERMISSION_APP_TWO=inventory:*:*
+   ```
+- Start the local development server against mock API responses
+   ```sh
+   $ npm start
+   ```
+   Start developing against files in `./src`. Linting feedback will be automatically enabled through the terminal output
+- Run unit tests while developing
+   ```sh
+   $ npm run test:dev
+   ```
+- Exit the process, `ctr + c` or OS specific key combination
+- Run the build and related integration tests
+   ```sh
+   $ npm run build
+   ```
+
+For more detailed development guidance see [Development Guide](./docs/development.md)
 
 ##### Windows and repository symlinks
 The repo uses **symlinks** so agent tools can find shared skills (for example `.agents/skills` points at `guidelines/skills`). On **Windows**, a plain clone can leave those as plain files instead of links, which breaks that layout.
@@ -29,7 +48,7 @@ The repo uses **symlinks** so agent tools can find shared skills (for example `.
 
 #### Development workflow
 - Make changes to the codebase
-- Run tests to verify your changes do not break existing functionality
+- Run tests and build to verify your changes do not break existing functionality
 - Commit your changes and push them to your fork
 - Open a pull request
 
@@ -51,7 +70,7 @@ Development pull requests (PRs) should be opened against the `main` branch.
 
 > If your pull request work contains any of the following warning signs:
 >  - has no related issue (sw-XXXX)
->  - ignores existing code style (functional components, storeHooks)
+>  - ignores existing code style (functional components, dependency injection, storeHooks)
 >  - out-of-sync commits (not rebased against the `main` branch)
 >  - poorly structured commits and messages
 >  - any one commit relies on other commits to work
@@ -60,6 +79,7 @@ Development pull requests (PRs) should be opened against the `main` branch.
 >  - dramatic unit test snapshot updates
 >  - affects any file not directly associated with the issue being resolved
 >  - affects "many" files
+>  - provides a bot-generated explanation (and cannot be explained by the human counterpart)
 >
 > You will be asked to restructure your commits or break the work into multiple pull requests.
 
@@ -74,19 +94,35 @@ Commit messages follow two basic guidelines:
   ```
   Example: `feat(config): sw-123 rhel, activate instance inventory (#456)`
 
-> Settings, like the allowed number of message characters, for pull request commit linting can be found in [scripts/actions.commit.js](./scripts/actions.commit.js).
+> Settings, like extending the allowed number of message characters, for pull request commit linting can be found in [scripts/actions.commit.js](./scripts/actions.commit.js).
 
 #### Pull request test failures
-Before any review takes place, all tests should pass. Creating a pull request activates GitHub actions for commit linting, documentation linting, spelling, unit tests, and integration tests.
+Before any review takes place, all tests should pass. Creating a pull request activates GitHub actions for commit linting, documentation linting, spelling, unit tests, and build integration tests.
 
 > If you are unsure why your tests are failing, you should [review testing documentation](./docs/development.md#testing).
 
 ### Code style guidance and conventions
-Basic code style guidelines are enforced by ESLint.
+Basic code style guidelines are enforced by ESLint, but there are additional guidelines.
+
+#### File Structure
+- File names use lowerCamelCase and dot notation (e.g., server.http.ts, server.logger.ts).
+- The directory structure is organized by React, Redux, and service layer. With all relevant files maintained in the src directory.
+
+#### Functionality, testing
+- Functions should attempt to maintain a single responsibility.
+- Function annotations follow a minimal JSDoc style; descriptions are encouraged.
+- Tests should focus on functionality.
+- Tests should not be written for external packages. That is the responsibility of the external package, or it shouldn't be used.
+
+#### TypeScript
+- Typings are handled through JSDoc comments.
+- TypeScript is currently not implemented.
 
 #### React and Components
 - Use **functional components** and React hooks.
-- Align with PatternFly 5/6 tokens and existing shared components.
+- Leverage dependency injection for complex components and unit testing.
+- Align with PatternFly tokens and existing shared components.
+- Align with internal code conventions on wrapping complex PatternFly components that are prone to change between versions.
 - Group external (PF/React) imports, then internal (`services/`, `redux/`), then relative.
 
 #### Redux and State
@@ -94,17 +130,28 @@ Basic code style guidelines are enforced by ESLint.
 - Use `storeHooks.reactRedux` helpers (e.g., `useDispatch`, `useSelector`).
 - Review `src/redux/index.js` before adding new state.
 
-#### i18n
+#### i18n and locale
 - User-visible strings MUST use `public/locales/en-US.json` via i18n helpers.
 
 ### Testing
 Testing is based on Jest and **React Testing Library** (RTL).
 
 #### Unit tests
-Unit tests are located in `__tests__` directories parallel to the source files. Integration tests are in the root `./tests` directory.
+Unit tests are located in `__tests__` directories parallel to the source files.
+
+#### E2E tests
+Integration, or E2E, tests are located in the root `./tests` directory and are currently focused on consistent and clean build output.
+
+> Playwright is being considered for integration Quality Assurance (QA) testing, but is not yet implemented.
 
 #### Snapshots
-Update snapshots **only** for expected output changes. Use `npm run test:dev` and press `u` for targeted updates.
+Update snapshots **only** for expected output changes!
+- Update for unit tests, use `npm run test:dev` and press `u` for targeted updates.
+- Update for E2E tests, use `npm run build`, if the build checks fail use `npm run test:integration-dev` and press `u` for targeted updates.
+
+> Snapshots in this repository are leveraged as fast unit test implementations and are purposefully loud to alert development.
+> If you're seeing updates, it's likely due to changes in the build output or configuration, sometimes caused by build updates, but not always.
+> Please review your changes carefully and ensure they align with the expected behavior, failure to acknowledge these alerts may result in production issues.
 
 ## Maintenance: Node.js engine bumps
 
