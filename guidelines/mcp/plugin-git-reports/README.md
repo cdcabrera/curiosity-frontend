@@ -56,7 +56,7 @@ npx -y @patternfly/patternfly-mcp@latest \
 | `paths` | no | `report=examples` only — pathspec strings |
 | `bodyLines` | no | `report=examples` only — max body lines per commit (default 12) |
 
-**`examples`** runs [`scripts/git-report-examples.py`](../../../scripts/git-report-examples.py) and needs **python3** on `PATH`.
+**`examples`** runs [`scripts/git-report-examples.mjs`](../../../scripts/git-report-examples.mjs) and needs **node** on `PATH`.
 
 ## See also
 

@@ -76,8 +76,8 @@ if [[ "$REPORT" == "examples" ]]; then
     echo 'Use --format md or json with --report examples' >&2
     exit 1
   fi
-  if ! command -v python3 >/dev/null 2>&1; then
-    echo 'python3 is required for --report examples' >&2
+  if ! command -v node >/dev/null 2>&1; then
+    echo 'node is required for --report examples' >&2
     exit 1
   fi
   if ! [[ "$LIMIT" =~ ^[0-9]+$ ]]; then
@@ -88,23 +88,23 @@ if [[ "$REPORT" == "examples" ]]; then
     echo '--body-lines must be a non-negative integer' >&2
     exit 1
   fi
-  PY=(python3 "$REPO_ROOT/scripts/git-report-examples.py"
+  EXAMPLES=(node "$REPO_ROOT/scripts/git-report-examples.mjs"
     --as-of-commit "$REV"
     --as-of-date "$REV_DATE"
     --format "$FORMAT"
     --limit "$LIMIT"
     --body-lines "$BODY_LINES")
-  [[ -n "$SINCE" ]] && PY+=(--since "$SINCE")
-  [[ -n "$UNTIL" ]] && PY+=(--until "$UNTIL")
-  [[ -n "$COMMIT_TYPE" ]] && PY+=(--type "$COMMIT_TYPE")
-  [[ -n "$SCOPE" ]] && PY+=(--scope "$SCOPE")
-  [[ -n "$SUBJECT_GLOB" ]] && PY+=(--subject-glob "$SUBJECT_GLOB")
+  [[ -n "$SINCE" ]] && EXAMPLES+=(--since "$SINCE")
+  [[ -n "$UNTIL" ]] && EXAMPLES+=(--until "$UNTIL")
+  [[ -n "$COMMIT_TYPE" ]] && EXAMPLES+=(--type "$COMMIT_TYPE")
+  [[ -n "$SCOPE" ]] && EXAMPLES+=(--scope "$SCOPE")
+  [[ -n "$SUBJECT_GLOB" ]] && EXAMPLES+=(--subject-glob "$SUBJECT_GLOB")
   if ((${#PATHS[@]} > 0)); then
     for p in "${PATHS[@]}"; do
-      PY+=(--path "$p")
+      EXAMPLES+=(--path "$p")
     done
   fi
-  "${PY[@]}"
+  "${EXAMPLES[@]}"
   exit 0
 fi
 
