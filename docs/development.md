@@ -306,6 +306,9 @@ To update these files after updating comments
   ```
 
 > A PR/MR linting check currently runs to confirm you've updated documentation, so you'll need to add these files to your PR/MR.
+
+Markdown under `docs/` and `guidelines/`, plus root `README.md`, `CONTRIBUTING.md`, and `config/README.md`, is spell-checked with `npm run test:spell-support` (dictionary in [`config/cspell.config.json`](../config/cspell.config.json)). That command runs as part of `npm run test:docs` and `npm run test:dev`.
+
 ## Testing
 
 > Blindly updating unit test snapshots is not recommended. Within this code-base snapshots have been created

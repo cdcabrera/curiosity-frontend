@@ -94,7 +94,7 @@ Creating a pull request activates the following checks through GitHub actions.
 - Commit message linting, see [commit_lint.yml](./.github/workflows/commit_lint.yml)
 - Code documentation linting, see [documentation_lint.yml](./.github/workflows/documentation_lint.yml)
 - Pull request spelling, code linting, unit tests and repo-level integration tests, see [integration](./.github/workflows/integration.yml)
-  - The spelling config dictionary is here [cspell.config.json](./config/cspell.config.json)
+  - The spelling config dictionary is here [cspell.config.json](./config/cspell.config.json). Locales and `src` use `npm run test:spell`; `docs/`, `guidelines/`, and support markdown use `npm run test:spell-support` (also run via `npm run build:docs` / `documentation_lint.yml`).
 - Jenkins integration testing. Currently, Jenkins re-runs the same tests being used in [integration](./.github/workflows/integration.yml)
 
 For additional information on failures for

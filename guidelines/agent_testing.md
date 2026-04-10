@@ -25,12 +25,13 @@ Agent-only testing guidance. Full maintainer documentation is in [docs/developme
 | Lint only | `npm run test:lint` |
 | Autofix lint for `src` (JS/JSX/JSON) | `npm run test:lintfix` |
 | Spell check (locales + `src` JS) | `npm run test:spell` |
+| Spell check (`docs/`, `guidelines/`, root/support markdown) | `npm run test:spell-support` |
 | Integration tests | `npm run test:integration` |
 | Integration (ephemeral profile) | `npm run test:integration-ephemeral` |
 | Clear Jest cache | `npm run test:clearCache` |
 | PR-style verification | `npm run verify` |
 
-Spell and lint configurations are defined under `config/`; see `CONTRIBUTING.md` for CI expectations (GitHub Actions, Jenkins).
+Spell and lint configurations are defined under `config/`; see `CONTRIBUTING.md` for CI expectations (GitHub Actions, Jenkins). When you edit `docs/` or `guidelines/`, run `npm run test:spell-support` (or `npm run test:dev`, which includes it).
 
 ## Snapshots
 
