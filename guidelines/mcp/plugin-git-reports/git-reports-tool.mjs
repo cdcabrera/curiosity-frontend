@@ -16,10 +16,13 @@ const REPO_ROOT = path.resolve(__dirname, '../../..');
 const GIT_REPORT_SCRIPT = path.join(REPO_ROOT, 'scripts', 'git-report.sh');
 
 const toolDescription = [
-  'Run curiosity-frontend time-bounded commit-message reports (corpus stats, fix churn,',
-  'PatternFly-related subjects, subject samples, filtered commit examples for LLM-style use).',
-  'Wraps scripts/git-report.sh / npm run report:git.',
-  'Repo root is resolved from this plugin path (guidelines/mcp/plugin-git-reports).'
+  'Curiosity-frontend only: analyzes git commit subjects (not line-level blame) as of asOf (default HEAD).',
+  'Bundled with PatternFly MCP as a plugin but unrelated to PatternFly docs search.',
+  'Reports: corpus (convention stats: types, sw-/ent-/(#PR)); churn (fix heuristics); patternfly (subjects mentioning patternfly or @patternfly);',
+  'subjects (first/latest sample); examples (filtered log + body excerpt + stat + optional pattern hints).',
+  'For examples, combine filters with AND semantics: commitType, scope (exact match to any comma-separated scope in subject), subjectGlob (* wildcards), paths, since/until.',
+  'Raise bodyLines (default 12) when you need fuller bullet bodies. format=json only for corpus or examples.',
+  'Equivalent CLI: npm run report:git / bash scripts/git-report.sh. Conventions: docs/development.md#git-commit-message-reports, CONTRIBUTING.md.'
 ].join(' ');
 
 const inputSchema = {
@@ -33,12 +36,13 @@ const inputSchema = {
       type: 'string',
       enum: ['corpus', 'churn', 'patternfly', 'subjects', 'examples'],
       description:
-        'corpus: convention counts; churn: fix-oriented heuristics; patternfly: subject grep; subjects: first/latest sample; examples: filtered commits with bodies/stats (JSON or md)'
+        'Which report to run. corpus: type/sw-/PR token counts. churn: top fix scopes + keyword hits. patternfly: commits whose subject mentions patternfly or @patternfly. subjects: bookend sample of history. examples: main tool for filtered commits (use subjectGlob e.g. *sw-*, *pf6*, scope e.g. select, commitType e.g. build).'
     },
     format: {
       type: 'string',
       enum: ['md', 'json'],
-      description: 'markdown (default) or json (supported for corpus and examples)'
+      description:
+        'Output format. md default. json only valid for report=corpus or report=examples; churn/patternfly/subjects are md-only.'
     },
     since: {
       type: 'string',
@@ -58,7 +62,8 @@ const inputSchema = {
     },
     scope: {
       type: 'string',
-      description: 'For report=examples: conventional scope (exact match in the scope list).'
+      description:
+        'For report=examples: exact match against one scope in type(scope): or type(a,b): subjects (comma-separated scopes in commits each match independently).'
     },
     subjectGlob: {
       type: 'string',
