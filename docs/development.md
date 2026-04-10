@@ -460,6 +460,12 @@ bash scripts/git-report.sh --as-of main --report patternfly
 
 For blame or file history, use `git log`, `git blame`. Extra one-liners: `git log <REV> -i --grep='<token>' --no-merges --format='%h | %aI | %s'` (cap output).
 
+### Future MCP tool (git reports)
+
+**Canonical implementation** stays in **[`scripts/git-report.sh`](../scripts/git-report.sh)**. **`npm run report:git`** is the same script (pass flags after `--`, e.g. `npm run report:git -- --as-of HEAD --report corpus`).
+
+A future **PatternFly MCP** `--tool` plugin should **delegate to one of those entry points** (spawn `npm run report:git` or `bash scripts/git-report.sh` from the repo root with the same arguments)—not reimplement the report logic in the plugin. That keeps humans, CI, agents, and MCP on one code path.
+
 ## Related docs
 
 - [architecture.md](./architecture.md) — App structure, stack, and `src/` layout
