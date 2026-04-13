@@ -65,6 +65,8 @@ Our process follows the standard GitHub fork and pull request workflow.
 - `main` branch is a representation of development and `stage`.
 - `stable` branch is a representation of the `prod` environment.
 
+> Note: The only PRs ever merged into the `stable` branch are those from `main` and a pull request to merge a release commit.
+
 #### Pull requests
 Development pull requests (PRs) should be opened against the `main` branch.
 
@@ -79,9 +81,12 @@ Development pull requests (PRs) should be opened against the `main` branch.
 >  - dramatic unit test snapshot updates
 >  - affects any file not directly associated with the issue being resolved
 >  - affects "many" files
->  - provides a bot-generated explanation (and cannot be explained by the human counterpart)
+>  - provides a bot-generated explanation that cannot be explained by the human counterpart
 >
-> You will be asked to restructure your commits or break the work into multiple pull requests.
+> You will be asked to either:
+> - restructure your commits
+> - break the work into multiple pull requests
+> - close the PR
 
 #### Pull request commits, messaging
 Your pull request should contain Git commit messaging that follows [conventional commit types](https://www.conventionalcommits.org/) to provide consistent history and help generate [CHANGELOG.md](./CHANGELOG.md) updates.
@@ -94,10 +99,33 @@ Commit messages follow two basic guidelines:
   ```
   Example: `feat(config): sw-123 rhel, activate instance inventory (#456)`
 
+  Where:
+  - **Type**: The type of work the commit resolves (e.g., `feat`, `fix`, `chore`, `docs`, `refactor`, `test`).
+  - **Scope**: The optional area of code affected (directory, filename, or concept).
+  - **Issue number**: The issue number typically from the current issue tracker (e.g., `ent-123`, `sw-123`).
+  - **Description**: What the commit work encompasses.
+  - **#PR_NUMBER**: The pull request number. Typically added automatically during merge/squash operations. Including it manually is optional. It can help with traceability during review.
+
+> The codebase as of version `4.19.0` adheres to strict messaging guidelines specifically for seachability and [CHANGELOG generation](./CHANGELOG.md). It is encouraged this practice is maintained for the new benefit of having agents interact and search your git history.
+>
+> Helpful hints for searchable commit messages:
+>   - Filler words are often unnecessary to relate to your work when leveraging conventional commit types (e.g. `for`, `the`, `add`, `updated`).
+>   - Keep the subject line concise yet descriptive. If previous coding work was done on the same files, consider using the same commit message for searchability.
+>   - Do not over describe, add unnecessary details.
+>   - State facts, do not inject personal opinions. Facts help searchability. Opinions can be applied to issue/story comments and work great if there's a story number on the commit message.
+>   - Include a body if affecting multiple files, be concise. Past messages list files and the changes applied to them instead of broad descriptions. This helps searchability.
+
+> If your **pull request contains multiple commits**, they may be squashed into a single commit before merging, and the messaging altered to reflect current guidelines.
+
 > Settings, like extending the allowed number of message characters, for pull request commit linting can be found in [scripts/actions.commit.js](./scripts/actions.commit.js).
 
 #### Pull request test failures
-Before any review takes place, all tests should pass. Creating a pull request activates GitHub actions for commit linting, documentation linting, spelling, unit tests, and build integration tests.
+Before any review takes place, all tests should pass. Creating a pull request activates GitHub actions for:
+- commit linting
+- documentation linting
+- spelling
+- unit tests
+- build integration tests
 
 > If you are unsure why your tests are failing, you should [review testing documentation](./docs/development.md#testing).
 
@@ -105,12 +133,13 @@ Before any review takes place, all tests should pass. Creating a pull request ac
 Basic code style guidelines are enforced by ESLint, but there are additional guidelines.
 
 #### File Structure
-- File names use lowerCamelCase and dot notation (e.g., server.http.ts, server.logger.ts).
-- The directory structure is organized by React, Redux, and service layer. With all relevant files maintained in the src directory.
+- File names use lowerCamelCase reflective of the parent directory and functionality (e.g., authentication.ts, authenticationContext.ts).
+- The directory structure is organized by React, Redux, and service layer. With all relevant application files maintained in the src directory.
 
 #### Functionality, testing
 - Functions should attempt to maintain a single responsibility.
 - Function annotations follow a minimal JSDoc style; descriptions are encouraged.
+- Functions leverage dependency injection to facilitate reusability and unit testing with mocks.
 - Tests should focus on functionality.
 - Tests should not be written for external packages. That is the responsibility of the external package, or it shouldn't be used.
 
@@ -118,11 +147,18 @@ Basic code style guidelines are enforced by ESLint, but there are additional gui
 - Typings are handled through JSDoc comments.
 - TypeScript is currently not implemented.
 
+> If a refactor towards TypeScript is started, it is highly recommended that unit tests and E2E tests are updated and working before that effort. The level of React context and complex Redux state being used in the application can be deceptive in its complexity and behavior, and without a baseline set of checks you risk functionality gaps.
+
 #### React and Components
 - Use **functional components** and React hooks.
-- Leverage dependency injection for complex components and unit testing.
-- Align with PatternFly tokens and existing shared components.
-- Align with internal code conventions on wrapping complex PatternFly components that are prone to change between versions.
+- Leverage dependency injection for
+   - separating React lifecycle and component logic
+   - reusability of components
+   - unit testing with mocks
+- Align with PatternFly by wrapping PatternFly components that are
+   - complex
+   - experience failure
+   - are prone to change or be deprecated between PatternFly versions
 - Group external (PF/React) imports, then internal (`services/`, `redux/`), then relative.
 
 #### Redux and State
@@ -133,6 +169,8 @@ Basic code style guidelines are enforced by ESLint, but there are additional gui
 #### i18n and locale
 - User-visible strings MUST use `public/locales/en-US.json` via i18n helpers.
 
+> Locale strings are loaded using XHR and make heavy use of the internal methods provided by the i18n library to prevent duplication.
+
 ### Testing
 Testing is based on Jest and **React Testing Library** (RTL).
 
@@ -141,8 +179,6 @@ Unit tests are located in `__tests__` directories parallel to the source files.
 
 #### E2E tests
 Integration, or E2E, tests are located in the root `./tests` directory and are currently focused on consistent and clean build output.
-
-> Playwright is being considered for integration Quality Assurance (QA) testing, but is not yet implemented.
 
 #### Snapshots
 Update snapshots **only** for expected output changes!
@@ -157,7 +193,7 @@ Update snapshots **only** for expected output changes!
 
 The `Node.js` engine requirements are updated on a predictable biannual schedule to ensure the server remains secure, leverages modern runtime features, and provides stability for consumers.
 
-> Our engine requirements are intended to be the minimum to run the MCP server. They are not intended to be a maximum, as newer versions may introduce breaking changes or require additional configuration.
+> Our engine requirements are intended to be the minimum to run the application. They are not intended to be a maximum, as newer versions may introduce breaking changes or require additional configuration.
 
 ### Schedule and process
 - **Timing**: Bumps are generally targeted for **Spring (April/May)** and **Fall (October/November)**, aligned with the [Node.js release schedule](https://nodejs.org/en/about/previous-releases) as versions enter or exit LTS.
@@ -169,7 +205,7 @@ The `Node.js` engine requirements are updated on a predictable biannual schedule
 ### Acceptance criteria for bumps
 - Update `package.json` engine requirements.
 - Update related GitHub Action workflows (CI/CD).
-- Update "Environmental Requirements" in documentation.
+- Update "Environmental Requirements" in documentation, typically README.md and CONTRIBUTING.md
 - Ensure all tests pass on the new target version.
 
 ## AI agent
