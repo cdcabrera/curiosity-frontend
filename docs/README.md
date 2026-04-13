@@ -12,5 +12,5 @@ Welcome to the Curiosity Frontend documentation. This guide is organized by user
 - **[Services](#services)**: Overview of available services, mocks, and methodology.
 - **[AI tools](#ai-tools)**: Reference of available AI tools and their usage.
 
-### 🏗️ Architecture & design
+### 🏗️ Architecture and design
 - **[Application Architecture](./architecture.md)**: Design and core concepts.
