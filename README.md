@@ -10,35 +10,59 @@ Curiosity Frontend provides a comprehensive UI for managing and reporting on Red
 
 ## Requirements
 - [Node.js 20+](https://nodejs.org/)
-- NPM (Yarn install is discouraged due to legacy dependency issues)
+- NPM
 
 ## Quick start
 
 For in-depth tooling, environment, and proxy setup guidance see [docs/development.md](./docs/development.md).
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/RedHatInsights/curiosity-frontend.git
-cd curiosity-frontend
-```
+### Install
+1. Clone the repository
+   ```
+   $ git clone https://github.com/RedHatInsights/curiosity-frontend.git
+   ```
 
-### 2. Install dependencies
-```bash
-npm install
-```
+1. Within the repo context, install project dependencies
+   ```
+   $ cd curiosity-frontend && npm install
+   ```
 
-### 3. Start the application
-```bash
-npm start
-```
+### Develop
+This is the base context for running a local UI against a mock API and styling.
+
+1. Create a local dotenv file called `.env.local` and add the following contents
+    ```
+    REACT_APP_DEBUG_MIDDLEWARE=true
+    REACT_APP_DEBUG_ORG_ADMIN=true
+    REACT_APP_DEBUG_PERMISSION_APP_ONE=subscriptions:*:*
+    REACT_APP_DEBUG_PERMISSION_APP_TWO=inventory:*:*
+   ```
+1. In a terminal instance that uses the repo context... Run
+   ```
+   $ npm start
+   ```
+1. Start developing against files in `./src`. Linting feedback will be automatically enabled through the terminal output
+
+For in-depth local run guidance review [docs/development.md](./docs/development.md)
+
+### Unit testing
+Run and update unit tests while developing instead of after-the-fact. In a new terminal instance
+
+1. In a new terminal instance that uses the repo context... Run
+   ```
+   $ npm run test:dev
+   ```
+2. Test files can be accessed, and edited, under `__test__` directories parallel to the files you're editing. Test failures for
+   recently edited files will be available in the terminal output along with basic testing framework use directions.
+
+For in-depth testing guidance review [docs/development.md](./docs/development.md)
 
 ## Documentation
 
-For comprehensive usage, development, and project architecture [read the docs](./docs/README.md).
+For comprehensive development and project architecture [read the docs](./docs/README.md).
 
-- **🚀 Usage**: Detailed guide on [running the application and local development](./docs/development.md#local-and-proxy-development).
-- **🛠️ Developer reference**: Reference for [tooling, testing, and debugging](./docs/development.md).
-- **🏗️ Architecture & design**: Learn about our [application structure and data flow](./docs/architecture.md).
+- **Development**: Reference for [development strategy, debugging, and testing](./docs/development.md).
+- **Architecture**: Learn about the [application structure and data flow](./docs/architecture.md#data-sources-and-integrations).
 
 ## Contributing
 
