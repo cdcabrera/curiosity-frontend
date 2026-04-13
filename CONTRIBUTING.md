@@ -217,6 +217,8 @@ Basic code style guidelines are enforced by ESLint, but there are additional gui
 ### Testing
 Testing is based on Jest and **React Testing Library** (RTL).
 
+> When writing tests, remember to not write tests that "retest" dependencies and focus on what was implemented. Those dependencies should already be tested, otherwise why are we using it.
+
 #### Unit tests
 Unit tests are located in `__tests__` directories parallel to the source files.
 

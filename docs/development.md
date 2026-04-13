@@ -93,6 +93,11 @@ Weldable is used to
 For details on mocking APIs see [Mocking service responses](#mocking-service-responses)
 
 ### NPM scripts
+Updated NPM scripts can be found in [package.json](../package.json) 
+
+| script | description |
+|--------|-------------|
+|        |             |
 
 ### Environment variables (dotenv)
 dotenv files within this repository are leveraged for application configuration only and contain no secrets or sensitive information.
@@ -182,7 +187,12 @@ The dotenv files are structured to cascade each additional dotenv file settings 
 ## Development methodology and teams
 
 ### Dependency injection
-A primary focus for components in this application was to integrate unit testing. Dependency injection is key to lighter components focused on display logic, closer to single function-like responsibility, and ease of mocks for unit testing.
+A primary focus for components in this application is about amplifying unit testing, dependency injection is key to this.
+
+Dependency injection within this codebase allows for lighter components focused on
+- display logic
+- being closer to single responsibility
+- ease of mocks for unit testing.
 
 ### Where does business logic live?
 Not in the UI. Early in the project's history, an architecture decision was made to avoid business logic in the user interface and focus on display logic.
