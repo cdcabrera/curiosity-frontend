@@ -4,7 +4,7 @@ Guide to Curiosity's development process and reference documentation.
 
 - [Getting started](#getting-started)
 - [Build](#build)
-- [Development methodology](#development-methodology)
+- [Development methodology and team members](#development-methodology-and-team-members)
 - [Debugging](#debugging)
 - [React components](#react-components)
 - [Redux and state management](#redux-and-state-management)
@@ -179,17 +179,42 @@ The dotenv files are structured to cascade each additional dotenv file settings 
 | REACT_APP_SERVICES_RHSM_INVENTORY_SUBSCRIPTIONS   | A static string referencing the RHSM API spec                                                                                                                  |
 | REACT_APP_SERVICES_RHSM_OPTIN                     | A static tokenized string referencing the RHSM API spec                                                                                                        |
 
-## Development methodology
-
-### Where does business logic live?
+## Development methodology and teams
 
 ### Dependency injection
+A primary focus for components in this application was to integrate unit testing. Dependency injection is key to lighter components focused on display logic, closer to single function-like responsibility, and ease of mocks for unit testing.
+
+### Where does business logic live?
+Not in the UI. Early in the project's history, an architecture decision was made to avoid business logic in the user interface and focus on display logic.
+
+This is still true and is key to debugging and keeping the application display configurable. The user interface simply displays what the API gives it offsetting the responsibility of business logic onto languages more capable than JavaScript.
 
 ### Design and user experience coordination
+Design and user experience are key to the stability of the Curiosity application. It is important to ensure that the user interface is intuitive and easy to use.
+
+Application development typically coordinates design efforts with a dedicated designer and team. If there is a design alteration required, it's important to reach out to the design team since they generally coordinate multiple application displays to ensure a consistent user experience for the Consoledot platform.
+
+**Make sure to reach out to the design team before attempting user experience alterations and refactors.**
+
+### Copy design and writing
+Copy design and writing, similar to design and user experience coordination, is crucial for maintaining a consistent brand and user experience across all applications.
+
+Application development typically coordinates locale string updates with the technical writing team to ensure that the content and visual elements align with the overall brand guidelines and user interface standards.
+
+**Make sure to reach out to the technical writing team before attempting content and visual element alterations and refactors.**
 
 ### Quality assurance and E2E
+Quality assurance and end-to-end (E2E) testing are vital to making sure regressions, and those one-off off-hours issues do not become the norm.
+
+In addition to the integration checks the repository uses on its build output, E2E is leveraged at the continuous integration (CI) level to ensure that the application is functioning as expected before deployment.
+
+**Make sure to reach out to the related team members if you are unfamiliar with what mechanisms are currently being used to perform E2E.**
+
+> There are future plans to integrate Playwright for E2E testing. Any future code rewrites should consider any level of testing integration a priority over general rewrites/refactors to avoid losing known and unknown functionality.
 
 ## Debugging
+
+### Testing
 
 ### Local
 
