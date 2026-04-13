@@ -223,24 +223,61 @@ Update snapshots **only** for expected output changes!
 > If you're seeing updates, it's likely due to changes in the build output or configuration, sometimes caused by build updates, but not always.
 > Please review your changes carefully and ensure they align with the expected behavior, failure to acknowledge these alerts may result in production issues.
 
-## Maintenance: Node.js engine bumps
+## Maintenance
+
+### Node.js engine bumps
 
 The `Node.js` engine requirements are updated on a predictable biannual schedule to ensure the server remains secure, leverages modern runtime features, and provides stability for consumers.
 
 > Our engine requirements are intended to be the minimum to run the application. They are not intended to be a maximum, as newer versions may introduce breaking changes or require additional configuration.
 
-### Schedule and process
+#### Schedule and process
 - **Timing**: Bumps are generally targeted for **Spring (April/May)** and **Fall (October/November)**, aligned with the [Node.js release schedule](https://nodejs.org/en/about/previous-releases) as versions enter or exit LTS.
 - **Security**: Out-of-band updates may be performed if critical security considerations arise.
 - **Version Targets**:
   - Focus on the latest **even-numbered (LTS/Stable)** versions (e.g., bumping to 22, 24, or 26).
   - GitHub Workflows should be updated to include the latest available even version.
 
-### Acceptance criteria for bumps
+#### Acceptance criteria for bumps
 - Update `package.json` engine requirements.
 - Update related GitHub Action workflows (CI/CD).
 - Update "Environmental Requirements" in documentation, typically README.md and CONTRIBUTING.md
 - Ensure all tests pass on the new target version.
+
+### NPM dependencies
+
+NPM dependencies are managed through three methods
+- GitHub Dependabot automation
+- Direct management of `PatternFly` and `Consoledot` dependencies.
+- Direct lockfile management, and one-off manual updates as needed.
+
+#### GitHub Dependabot
+GitHub Dependabot configuration is located under [.github/dependabot.yml](./.github/dependabot.yml) and is currently set to ignore `PatternFly` and `Consoledot` dependencies.
+
+> With the uptick in NPM hacks, Dependabot is set to a two-week delay from release to give any security issues time to be addressed.
+
+#### PatternFly and Consoledot dependencies
+Currently, directly managed to ensure compatibility with specific versions and to avoid unnecessary updates that could break the application. 
+
+> These dependencies are currently ignored under GitHub Dependabot but could be reinstated if needed. Reinstating them should be done with test restructures to refactor related Jest snapshots which may cause churn.
+
+#### Direct lockfile management
+Given the uptick of NPM hacks a cycle of maintainers running `$ npm audit` and `$ npm audit fix` should be performed monthly to ensure the lockfile is up to date.
+
+1. Make sure your `Node.js` version aligns to the `package.json` `engines` field.
+2. Run `$ npm audit`
+3. Review the results and assess the impact on the application
+4. If necessary, run `$ npm audit fix` to update the lockfile
+5. Verify the application still functions as expected after the update by running tests and the build.
+6. Open a PR to perform additional validation and merge the update into `main`
+
+> Additional measures should be reviewed and updated periodically
+> - Pinning dependencies (removing the caret) on manual updates should be considered. Pinning can mitigate risks around NPM hacks disguised as release patches.
+> - Disabling "post install." Unfortunately, Consoledot scripting relies on `post install`, and disabling it will cause issues with the build process. It's advised that maintainers periodically confirm post install scripting is still necessary.
+
+> **IMPORTANT** Just because a dependency is noted as "critical" or "high" severity does not mean it is an immediate security risk. 
+> Technically, the application display is already compiled and reintroducing "updated packages" by retriggering the build process can actually have the reverse intention by exposing vulnerabilities and integrating compromised packages.
+> Make sure to review security advisories and assess the impact on the application before taking action.
 
 ## AI agent
 
