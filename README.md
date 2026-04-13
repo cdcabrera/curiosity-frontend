@@ -37,7 +37,7 @@ This is the base context for running a local UI against a mock API and styling.
     REACT_APP_DEBUG_PERMISSION_APP_ONE=subscriptions:*:*
     REACT_APP_DEBUG_PERMISSION_APP_TWO=inventory:*:*
    ```
-1. In a terminal instance that uses the repo context... Run
+1. In a terminal instance within the repository root, run:
    ```
    $ npm start
    ```
@@ -46,13 +46,13 @@ This is the base context for running a local UI against a mock API and styling.
 For in-depth local run guidance review [docs/development.md](./docs/development.md)
 
 ### Unit testing
-Run and update unit tests while developing instead of after-the-fact. In a new terminal instance
+Run and update unit tests during development. In a new terminal instance:
 
-1. In a new terminal instance that uses the repo context... Run
+1. Within the repository root, run:
    ```
    $ npm run test:dev
    ```
-2. Test files can be accessed, and edited, under `__test__` directories parallel to the files you're editing. Test failures for
+2. Test files are located in `__tests__` directories parallel to the source files. Test failures for
    recently edited files will be available in the terminal output along with basic testing framework use directions.
 
 For in-depth testing guidance review [docs/development.md](./docs/development.md)

@@ -33,8 +33,8 @@ This is a non-networked local run designed to function with minimal resources, a
    ```
    $ npm run test:dev
    ```
-   > If issues happen with the mock server port of `3030` you can set a custom port by exporting a parameter when you run start-up
-   > ie. `$ export MOCK_PORT=5000; npm start`
+   > If issues occur with the mock server port `3030`, you can set a custom port by exporting a parameter before starting the server.
+   > i.e., `$ export MOCK_PORT=5000; npm start`
 
 1. Make sure your browser opened around the domain `https://localhost:3000/`
 1. Start developing...
@@ -86,9 +86,9 @@ This is a networked run that has the ability to proxy production, stage, and eph
 ### Webpack and Consoledot configuration
 Webpack configuration leverages the NPM package [`Weldable`](https://github.com/cdcabrera/weldable) to integrate with Consoledot Webpack configuration.
 
-Weldable is used to
-- Provide a single NPM install point for most Webpack NPM packages. Without Weldable we would potentially have to include a few more dependency packages in our `package.json`
-- Enable local non-network runs of the UI with API mocks. Since Weldable helps install and leverage the same Webpack configurations, we're able to use to run without Consoledot branding and influence to see base application display behavior.
+Weldable is used to:
+- Provide a single NPM install point for most Webpack packages, reducing the number of direct dependencies in `package.json`.
+- Enable local, non-networked runs of the UI with API mocks. Since Weldable leverages production Webpack configurations, the application can be viewed without Consoledot branding or influence.
 
 For details on mocking APIs see [Mocking service responses](#mocking-service-responses)
 
@@ -225,43 +225,152 @@ In addition to the integration checks the repository uses on its build output, E
 ## Debugging
 
 ### Testing
+General development includes confirming your effort doesn't break existing functionality.
 
-### Local
+#### Spelling
+Basic spelling checks run across documentation and code.
+
+To update the dictionary, typically for internal acronyms or terminology
+- Add your word to the [config/cspell.config.json](../config/cspell.config.json)
+
+Run spell checks using
+- Use `$ npm run test:spell` for running spelling checks across source code and support JSON.
+- Use `$ npm run test:spell-support` for running spelling checks across documentation and support JSON.
+
+#### ESLint linting
+
+##### ESLint configuration
+Linting is performed using ESLint with a custom configuration tailored to the project's coding standards.
+- Configuration is located in the project root [.eslint.config.mjs](../.eslint.config.mjs]) and can be customized for specific linting needs.
+- Configuration support can be found in [config/](../config/)
+   - [config/eslint.config.airbnb.mjs](../config/eslint.config.airbnb.mjs) - Custom ESLint rules for the project. Moved here to remove the NPM dependency because the Airbnb style guide rules are older and minimally maintained.
+
+##### Linting
+Run linting using 
+- Use `$ npm run lint` for running linting and Jest tests
+- Use `$ npm run lint:dev`: for running linting and then entering Jest watch mode.
+
+#### Jest testing
+Jest is used for unit and integration testing.
+
+##### Jest configuration
+- Configuration is located in the project root [jest.config.js](../jest.config.js) and can be customized for specific testing needs.
+- Configuration support can be found in [config/](../config/)
+   - [config/jest.setupTests.js](../config/jest.setupTests.js) - Configuration for Jest setup and initialization. Contains test helpers meant to help ease testing.
+   - [config/jest.transform.file.js](../config/jest.transform.file.js) - Configuration for Jest file transformation. Allows for custom transformations of files during testing.
+   - [config/jest.transform.style.js](../config/jest.transform.style.js) - Configuration for Jest style transformation. Allows for custom transformations of style files during testing.
+
+##### Unit testing
+Run tests using 
+- Use `$ npm test` for running linting and Jest tests
+- Use `$ npm run test:dev`: for running linting and then entering Jest watch mode.
+
+##### Integration testing
+**IMPORTANT: Integration checks require build output before they work! Otherwise, you may potentially be running against a previous build output.**
+
+Run build integration tests using
+- Use `$ npm run build` for building then running the follow-up build integration checks.
+  
+  If the build integration checks fail, you can update them with `$npm run test:integration-dev` and enter Jest watch mode.
+
+### Local and proxy runs
+Debugging locally, and while using the platform proxy, follows general frontend development practices.
+
+#### API and Redux state
+Use `.env.local` to toggle debugging features leveraging Redux and the browser's developer console. This will broadcast state updates in the browser's developer console associated with ALL facets of the application display, from API responses to toolbar filters being applied.
+
+Setting `REACT_APP_DEBUG_MIDDLEWARE=true` enables `redux-logger` in the browser console, allowing you to inspect every action and state change.
+
+> Almost every facet of the application display accesses Redux state, because of this Redux state logger can be especially **useful to track down problematic API responses or React hooks that may be causing unnecessary refresh cycles.** (e.g. Why is the application display hitting the RHSM API multiple times for the same call?)
+
+#### Local run and API mocking
+As a last resort, or first, you can recreate API response behavior by leveraging the mock API server.
+
+API mocks are stored as JSDoc styled comments in the service files, see
+- `src/services/rhsmServices.js` - RHSM related service mocks
+- `src/services/platformServices.js` - Export related service mocks
+
+The mocking tool is [`apidoc-mock`](https://github.com/cdcabrera/apidoc-mock). See the tool for how-to-use, but the basics involve adding JSDoc style comments like
+- `@apiMock {ForceStatus} [HTTP STATUS]` - force a specific http status like `404`, `500`, etc.
+- `@apiMock {DelayResponse} [MILLISECONDS]` - force (in milliseconds) a delayed response to see if the application is resilient to slow API responses
 
 ### Staging and production
+Debugging in staging and production means leveraging exposed tools and displays.
+- **Version number** - The `src/components/productView/productView.js` exposes the released version number and related Git hash of the application display (in environment it is located in the bottom left of the application display). This is useful for narrowing down offending commits.
+- **Redux state log** - The last 100 sanitized entries of the Redux state log can be accessed via the `curiosity` object in the browser console. Open the browser developer console and type `$ curiosity.debugLog()` then hit the `enter` key. This log is helpful for diagnosing state-related issues.
+- **Error message cards** - The `src/components/errorMessage/errorMessage.js` component provides a standardized way to display error messages to the user. It is typically used to display errors from API responses. The error card component automatically displays on error (typically http status) in the view and provides access to the offending Redux state log in a form field.
+    - Additionally, typing the word `debug` while focused on the state error display field will provide a `Download UI state log` link that can be used to download the noted `Redux state log`.
+  <p style="display: flex;">
+    <img src="./images/debugging_errorMessage.png" width="400" alt="Error message card example" />
+    <img src="./images/debugging_errorMessageField.png" width="400" alt="Error message card field example" />
+  </p>
 
 ## React components
 
-### Separating component display from logic and lifecycle events.
+### Separating component display from logic and lifecycle events
+We follow a consistent pattern of structuring components against the concepts of display logic and lifecycle.
 
-### React context
+Basic guidelines for implementing React with Redux in Curiosity
+- `lowerCamelCase` file names and directories
+- Component index files are not leveraged in favor of naming them 
+- Prefer assigned function/arrow function components
+- Not all components need context or state.
+- Services are not typically called directly from components, prefer React/Redux hooks and helpers.
+   - Reason: React/Redux hooks are optimized to help aggregate API calls, bypassing that optimization may have negative performance implications. 
+- Redux is combined with React context to pass state across, or towards, components that require it.
+   - Reason: To help in reducing prop drilling context and hooks are leveraged. Redux was a legacy decision, up-to-date alternatives may also be viable. 
+- Lifecycle hooks are typically placed in related `context` suffixed files alongside the component file. There are exceptions to this guideline. (e.g. `authenticationContext.js`, `graphCardContext.js`, etc)
+   - Reason: To keep components focused on display logic and "reactive", instead of attempting everything inside the component, making testing difficult.
+- Custom React hooks are typically dependency injected into components and other hooks.
+   - Reason: To facilitate testing and mocks and limit components to display logic only.
 
 ### PatternFly components
+Curiosity is built on **PatternFly**. We leverage PatternFly components for almost every aspect of the display except display logic.
+
+Basic guidelines for implementing PatternFly in Curiosity
+- Complex PatternFly components or components known to shift under PatternFly versions must be wrapped in an application level component
+   - Reason: This ensures application stability and predictable behavior across PatternFly versions by providing a single fail point.
+- Styling overrides should be kept to a minimum and centralized in a single location, typically [`src/styles/`](../src/styles/)
+   - Reason: This ensures that the style overrides can be easily removed if/when PatternFly no longer requires them.
 
 ## Redux and state management
 
-### Simplifying state management for services
+### Simplifying state management for general use and services
+To reduce boilerplate, we use legacy custom helpers located in [`src/redux/common/reduxHelpers.js`](../src/redux/common/reduxHelpers.js)
+- `reduxHelpers.setStateProp` - Automatically updates state properties with new values.
+- `reduxHelpers.generatedPromiseActionReducer` - Automatically handles the lifecycle of asynchronous API calls. Multiple calls can be aggregated together.
 
-#### Middleware
-
-#### Promise handling
-
-#### Reducer helpers
+### Middleware
+The application uses several custom middlewares:
+- **ActionRecordMiddleware**: Logs actions for debugging and session replay capabilities. Integrates with downloading the debug log, `$ curiosity.debugLog()`.
+- **MultiActionMiddleware**: Combines multiple actions into a single action for batch processing. **Epically useful** for optimizing performance and combining API calls at the application level with Redux. See [`src/redux/middleware/multiActionMiddleware.js`](../src/redux/middleware/multiActionMiddleware.js) for implementation details.
+- **PromiseMiddleware**: Handles actions with a promise payload, dispatching `PENDING`, `FULFILLED`, and `REJECTED` actions. Customized with a `catch` to help squash Promise related errors, see [`src/redux/middleware/promiseMiddleware.js`](../src/redux/middleware/promiseMiddleware.js) and `isCatchRejection`.
+- **StatusMiddleware**: Intercepts HTTP status codes to trigger global notifications or errors. Useful for handling global errors with Redux reducers.
 
 ## Services
 
 ### Normalizing service data for state management
+Data from APIs is normalized using schema validation and response transformers before reaching the Redux store to ensure consistent consumption by components.
 
 #### Joi service response validation
+We use **Joi** (defined in `*Schemas.js` files) to validate API responses at runtime. In contrast to TypeScript, this catches schema mismatches in local and platform environments and is typically used as a pre-check before attempting a response transformation that could trigger an application display failure.
 
 #### Transforming service responses
+Service responses are transformed (e.g., camelCasing keys) using helpers in [`src/services/common/helpers.js`](../src/services/common/helpers.js) to align with JavaScript naming conventions.
 
 #### Caching service responses
+Axios-based caching is implemented in [`src/services/common/serviceConfig.js`](../src/services/common/serviceConfig.js) using `lru-cache`. Caching duration is configurable via the `REACT_APP_AJAX_CACHE` flag.
 
 ### Mocking service responses
+Local development uses [`apidoc-mock`](https://github.com/cdcabrera/apidoc-mock) to serve JSDoc styled comments/annotations as any API response from JSON to HTML.
+
+These **JSDoc comment mocks** are located alongside the service functions and are automatically run on initial local development start with `$ npm start`.
+
+Review the [`apidoc-mock` documentation](https://github.com/cdcabrera/apidoc-mock) for up-to-date usage instructions.
 
 ## AI tools
+Custom AI resources are maintained in the [`guidelines/`](../guidelines/) directory to assist in automated development tasks.
 
-### Agent skills
-
-### PatternFly MCP
+- [Local agent skills for Claude and Cursor](../guidelines/skills/)
+- [PatternFly MCP for AI agent interfacing with components, writing, design, accessibility, and general questions](https://github.com/patternfly/patternfly-mcp?tab=readme-ov-file#quick-start)
+- [PatternFly AI agent resources for best practices and skills](https://github.com/patternfly/ai-helpers?tab=readme-ov-file#quick-start)

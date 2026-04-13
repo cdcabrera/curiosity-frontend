@@ -3,14 +3,14 @@
 Welcome to the Curiosity Frontend documentation. This guide is organized by user intent.
 
 ### 🛠️ Developer reference
-- **[Getting started](#getting-started)**:
-- **[Build](#build)**: Reference of build and dotenv options.
-- **[Development methodology](#development-methodology)**:
-- **[Debugging](#debugging)**:
-- **[React components](#react-components)**: Overview of React component methodology.
-- **[Redux and state management](#redux-and-state-management)**: Overview of Redux and state management.
-- **[Services](#services)**: Overview of available services, mocks, and methodology.
-- **[AI tools](#ai-tools)**: Reference of available AI tools and their usage.
+- **[Getting started](./development.md#getting-started)**: Local and proxy development setup.
+- **[Build](./development.md#build)**: Reference of build, NPM scripts, and dotenv options.
+- **[Development methodology](./development.md#development-methodology-and-teams)**: Dependency injection and team coordination.
+- **[Debugging](./development.md#debugging)**: Testing, local debugging, and production checks.
+- **[React components](./development.md#react-components)**: Overview of React component methodology (Views vs Components).
+- **[Redux and state management](./development.md#redux-and-state-management)**: Overview of Redux, middleware, and reducers.
+- **[Services](./development.md#services)**: Overview of available services, mocks, and normalization.
+- **[AI tools](./development.md#ai-tools)**: Reference of available AI tools (MCP, Agent skills).
 
 ### 🏗️ Architecture and design
-- **[Application Architecture](./architecture.md)**: Design and core concepts.
+- **[Application Architecture](./architecture.md)**: High-level system overview and Mermaid diagrams.

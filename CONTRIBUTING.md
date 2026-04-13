@@ -111,10 +111,10 @@ Commit messages follow two basic guidelines:
   - **Description**: What the commit work encompasses.
   - **#PR_NUMBER**: The pull request number. Typically added automatically during merge/squash operations. Including it manually is optional. It can help with traceability during review.
 
-> The codebase as of version `4.19.0` adheres to strict messaging guidelines specifically for seachability and [CHANGELOG generation](./CHANGELOG.md). It is encouraged this practice is maintained for the new benefit of having agents interact and search your git history.
+> The codebase as of version `4.19.0` adheres to strict messaging guidelines specifically for searchability and [CHANGELOG generation](./CHANGELOG.md). It is encouraged that this practice be maintained to benefit agents interacting with and searching your Git history.
 >
 > Helpful hints for searchable commit messages:
->   - Filler words can be used but are often unnecessary to relate your work when leveraging conventional commit types (e.g. `fix`, `feat`, `build`).
+>   - Filler words can be used but are often unnecessary when leveraging Conventional Commit types (e.g., `fix`, `feat`, `build`).
 >   - Keep the subject line concise yet descriptive. If previous coding work was done on the same files, consider using the same commit message for searchability.
 >   - Do not over describe, add unnecessary details.
 >   - State facts and be consistent, do not inject personal opinions. Facts and consistency help searchability. Opinions can be applied to issue/story comments and work great if there's a story number already on the commit message.
