@@ -65,7 +65,7 @@ Our process follows the standard GitHub fork and pull request workflow.
 - `main` branch is a representation of development and `stage`.
 - `stable` branch is a representation of the `prod` environment.
 
-> Note: The only PRs ever merged into the `stable` branch are those from `main` and a pull request to merge a release commit.
+> Note: The only PRs ever merged into the `stable` branch are those from `main` and a pull request to merge a release commit, see [release process](#release-process)
 
 #### Pull requests
 Development pull requests (PRs) should be opened against the `main` branch.
@@ -128,6 +128,40 @@ Before any review takes place, all tests should pass. Creating a pull request ac
 - build integration tests
 
 > If you are unsure why your tests are failing, you should [review testing documentation](./docs/development.md#testing).
+
+### Release process
+
+The codebase makes use of linear Git commit history to ensure sequentially released features and fixes. This approach simplifies the release process by minimizing merge conflicts
+and providing a straightforward history for tracking changes.
+
+#### Staging release
+Staging code is automatically released to the `staging` environment on merge into the `main` branch.
+
+#### Production release
+Production code is currently maintained in the `stable` branch. Only maintainers are allowed to merge into this branch.
+
+##### Release process
+- Open a pull request from `main` to `stable`. (You can leverage past PRs as an example)
+- Ensure all tests pass in the `staging` environment.
+- **REBASE MERGE ONLY** the pull request into the `stable` branch. (It is currently discouraged that you squash commits into `stable` since it blocks/destroys the CHANGELOG.md generation.)
+- A maintainer creates a release commit on their local from the `stable` branch, by
+   1. Creating a release commit with a CHANGELOG.md update 
+      ```sh
+       $ npm run release
+       // or if you want to force a version
+       $ npm run release -- --override "0.0.0"
+      ```
+   2. Open a PR to the `stable` branch with this release commit
+   3. Let CI pass and then merge the PR. (It is now encouraged to add a PR number to the release commit since it improves transparency and traceability.)
+   4. Tag the stable branch commit. Tagging is not technically necessary for release but does provide potential known points in time that can be rolled back in an emergency. (Leverage existing tags as an example, currently they start with `v` followed by the version number, e.g., `v0.0.0`)
+   5. Next, rebase the `main` branch from the `stable` branch, this ensures the CHANGELOG.md log will continue to align with the release history.
+   6. Finally, update the AppSRE hash associated with the release commit hash. The application display should be released to production within a variable timeframe. 
+ 
+> The release process can be simplified with the simple removal of the `stable` branch. This would eliminate the ping-pong rebase that currently takes place and still maintain the CHANGELOG.md generator. The downside of removing a pristine production branch that is not directly manipulated, like `stable`, is that direct manipulation of the development branch `main` would go away.
+> 
+> It is still encouraged that the release for CHANGELOG.md is maintained since it helps update 3 files, `CHANGELOG.md`, `package.json`, and `package-lock.json`. An added benefit is that the version displayed in `package.json` is broadcast in the application display for debugging purposes (and currently located at the bottom left of the application display).
+
+> The CHANGELOG.md generator does not rely on the Git commit hash of the release commit, allowing it to be added in with a PR. Instead, the tool forms a range from the previous release commit and is reliant on a specific commit message format. Altering the release commit format may break the CHANGELOG.md generation.
 
 ### Code style guidance and conventions
 Basic code style guidelines are enforced by ESLint, but there are additional guidelines.
