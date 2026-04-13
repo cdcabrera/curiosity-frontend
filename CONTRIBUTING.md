@@ -1,5 +1,5 @@
 # Contributing
-Interested in contributing to the project? Review the following guidelines and our [planned architecture](./docs/architecture.md) to make sure your contribution is aligned with the project's goals.
+Interested in contributing to the project? Review the following guidelines and our [architecture](./docs/architecture.md) to make sure your contribution is aligned with the project's goals.
 
 ## Development
 
@@ -109,10 +109,10 @@ Commit messages follow two basic guidelines:
 > The codebase as of version `4.19.0` adheres to strict messaging guidelines specifically for seachability and [CHANGELOG generation](./CHANGELOG.md). It is encouraged this practice is maintained for the new benefit of having agents interact and search your git history.
 >
 > Helpful hints for searchable commit messages:
->   - Filler words can be used but are often unnecessary to relate to your work when leveraging conventional commit types (e.g. `for`, `the`, `add`, `updated`).
+>   - Filler words can be used but are often unnecessary to relate your work when leveraging conventional commit types (e.g. `fix`, `feat`, `build`).
 >   - Keep the subject line concise yet descriptive. If previous coding work was done on the same files, consider using the same commit message for searchability.
 >   - Do not over describe, add unnecessary details.
->   - State facts, do not inject personal opinions. Facts help searchability. Opinions can be applied to issue/story comments and work great if there's a story number on the commit message.
+>   - State facts and be consistent, do not inject personal opinions. Facts and consistency help searchability. Opinions can be applied to issue/story comments and work great if there's a story number already on the commit message.
 >   - Include a body if affecting multiple files, be concise. Past messages list files and the changes applied to them instead of broad descriptions. This helps searchability.
 
 > If your **pull request contains multiple commits**, they may be squashed into a single commit before merging, and the messaging altered to reflect current guidelines.
@@ -161,7 +161,11 @@ Production code is currently maintained in the `stable` branch. Only maintainers
 > 
 > It is still encouraged that the release for CHANGELOG.md is maintained since it helps update 3 files, `CHANGELOG.md`, `package.json`, and `package-lock.json`. An added benefit is that the version displayed in `package.json` is broadcast in the application display for debugging purposes (and currently located at the bottom left of the application display).
 
-> The CHANGELOG.md generator does not rely on the Git commit hash of the release commit, allowing it to be added in with a PR. Instead, the tool forms a range from the previous release commit and is reliant on a specific commit message format. Altering the release commit format may break the CHANGELOG.md generation.
+> The CHANGELOG.md generator
+> - Does not rely on the Git commit hash of the release commit, allowing it to be added in with a PR. The tool forms a range from the previous release commit and is reliant on a specific release commit message format. Altering the release commit format may break the CHANGELOG.md generation.
+> - Will call out non-conventional commits, using the setting `--non-cc`.
+> - Will denote breaking changes if the conventional commit syntax is used with a `!`, (e.g. `fix!: sw-123 lorem ipsum`, `feat(aScope)!: sw-123 lorem ipsum`)
+> - Has a `dry run` option that prints the proposed changes to the terminal/console, `$ npm run release:rc`
 
 ### Code style guidance and conventions
 Basic code style guidelines are enforced by ESLint, but there are additional guidelines.
