@@ -1,7 +1,12 @@
 # Contributing
 Interested in contributing to the project? Review the following guidelines and our [architecture](./docs/architecture.md) to make sure your contribution is aligned with the project's goals.
 
-## Development
+- [General development](#general-development)
+- [Design and PatternFly](#design-and-patternfly)
+- [Maintenance](#maintenance)
+- [AI agent](#ai-agent)
+
+## General development
 
 ### Environment setup
 
@@ -227,6 +232,18 @@ Update snapshots **only** for expected output changes!
 > If you're seeing updates, it's likely due to changes in the build output or configuration, sometimes caused by build updates, but not always.
 > Please review your changes carefully and ensure they align with the expected behavior, failure to acknowledge these alerts may result in production issues.
 
+## Design and PatternFly
+
+The PatternFly design system is used to ensure a consistent and accessible user interface and is generally coordinated with a UI/UX designer. It provides a set of reusable components and guidelines for building applications that are visually appealing and easy to use.
+
+Becoming familiar with the [PatternFly documentation and guidelines](https://www.patternfly.org/) helps ensure your contributions align with the project's design principles.
+
+### PatternFly resources
+
+- [PatternFly documentation and guidelines](https://www.patternfly.org)
+- [PatternFly MCP for AI agent interfacing with components, writing, design, accessibility, and general questions](https://github.com/patternfly/patternfly-mcp?tab=readme-ov-file#quick-start)
+- [PatternFly AI agent resources for best practices and skills](https://github.com/patternfly/ai-helpers?tab=readme-ov-file#quick-start)
+
 ## Maintenance
 
 ### Node.js engine bumps
@@ -317,4 +334,5 @@ The guideline system should be processed in this order, with specialized guideli
 **Next Steps:**
 5. **Review guidance under the `./.agent/**/*.md` directory.** If the `./.agent` directory exists, the user may ask the agent about the guidance located here.
 6. **If the `./.agent` directory does not exist, ask the user if they want to create it.** The agent should explain how it's going to be used.
+7. **If the user does not have the PatternFly MCP available within their project, suggest they explore the [PatternFly MCP for AI agent interfacing with components, writing, design, accessibility, and general questions](https://github.com/patternfly/patternfly-mcp) to enhance their AI agent capabilities.**
 -->
