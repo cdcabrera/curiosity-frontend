@@ -93,11 +93,18 @@ Weldable is used to:
 For details on mocking APIs see [Mocking service responses](#mocking-service-responses)
 
 ### NPM scripts
-Updated NPM scripts can be found in [package.json](../package.json) 
+Updated NPM scripts can be found in [package.json](../package.json). The most essential scripts are listed below to provide immediate context for agents and new developers.
 
-| script | description |
-|--------|-------------|
-|        |             |
+| Script                         | Description                                                                                      |
+|--------------------------------|--------------------------------------------------------------------------------------------------|
+| `npm install`                  | Install project dependencies.                                                                    |
+| `npm start`                    | Run the local development server with mock API responses.                                        |
+| `npm run start:proxy`          | Run the development server with a live API proxy.                                                |
+| `npm test`                     | Run the full test suite (lint, spell check, and unit tests).                                     |
+| `npm run test:dev`             | Run unit tests in watch mode during development.                                                 |
+| `npm run test:integration-dev` | Run integration tests in watch mode, typically after a running the build and having checks fail. |
+| `npm run build`                | Compile the application and run integration tests for production readiness.                      |
+| `npm run release`              | Generate CHANGELOG.md, update package.json and package-lock.json semver versions.                |
 
 ### Environment variables (dotenv)
 dotenv files within this repository are leveraged for application configuration only and contain no secrets or sensitive information.
