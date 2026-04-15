@@ -17,6 +17,11 @@ See the [Guidelines Index](./README.md#guidelines-index) for all guidelines.
 - **Mocking**: Isolate external services. Use dependency injection for test doubles.
 - **Reproducers Required**: Every bug fix must include a test case that reproduces the issue and verifies the fix.
 - **Structure**: Unit tests in `__tests__/` parallel to source; integration tests in `tests/`.
+- **Global Utilities**: Use the custom global utilities provided in `config/jest.setupTests.js`: `renderComponent`, `renderHook`, and `shallowComponent`.
+- **Redux Testing**:
+    - **Mock State**: When testing hooks with Redux, `renderHook` accepts a `state` option to mock the store's state: `await renderHook(() => useMyHook(), { state: { ... } });`
+    - **Action Sequences**: Test action sequences using `promiseMiddleware` with a real store (via `legacy_createStore`) or stub dispatch with `jest.fn()`. Use `moxios` to mock API responses.
+    - **Action Helpers**: Use `reduxHelpers.PENDING_ACTION`, `reduxHelpers.FULFILLED_ACTION`, and `reduxHelpers.REJECTED_ACTION` from `src/redux/common/reduxHelpers.js` to test reducer logic.
 
 ## 2. Command Reference
 For all available NPM scripts see [package.json](../package.json).
@@ -35,7 +40,7 @@ For all available NPM scripts see [package.json](../package.json).
 
 ### 3.1 Integration Test Snapshots
 - **Intentionality**: Update snapshots **only** for expected output changes.
-- **Workflow**: Use `npm run build` to confirm tests complete without issue. If test snapshots fail run `npm run test:integration-dev` and press `u` for targeted updates. Inspect all diffs.
+- **Workflow**: Use `npm run build` to confirm tests complete without issue. If test snapshots fail, run `npm run test:integration-dev` and press `u` for targeted updates. Inspect all diffs.
 
 ## 4. Definition of Done
 1. **Linting**: `npm run test:lint` passes.

@@ -16,8 +16,9 @@ For a detailed overview of the application design, see [docs/architecture.md](..
 
 ## 2. Core Behavior Standards
 - **Sequential Processing**: Ask questions one at a time; process requests in logical order; complete one task before starting another.
-- **Architectural Alignment**: Always confirm changes against the [application architecture](../docs/architecture.md) before proceeding with implementation.
+- **Architectural Alignment**: Always confirm changes against the [application architecture](../docs/architecture.md) and existing [product configurations](../src/config/README.md) before proceeding.
 - **Reference-Based Implementation**: Review git history; study existing patterns; maintain code style consistency and follow [standard Git workflows](../CONTRIBUTING.md#using-git).
+    - **History Searchability**: Up to version `4.19.0`, the repository has strictly followed conventional commit syntax since its inception. Agents should leverage these commit messages for highly accurate history searches and context gathering.
 - **Commit Messaging Standards**: Follow the project's [commit messaging standards](../CONTRIBUTING.md#pull-request-commits-messaging).
 - **Validation Required**: Follow checklists; verify requirements; test thoroughly. Review [pull request warning signs](../CONTRIBUTING.md#pull-requests) to avoid common pitfalls.
 - **Confirmation Required**: Confirm success; summarize changes; explain impact; verify understanding.

@@ -17,10 +17,8 @@ Agent-specific guidelines for curiosity-frontend, optimized for machine processi
 
 **Note:** `guidelines/skills/` is the canonical location for skills. Repo symlinks point here so agents can discover them: `.agents/skills` (Cursor), `.claude/skills` (Claude). The `.agent/` directory (no “s”) is reserved for each developer’s local work and is off limits—do not use it for shared skills or guidelines.
 
-### PatternFly MCP Plugins
-- [PatternFly MCP Plugin Git Reports](./mcp/plugin-development.md) - Generate reports based on Git commits.
-
-**Note:** This section provides resources and guidelines for working with PatternFly MCP plugins. [PatternFly MCP server quick start](https://github.com/patternfly/patternfly-mcp?tab=readme-ov-file#quick-start)
+### PatternFly MCP
+- [PatternFly MCP server quick start](https://github.com/patternfly/patternfly-mcp?tab=readme-ov-file#quick-start)
 
 ## User Guide
 
@@ -35,7 +33,7 @@ Agents should use these phrases as signals to consult specific documentation and
 | **Global banner**                 | [Configurable Banners skill](./skills/configurable-banners/SKILL.md), `docs/architecture.md`             |
 | **Release / Deploy**              | [CONTRIBUTING.md](../CONTRIBUTING.md) (Process)                                                          |
 | **Dependencies**                  | [CONTRIBUTING.md](../CONTRIBUTING.md) (NPM maintenance)                                                  |
-| **Git reports**                   | [docs/development.md#git-commit-message-reports](../docs/development.md#git-commit-message-reports)      |
+| **Git history**                   | [Agent Behaviors](./agent_behaviors.md) (Searchability), [CONTRIBUTING.md](../CONTRIBUTING.md) (Messaging) |
 
 ## Guidelines Processing Order
 

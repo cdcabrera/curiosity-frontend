@@ -62,7 +62,7 @@ For in-depth testing guidance review [docs/development.md](./docs/development.md
 For comprehensive development and project architecture [read the docs](./docs/README.md).
 
 - **Development**: Reference for [development strategy, debugging, and testing](./docs/development.md).
-- **Architecture**: Learn about the [application structure and data flow](./docs/architecture.md#data-sources-and-integrations).
+- **Architecture**: Learn about the [application structure and data flow](./docs/architecture.md#system-overview).
 
 ## Contributing
 

@@ -37,7 +37,7 @@ Interested in contributing to the project? Review the following guidelines and o
    ```sh
    $ npm run test:dev
    ```
-- Exit the process, `ctr + c` or OS specific key combination
+- Exit the process, `ctrl + c` or OS specific key combination
 - Run the build and related integration tests
    ```sh
    $ npm run build
@@ -111,7 +111,7 @@ Commit messages follow two basic guidelines:
   - **Description**: What the commit work encompasses.
   - **#PR_NUMBER**: The pull request number. Typically added automatically during merge/squash operations. Including it manually is optional. It can help with traceability during review.
 
-> The codebase as of version `4.19.0` adheres to strict messaging guidelines specifically for searchability and [CHANGELOG generation](./CHANGELOG.md). It is encouraged that this practice be maintained to benefit agents interacting with and searching your Git history.
+> The codebase since its inception and up to version `4.19.0` strictly adheres to messaging guidelines specifically for searchability and [CHANGELOG generation](./CHANGELOG.md). It is encouraged that this practice be maintained as these commit messages can be leveraged by agents for highly accurate history searches based on conventional commits and the descriptions associated with them.
 >
 > Helpful hints for searchable commit messages:
 >   - Filler words can be used but are often unnecessary when leveraging Conventional Commit types (e.g., `fix`, `feat`, `build`).
@@ -149,7 +149,7 @@ Production code is currently maintained in the `stable` branch. Only maintainers
 - Open a pull request from `main` to `stable`. (You can leverage past PRs as an example)
 - Ensure all tests pass in the `staging` environment.
 - **REBASE MERGE ONLY** the pull request into the `stable` branch. (It is currently discouraged that you squash commits into `stable` since it blocks/destroys the CHANGELOG.md generation.)
-- A maintainer creates a release commit on their local from the `stable` branch, by
+- A maintainer creates a release commit on their local machine from the `stable` branch, by
    1. Creating a release commit with a CHANGELOG.md update 
       ```sh
        $ npm run release
@@ -177,7 +177,7 @@ Basic code style guidelines are enforced by ESLint, but there are additional gui
 
 #### File Structure
 - File names use lowerCamelCase reflective of the parent directory and functionality (e.g., authentication.ts, authenticationContext.ts).
-- The directory structure is organized by React, Redux, and service layer. With all relevant application files maintained in the src directory.
+- The directory structure is organized by React, Redux, and service layer, with all relevant application files maintained in the src directory.
 
 #### Functionality, testing
 - Functions should attempt to maintain a single responsibility.

@@ -4,7 +4,7 @@ Guide to Curiosity's development process and reference documentation.
 
 - [Getting started](#getting-started)
 - [Build](#build)
-- [Development methodology and team members](#development-methodology-and-team-members)
+- [Development methodology and teams](#development-methodology-and-teams)
 - [Debugging](#debugging)
 - [React components](#react-components)
 - [Redux and state management](#redux-and-state-management)
@@ -102,7 +102,7 @@ Updated NPM scripts can be found in [package.json](../package.json). The most es
 | `npm run start:proxy`          | Run the development server with a live API proxy.                                                |
 | `npm test`                     | Run the full test suite (lint, spell check, and unit tests).                                     |
 | `npm run test:dev`             | Run unit tests in watch mode during development.                                                 |
-| `npm run test:integration-dev` | Run integration tests in watch mode, typically after a running the build and having checks fail. |
+| `npm run test:integration-dev` | Run integration tests in watch mode, typically after running the build and having checks fail. |
 | `npm run build`                | Compile the application and run integration tests for production readiness.                      |
 | `npm run release`              | Generate CHANGELOG.md, update package.json and package-lock.json semver versions.                |
 
@@ -221,7 +221,7 @@ Application development typically coordinates locale string updates with the tec
 **Make sure to reach out to the technical writing team before attempting content and visual element alterations and refactors.**
 
 ### Quality assurance and E2E
-Quality assurance and end-to-end (E2E) testing are vital to making sure regressions, and those one-off off-hours issues do not become the norm.
+Quality assurance and end-to-end (E2E) testing are vital to making sure regressions and those one-off off-hours issues do not become the norm.
 
 In addition to the integration checks the repository uses on its build output, E2E is leveraged at the continuous integration (CI) level to ensure that the application is functioning as expected before deployment.
 
@@ -248,7 +248,7 @@ Run spell checks using
 
 ##### ESLint configuration
 Linting is performed using ESLint with a custom configuration tailored to the project's coding standards.
-- Configuration is located in the project root [.eslint.config.mjs](../.eslint.config.mjs]) and can be customized for specific linting needs.
+- Configuration is located in the project root [eslint.config.mjs](../eslint.config.mjs) and can be customized for specific linting needs.
 - Configuration support can be found in [config/](../config/)
    - [config/eslint.config.airbnb.mjs](../config/eslint.config.airbnb.mjs) - Custom ESLint rules for the project. Moved here to remove the NPM dependency because the Airbnb style guide rules are older and minimally maintained.
 
