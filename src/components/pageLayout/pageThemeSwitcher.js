@@ -4,7 +4,7 @@ import { MoonIcon, SunIcon } from '@patternfly/react-icons';
 
 /**
  * @memberof PageLayout
- * @module ThemeSwitcher
+ * @module PageThemeSwitcher
  */
 
 const DARK_THEME_CLASS = 'pf-v6-theme-dark';
@@ -14,11 +14,14 @@ const DARK_THEME_CLASS = 'pf-v6-theme-dark';
  * `pf-v6-theme-dark` class to the root `<html>` element; toggling "light"
  * removes it.
  *
+ * Note: This component is only intended to be used within the development run of the application.
+ * The hardcoded className is only used here for development purposes.
+ *
  * @param {object} props
  * @param {string} [props.className='']
  * @returns {JSX.Element}
  */
-const ThemeSwitcher = ({ className = '' }) => {
+const PageThemeSwitcher = ({ className = '' }) => {
   const [isDark, setIsDark] = useState(
     () => typeof document !== 'undefined' && document.documentElement.classList.contains(DARK_THEME_CLASS)
   );
@@ -56,4 +59,4 @@ const ThemeSwitcher = ({ className = '' }) => {
   );
 };
 
-export { ThemeSwitcher as default, ThemeSwitcher };
+export { PageThemeSwitcher as default, PageThemeSwitcher };
