@@ -4,6 +4,7 @@ import { Button, Flex, FlexItem } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { helpers } from '../../common';
 import { translate } from '../i18n/i18n';
+import { ThemeSwitcher } from './themeSwitcher';
 
 /**
  * @memberof PageLayout
@@ -24,6 +25,9 @@ const PageHeader = ({ children, productLabel, t = translate }) => (
     <Flex justifyContent={{ sm: 'justifyContentSpaceBetween' }}>
       <FlexItem>
         <PageHeaderTitle title={children} className="pf-u-mb-sm" />
+      </FlexItem>
+      <FlexItem>
+        <ThemeSwitcher />
       </FlexItem>
     </Flex>
     {productLabel && (
